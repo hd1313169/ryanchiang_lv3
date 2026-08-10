@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npx impeccable *)",
+      "Bash(npm install *)",
+      "Bash(openspec update *)",
+      "Bash(openspec init *)",
+      "Bash(claude plugins *)",
+      "Bash(npm -v)",
+      "Bash(git --version)",
+      "Bash(git -C \"C:/Users/wsad7/Desktop/portfolio\" status)",
+      "Bash(npx --yes create-astro@latest --help)",
+      "Bash(npx --yes create-astro@latest . --template minimal --install --git --no-ai --yes)",
+      "Bash(rm -rf ./cyan-corot/.git)",
+      "Bash(mv ./cyan-corot/.gitignore ./cyan-corot/.vscode ./cyan-corot/README.md ./cyan-corot/astro.config.mjs ./cyan-corot/node_modules ./cyan-corot/package-lock.json ./cyan-corot/package.json ./cyan-corot/public ./cyan-corot/src ./cyan-corot/tsconfig.json .)"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+---
+interface Props {
+  caption?: string;
+  ratio?: string;
+}
+const { caption, ratio = "16 / 10" } = Astro.props;
+---
+
+<figure class="placeholder reveal">
+  <div class="block" style={`aspect-ratio:${ratio};`}></div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .placeholder {
+    margin: 0;
+  }
+
+  .block {
+    background: var(--color-block-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+  }
+
+  figcaption {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+  }
+</style>

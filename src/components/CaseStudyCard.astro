@@ -1,0 +1,101 @@
+---
+import PlaceholderBlock from "./PlaceholderBlock.astro";
+
+interface Props {
+  slug: string;
+  order: number;
+  title: string;
+  summary: string;
+  tags: string[];
+}
+const { slug, order, title, summary, tags } = Astro.props;
+const ordinal = String(order).padStart(2, "0");
+---
+
+<a class="feature" href={`/work/${slug}`}>
+  <span class="thumb">
+    <PlaceholderBlock ratio="16 / 9" />
+  </span>
+  <span class="meta-row">
+    <span class="ordinal">{ordinal}</span>
+    <span class="tags">
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </span>
+  </span>
+  <span class="text">
+    <h2>{title}</h2>
+    <p class="summary">{summary}</p>
+  </span>
+</a>
+
+<style>
+  .feature {
+    display: block;
+    text-decoration: none;
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .feature:first-child {
+    padding-top: 0;
+  }
+
+  .thumb {
+    display: block;
+    margin-bottom: var(--space-3);
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .ordinal {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .tag {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.2em 0.7em;
+  }
+
+  .text {
+    display: block;
+    max-width: 38rem;
+  }
+
+  h2 {
+    font-size: var(--text-md);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
+    transition: color var(--transition-hover);
+  }
+
+  .feature:hover h2 {
+    color: var(--color-text-secondary);
+  }
+
+  .summary {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+</style>

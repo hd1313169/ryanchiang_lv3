@@ -1,0 +1,342 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import portrait from "../assets/photos/about-hero-portrait.png";
+
+const facts = [
+  { label: "Role", value: "UX/UI 設計師" },
+  { label: "Focus", value: "SaaS 工具、CRM 系統、品牌網站" },
+  { label: "Experience", value: "3+ years" },
+];
+
+const skills = [
+  {
+    title: "設計執行",
+    description: "從 IA 規劃、Wireframe 到 Prototype 與 Handoff，完整參與每個交付節點。",
+  },
+  {
+    title: "系統思考",
+    description: "處理 RBAC 權限設計、複雜工作流與 Design System 建立，習慣從結構層面定義問題。",
+  },
+  {
+    title: "跨角色協作",
+    description: "橫跨設計、SA、PM 職責，參與需求釐清、UAT 定義與利害關係人溝通。",
+  },
+  {
+    title: "AI 協作",
+    description:
+      "以 AI 輔助 PRD 撰寫、前端原型生成與 SDD 開發流程（Open Spec、Superpower），明確區分哪些環節由 AI 加速、哪些關鍵節點由設計判斷介入——讓工具服務決策，而不是取代它。",
+  },
+];
+
+const experience = [
+  {
+    role: "UX/UI 設計師",
+    org: "筑今數位設計",
+    period: "2023 — 現在",
+    description:
+      "專注數位產品設計的顧問公司，負責橫跨金融、行銷、SaaS 等產業的系統設計，兼任 SA 職責，承接業務規則釐清、PRD 撰寫與工程師協作。",
+  },
+  {
+    role: "數位行銷專員",
+    org: "敦煌教育集團",
+    period: "2020 — 2022",
+    description: "透過數據分析與用戶問卷，養成從行為數據與質化回饋推導優化方向的習慣。",
+  },
+  {
+    role: "平面設計師",
+    org: "自由接案",
+    period: "2019 — 2020",
+    description: "接觸各產業的視覺需求，培養基礎美感與需求釐清的能力。",
+  },
+];
+---
+
+<BaseLayout
+  title="About — Ryan Chiang"
+  description="習慣在複雜的討論裡，先找到那個還沒被說清楚的前提。"
+>
+  <article class="about">
+    <section class="reveal intro-grid">
+      <div class="bio">
+        <p class="intro">
+          習慣在複雜的討論裡，先找到那個還沒被說清楚的前提——不是為了質疑，而是因為問題定義不清，後面做再多都是在修枝而不是在移樹。和這樣的人一起工作，通常意味著少一點「做完才發現方向錯了」——不是因為預測能力強，而是因為願意在早期多說一句讓人不舒服但必要的話。
+        </p>
+
+        <p class="run-in">
+          <span class="run-in-head" role="heading" aria-level="2">做法</span
+          >面對新問題，第一步是概覽而不是動手——彙整資訊、釐清全局，再追問：這個需求最終要達到什麼？然後才決定用什麼手段去解它。很多時候，這個步驟省掉的不是時間，而是後來不得不重做的工。
+        </p>
+
+        <p class="run-in">
+          <span class="run-in-head" role="heading" aria-level="2">心得</span
+          >在設計顧問公司的工作中，同時接觸金融、行銷、SaaS 等產業的系統專案，每個案子都在問同一個問題：這套系統裡有哪些規則是業主說不清楚的？能不能在動工前把它們找出來？長期做這件事，讓我確認了一件事——設計師最大的槓桿點，不在於把介面做得更漂亮，而在於在更早的地方介入，幫助定義問題本身。
+        </p>
+      </div>
+
+      <div class="side">
+        <div class="photo">
+          <Image src={portrait} alt="Ryan Chiang" width={280} />
+        </div>
+
+        <dl class="facts">
+          {
+            facts.map((fact) => (
+              <div class="fact">
+                <dt class="fact-label">{fact.label}</dt>
+                <dd class="fact-value">
+                  {fact.value.split("\n").map((line, i) => (
+                    <>
+                      {i > 0 && <br />}
+                      {line}
+                    </>
+                  ))}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section class="reveal section-row">
+      <h2>技能</h2>
+      <dl class="skills">
+        {
+          skills.map((skill) => (
+            <div class="skill">
+              <dt>{skill.title}</dt>
+              <dd>{skill.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="reveal section-row">
+      <h2>經歷</h2>
+      <ul class="experience">
+        {
+          experience.map((job) => (
+            <li class="experience-item">
+              <span class="experience-period">{job.period}</span>
+              <span class="experience-content">
+                <p class="job-title">
+                  {job.role}
+                  <span class="job-org">　／　{job.org}</span>
+                </p>
+                <p class="job-description">{job.description}</p>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="reveal section-row">
+      <p class="run-in">
+        <span class="run-in-head" role="heading" aria-level="2">Beyond Work</span
+        >AI 相關的個人專案整理中，稍後補上。
+      </p>
+    </section>
+
+    <section class="reveal section-row">
+      <p class="run-in">
+        <span class="run-in-head" role="heading" aria-level="2">聯絡</span
+        ><a href="mailto:wsad71155@gmail.com">wsad71155@gmail.com</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: var(--content-max-width);
+    padding-block: var(--space-4) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .intro-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .bio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .intro {
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.9;
+  }
+
+  .intro::first-letter {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: 2.75em;
+    font-weight: 500;
+    float: left;
+    line-height: 0.85;
+    padding-right: 0.1em;
+  }
+
+  .run-in {
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.9;
+  }
+
+  .run-in-head {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-weight: 500;
+    font-size: var(--text-md);
+    color: var(--color-text);
+    margin-right: var(--space-2);
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .photo :global(img) {
+    width: 100%;
+    max-width: 16rem;
+    height: auto;
+    border: 1px solid var(--color-border);
+  }
+
+  .facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .fact-label {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-1);
+  }
+
+  .fact-value {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+
+  .section-row {
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+  }
+
+  h2 {
+    font-size: var(--text-md);
+    font-weight: 500;
+    margin-bottom: var(--space-2);
+    color: var(--color-text);
+  }
+
+  .skills {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin: 0;
+  }
+
+  .skill dt {
+    font-weight: 500;
+    margin-bottom: var(--space-1);
+  }
+
+  .skill dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .experience {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .experience-item {
+    display: flex;
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .experience-item:first-child {
+    padding-top: 0;
+  }
+
+  .experience-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .experience-period {
+    flex-shrink: 0;
+    width: 6rem;
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    padding-top: 0.2em;
+  }
+
+  .experience-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .job-title {
+    font-weight: 500;
+  }
+
+  .job-org {
+    font-size: var(--text-sm);
+    font-weight: 300;
+    color: var(--color-text-secondary);
+  }
+
+  .job-description {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 300;
+    margin-top: var(--space-1);
+  }
+
+  @media (min-width: 40em) {
+    .intro-grid {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .bio {
+      flex: 3;
+    }
+
+    .side {
+      flex: 2;
+    }
+
+    .skills {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

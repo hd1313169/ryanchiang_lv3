@@ -1,0 +1,83 @@
+---
+import Nav from "./Nav.astro";
+import Illustration from "./Illustration.astro";
+
+const tagline = "產品設計師，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+---
+
+<aside class="sidebar">
+  <div class="identity">
+    <p class="wordmark">Ryan Chiang</p>
+    <p class="tagline">{tagline}</p>
+  </div>
+
+  <Nav />
+
+  <div class="illustration-slot">
+    <Illustration width={240} />
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--page-padding-inline) var(--space-5);
+  }
+
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .wordmark {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  .tagline {
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    max-width: 26ch;
+  }
+
+  .illustration-slot {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  @media (max-width: 60em) {
+    .illustration-slot {
+      display: none;
+    }
+  }
+
+  @media (max-width: 48em) {
+    .sidebar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--page-padding-inline);
+    }
+
+    .identity {
+      gap: var(--space-1);
+    }
+
+    .wordmark {
+      font-size: var(--text-md);
+    }
+
+    .tagline {
+      display: none;
+    }
+  }
+</style>

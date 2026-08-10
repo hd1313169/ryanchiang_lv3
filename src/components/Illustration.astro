@@ -1,0 +1,28 @@
+---
+// The sidebar's illustrated figure. Static — no animation, shown as
+// provided rather than cropped or masked.
+import { Image } from "astro:assets";
+import sidebarIllustration from "../assets/illustrations/sidebar-illustration.png";
+
+interface Props {
+  width?: number;
+  class?: string;
+}
+
+const { width = 220, class: className } = Astro.props;
+---
+
+<Image
+  class:list={["illustration", className]}
+  src={sidebarIllustration}
+  alt=""
+  width={width}
+/>
+
+<style>
+  .illustration {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

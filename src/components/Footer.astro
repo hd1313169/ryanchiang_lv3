@@ -1,0 +1,37 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer reveal">
+  <div class="footer-inner">
+    <a href="mailto:wsad71155@gmail.com">wsad71155@gmail.com</a>
+    <p>&copy; {year} Ryan Chiang. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-6);
+  }
+
+  .footer-inner {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: var(--space-3) var(--page-padding-inline) var(--space-4);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .footer-inner a {
+    font-size: var(--text-sm);
+  }
+
+  .footer-inner p {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+  }
+</style>

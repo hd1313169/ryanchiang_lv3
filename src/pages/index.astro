@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
+
+const caseStudies = (await getCollection("case-studies")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const tagline = "產品設計師，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+---
+
+<BaseLayout title="Ryan Chiang" description={tagline}>
+  <section class="work-list reveal" aria-label="作品列表">
+    {
+      caseStudies.map((entry) => (
+        <CaseStudyCard
+          slug={entry.id}
+          order={entry.data.order}
+          title={entry.data.title}
+          summary={entry.data.summary}
+          tags={entry.data.tags}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .work-list {
+    padding-bottom: var(--space-6);
+  }
+</style>
