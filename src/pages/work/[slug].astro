@@ -23,6 +23,7 @@ const allCaseStudies = (await getCollection("case-studies")).sort(
 const currentIndex = allCaseStudies.findIndex((c) => c.id === entry.id);
 const next = allCaseStudies[(currentIndex + 1) % allCaseStudies.length];
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const sections = [
   { href: "#專案背景", label: "背景" },
   { href: "#設計決策", label: "決策" },
@@ -72,7 +73,7 @@ const sections = [
       </div>
     </section>
 
-    <a class="next-case reveal" href={`/work/${next.id}`}>
+    <a class="next-case reveal" href={`${base}/work/${next.id}`}>
       <span class="next-label">下一篇案例</span>
       <span class="next-title">{next.data.title}</span>
     </a>
