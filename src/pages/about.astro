@@ -76,7 +76,7 @@ const experience = [
 
       <div class="side">
         <div class="photo">
-          <Image src={portrait} alt="Ryan Chiang" width={280} />
+          <Image src={portrait} alt="Ryan Chiang" width={900} />
         </div>
 
         <dl class="facts">
@@ -337,6 +337,15 @@ const experience = [
     }
   }
 
+  /* Narrow mobile: photo fills the content column's full width (still
+     inside the page's horizontal padding) instead of the old 16rem cap. */
+  @media (max-width: 31.1875em) {
+    .photo :global(img) {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
   /* Medium: the persistent sidebar nav leaves too little room here for a
      comfortable bio/side split, so the side card sits above the bio as a
      compact horizontal row instead of squeezing both columns. */
@@ -348,7 +357,7 @@ const experience = [
     }
 
     .photo {
-      flex-shrink: 0;
+      flex: 0 1 40%;
       aspect-ratio: 1109 / 832;
     }
 
@@ -356,6 +365,7 @@ const experience = [
       width: 100%;
       max-width: none;
       height: 100%;
+      object-fit: cover;
     }
 
     .facts {

@@ -1,0 +1,64 @@
+---
+import Illustration from "./Illustration.astro";
+
+const tagline = "UIUX設計師\n專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+---
+
+<section class="mobile-intro">
+  <div class="mobile-intro-illustration">
+    <Illustration width={220} />
+  </div>
+  <div class="mobile-intro-text">
+    <p class="mobile-intro-wordmark">Ryan Chiang</p>
+    <p class="mobile-intro-tagline">{tagline}</p>
+  </div>
+</section>
+
+<style>
+  .mobile-intro {
+    display: none;
+  }
+
+  @media (max-width: 60em) {
+    .mobile-intro {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      max-width: 90rem;
+      margin: var(--space-5) auto 0;
+      padding: 0 var(--page-padding-inline);
+    }
+
+    .mobile-intro-illustration {
+      flex: none;
+      width: 11rem;
+    }
+
+    .mobile-intro-wordmark {
+      font-family: var(--font-latin), var(--font-cjk), sans-serif;
+      font-size: var(--text-md);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-1);
+    }
+
+    .mobile-intro-tagline {
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+  }
+
+  @media (max-width: 30em) {
+    .mobile-intro {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+
+    .mobile-intro-illustration {
+      width: 11rem;
+    }
+  }
+</style>
