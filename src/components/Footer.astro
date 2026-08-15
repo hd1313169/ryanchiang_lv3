@@ -1,24 +1,42 @@
 ---
 const year = new Date().getFullYear();
+const email = "wsad71155@gmail.com";
 ---
 
 <footer class="footer reveal">
   <div class="footer-inner">
-    <a href="mailto:wsad71155@gmail.com">wsad71155@gmail.com</a>
+    <button class="mail-link" type="button" data-email={email}>
+      <svg
+        class="mail-icon"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="m2 7 9.1 6.4a1.7 1.7 0 0 0 1.8 0L22 7" />
+      </svg>
+      <span class="mail-text">{email}</span>
+    </button>
     <p>&copy; {year} Ryan Chiang. All rights reserved.</p>
   </div>
 </footer>
 
 <style>
   .footer {
-    border-top: 1px solid var(--color-border);
+    background: var(--color-text);
     margin-top: var(--space-6);
   }
 
   .footer-inner {
     max-width: 90rem;
     margin: 0 auto;
-    padding: var(--space-3) var(--page-padding-inline) var(--space-4);
+    padding: 10px var(--page-padding-inline);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -26,12 +44,49 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
   }
 
-  .footer-inner a {
+  .mail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
     font-size: var(--text-sm);
+    color: var(--color-bg);
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .mail-icon {
+    flex-shrink: 0;
   }
 
   .footer-inner p {
-    color: var(--color-text-secondary);
+    color: var(--color-bg);
+    opacity: 0.7;
     font-size: var(--text-xs);
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".mail-link").forEach((btn) => {
+    const textEl = btn.querySelector<HTMLElement>(".mail-text");
+    const email = btn.dataset.email ?? "";
+    const original = textEl?.textContent ?? email;
+    let resetTimer: ReturnType<typeof setTimeout>;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        return;
+      }
+      if (!textEl) return;
+      textEl.textContent = "已複製 Email";
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        textEl.textContent = original;
+      }, 1500);
+    });
+  });
+</script>

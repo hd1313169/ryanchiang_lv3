@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import PlaceholderBlock from "../../components/PlaceholderBlock.astro";
 
 export async function getStaticPaths() {
   const caseStudies = await getCollection("case-studies");
@@ -13,8 +12,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, summary, tags, order, role, scope, collaboration, status, showcaseItems } =
-  entry.data;
+const { title, summary, order, intro, mainDuties, team, timeline, tools } = entry.data;
 const ordinal = String(order).padStart(2, "0");
 
 const allCaseStudies = (await getCollection("case-studies")).sort(
@@ -25,10 +23,10 @@ const next = allCaseStudies[(currentIndex + 1) % allCaseStudies.length];
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const sections = [
-  { href: "#專案背景", label: "背景" },
-  { href: "#設計決策", label: "決策" },
-  { href: "#成果", label: "成果" },
-  { href: "#反思", label: "反思" },
+  { href: "#專案背景", label: "專案背景" },
+  { href: "#設計決策", label: "設計決策" },
+  { href: "#設計成果", label: "設計成果" },
+  { href: "#心得與反思", label: "心得與反思" },
 ];
 ---
 
@@ -43,36 +41,24 @@ const sections = [
 
         <h1>{title}</h1>
 
-        <dl class="meta">
-          <div><dt>角色</dt><dd>{role}</dd></div>
-          <div><dt>責任範疇</dt><dd>{scope}</dd></div>
-          <div><dt>協作</dt><dd>{collaboration}</dd></div>
-          <div><dt>狀態</dt><dd>{status}</dd></div>
-        </dl>
+        <p class="intro" set:html={intro} />
 
-        <div class="section-nav-wrap">
-          <span class="section-nav-label">本篇章節</span>
-          <nav class="section-nav" aria-label="本篇章節">
-            {sections.map((s) => <a href={s.href}>{s.label}</a>)}
-          </nav>
-        </div>
+        <dl class="meta">
+          <div><dt>主要職責</dt><dd>{mainDuties}</dd></div>
+          <div><dt>團隊成員</dt><dd>{team}</dd></div>
+          <div><dt>專案時程</dt><dd>{timeline}</dd></div>
+          <div><dt>使用工具</dt><dd>{tools}</dd></div>
+        </dl>
       </div>
     </header>
+
+    <nav class="section-nav-float" aria-label="本篇章節">
+      {sections.map((s) => <a href={s.href}>{s.label}</a>)}
+    </nav>
 
     <div class="prose reveal">
       <Content />
     </div>
-
-    <section class="showcase reveal">
-      <h2>設計展示</h2>
-      <div class="showcase-grid">
-        {
-          showcaseItems.map((item) => (
-            <PlaceholderBlock caption={`${item.title} — ${item.description}`} />
-          ))
-        }
-      </div>
-    </section>
 
     <a class="next-case reveal" href={`${base}/work/${next.id}`}>
       <span class="next-label">下一篇案例</span>
@@ -89,9 +75,8 @@ const sections = [
   }
 
   header {
-    padding-bottom: var(--space-4);
-    border-bottom: 2px solid var(--color-text);
-    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
   }
 
   .header-body {
@@ -125,21 +110,37 @@ const sections = [
     margin-bottom: var(--space-3);
   }
 
+  .intro {
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.85;
+    margin-bottom: var(--space-4);
+  }
+
+  .intro :global(strong) {
+    font-weight: 600;
+  }
+
   .meta {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin: 0 0 var(--space-3);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
   }
 
   .meta > div {
-    background: var(--color-block-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: var(--space-2) var(--space-3);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .meta > div:last-child {
+    border-bottom: 1px solid var(--color-border);
   }
 
   .meta dt {
+    flex: 0 0 6rem;
     font-size: var(--text-xs);
     color: var(--color-text-secondary);
   }
@@ -149,44 +150,37 @@ const sections = [
     font-size: var(--text-sm);
   }
 
-  .section-nav-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
+  /* Floating chapter index — only shown once there's enough spare width
+     beside the centered article column for it not to crowd the text. */
+  .section-nav-float {
+    display: none;
   }
 
-  .section-nav-label {
-    flex-shrink: 0;
-    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+  @media (min-width: 90em) {
+    .section-nav-float {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      position: fixed;
+      top: 22%;
+      right: var(--space-4);
+      z-index: 2;
+    }
+  }
+
+  .section-nav-float a {
     font-size: var(--text-xs);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
     color: var(--color-text-secondary);
-  }
-
-  .section-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-  }
-
-  .section-nav a {
-    font-size: var(--text-sm);
-    color: var(--color-text);
     text-decoration: none;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    padding: 0.45em 1.1em;
-    transition: background var(--transition-hover), color var(--transition-hover),
-      border-color var(--transition-hover);
+    text-align: right;
+    padding-right: var(--space-2);
+    border-right: 2px solid var(--color-border);
+    transition: color var(--transition-hover), border-color var(--transition-hover);
   }
 
-  .section-nav a:hover {
-    background: var(--color-text);
-    color: var(--color-bg);
-    border-color: var(--color-text);
+  .section-nav-float a:hover {
+    color: var(--color-text);
+    border-right-color: var(--color-text);
   }
 
   .prose :global(h2) {
@@ -223,7 +217,7 @@ const sections = [
     margin: var(--space-3) 0;
     padding: var(--space-2) var(--space-3);
     border-left: 2px solid var(--color-text);
-    background: var(--color-block-bg);
+    background: color-mix(in srgb, var(--color-text), white 98%);
   }
 
   .prose :global(blockquote p) {
@@ -234,27 +228,11 @@ const sections = [
     margin-bottom: var(--space-1);
   }
 
-  .showcase {
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 2px solid var(--color-text);
-  }
-
-  .showcase h2 {
-    font-size: var(--text-lg);
-    font-weight: 500;
-    margin-bottom: var(--space-3);
-  }
-
-  .showcase-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: var(--space-3);
-  }
-
   .next-case {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
     gap: var(--space-1);
     margin-top: var(--space-6);
     padding-top: var(--space-4);
@@ -282,8 +260,8 @@ const sections = [
   }
 
   @media (max-width: 28em) {
-    .meta {
-      grid-template-columns: 1fr;
+    .meta dt {
+      flex-basis: 4.5rem;
     }
   }
 </style>

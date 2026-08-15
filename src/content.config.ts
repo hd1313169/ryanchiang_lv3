@@ -9,16 +9,11 @@ const caseStudies = defineCollection({
     tags: z.array(z.string()),
     order: z.number(),
     ndaNote: z.string().optional(),
-    role: z.string(),
-    scope: z.string(),
-    collaboration: z.string(),
-    status: z.string(),
-    showcaseItems: z.array(
-      z.object({
-        title: z.string(),
-        description: z.string(),
-      })
-    ),
+    intro: z.string(),
+    mainDuties: z.string(),
+    team: z.string(),
+    timeline: z.string(),
+    tools: z.string(),
   }),
 });
 

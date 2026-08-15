@@ -3,11 +3,12 @@ import Nav from "./Nav.astro";
 import Illustration from "./Illustration.astro";
 
 const tagline = "UI/UX Designer\n專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <aside class="sidebar">
   <div class="identity">
-    <p class="wordmark">Ryan Chiang</p>
+    <a class="wordmark" href={`${base}/`}>Ryan Chiang</a>
     <p class="tagline">{tagline}</p>
   </div>
 
@@ -34,11 +35,18 @@ const tagline = "UI/UX Designer\n專注在把複雜的問題梳理清楚，做�
   }
 
   .wordmark {
+    display: block;
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
     font-size: var(--text-2xl);
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.15;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .wordmark:hover {
+    color: var(--color-text-secondary);
   }
 
   .tagline {

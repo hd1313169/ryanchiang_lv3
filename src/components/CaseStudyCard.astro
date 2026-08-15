@@ -8,8 +8,15 @@ interface Props {
   summary: string;
   tags: string[];
 }
-const { slug, title, summary, tags } = Astro.props;
+const { slug, order, title, summary, tags } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const ordinal = String(order).padStart(2, "0");
+
+// Force a line break right before the em-dash separator (rather than
+// wherever the browser happens to wrap) so long two-part titles read as
+// two deliberate lines instead of an arbitrary mid-word wrap.
+const [titleHead, ...titleRest] = title.split("——");
+const titleTail = titleRest.join("——");
 ---
 
 <a class="feature" href={`${base}/work/${slug}`}>
@@ -17,13 +24,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <PlaceholderBlock ratio="16 / 9" />
   </span>
   <span class="body">
-    <span class="meta-row">
+    <span class="text">
+      <span class="title-row">
+        <span class="ordinal">{ordinal}</span>
+        <h2>
+          {titleHead}
+          {titleTail && (
+            <>
+              <br />
+              ——{titleTail}
+            </>
+          )}
+        </h2>
+      </span>
       <span class="tags">
         {tags.map((tag) => <span class="tag">{tag}</span>)}
       </span>
-    </span>
-    <span class="text">
-      <h2>{title}</h2>
       <p class="summary">{summary}</p>
     </span>
   </span>
@@ -35,6 +51,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     gap: var(--space-4);
     align-items: center;
     text-decoration: none;
+  }
+
+  /* Generous whitespace between cards, with a hairline divider sitting in
+     the middle of the gap (not on the very first card). */
+  .feature:not(:first-child) {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
   }
 
   .thumb {
@@ -54,17 +78,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     min-width: 0;
   }
 
-  .meta-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-2);
-  }
-
   .tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-1);
+    margin-bottom: var(--space-2);
   }
 
   .tag {
@@ -82,6 +100,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     display: block;
   }
 
+  .title-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .ordinal {
+    /* Scales with the same container as the title so it keeps tracking
+       roughly the height of a 2-line title block at any card width. */
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: clamp(2rem, 1.4rem + 8.6cqi, 4.6rem);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-border);
+  }
+
   h2 {
     /* Scales with the text column's own width (not the viewport), so it
        never outgrows the space next to the thumbnail; hard-capped to 2
@@ -89,8 +126,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     font-size: clamp(1rem, 0.75rem + 1.6cqi, 1.1875rem);
     font-weight: 500;
     color: var(--color-text);
-    margin-bottom: var(--space-2);
-    line-height: 1.4;
+    line-height: 1.55;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -106,6 +142,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
     line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Below this container width, a side-by-side row squeezes the title/tags

@@ -1,8 +1,11 @@
 ---
-// The sidebar's illustrated figure. Static — no animation, shown as
-// provided rather than cropped or masked.
+// The sidebar's illustrated figure. Two frames cross-fade into each other,
+// advancing to the next frame every time the page has been scrolled past
+// another fixed-height step (looping back and forth as the reader scrolls
+// up or down), rather than animating on a timer.
 import { Image } from "astro:assets";
-import sidebarIllustration from "../assets/illustrations/sidebar-illustration.png";
+import frame1 from "../assets/illustrations/sidebar-illustration-1.png";
+import frame2 from "../assets/illustrations/sidebar-illustration-2.png";
 
 interface Props {
   width?: number;
@@ -10,20 +13,75 @@ interface Props {
 }
 
 const { width = 220, class: className } = Astro.props;
+const frames = [frame1, frame2];
 ---
 
-<Image
-  class:list={["illustration", className]}
-  src={sidebarIllustration}
-  alt=""
-  width={width * 2}
-  quality={100}
-/>
+<span class:list={["illustration-swap", className]}>
+  {
+    frames.map((frame, i) => (
+      <Image
+        class:list={["illustration-frame", i === 0 && "is-active"]}
+        src={frame}
+        alt=""
+        width={width * 2}
+        quality={100}
+        loading={i === 0 ? "eager" : "lazy"}
+      />
+    ))
+  }
+</span>
 
 <style>
-  .illustration {
+  .illustration-swap {
+    display: block;
+    position: relative;
+  }
+
+  .illustration-frame {
     display: block;
     width: 100%;
     height: auto;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .illustration-frame:first-child {
+    /* Establishes the box's height; the rest stack on top of it. */
+    position: relative;
+  }
+
+  .illustration-frame:not(:first-child) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .illustration-frame.is-active {
+    opacity: 1;
   }
 </style>
+
+<script>
+  // Shared across every <Illustration> instance on the page (sidebar +
+  // mobile intro both use this component) — Astro only injects this
+  // module once per page regardless of how many instances render.
+  const STEP = 920; // px of scroll per frame change
+
+  const groups = new Map<string, HTMLElement[]>();
+  document.querySelectorAll<HTMLElement>(".illustration-swap").forEach((swap, groupIndex) => {
+    const frames = Array.from(swap.querySelectorAll<HTMLElement>(".illustration-frame"));
+    if (frames.length) groups.set(String(groupIndex), frames);
+  });
+
+  if (groups.size) {
+    const applyFrame = () => {
+      const index = Math.floor(window.scrollY / STEP);
+      for (const frames of groups.values()) {
+        const active = index % frames.length;
+        frames.forEach((frame, i) => frame.classList.toggle("is-active", i === active));
+      }
+    };
+
+    applyFrame();
+    window.addEventListener("scroll", applyFrame, { passive: true });
+  }
+</script>
