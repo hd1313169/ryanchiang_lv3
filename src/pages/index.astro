@@ -7,7 +7,7 @@ const caseStudies = (await getCollection("case-studies")).sort(
   (a, b) => a.data.order - b.data.order
 );
 
-const tagline = "UIUX設計師，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+const tagline = "UI/UX Designer，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
 ---
 
 <BaseLayout title="Ryan Chiang" description={tagline}>
@@ -28,15 +28,11 @@ const tagline = "UIUX設計師，專注在把複雜的問題梳理清楚，做�
 
 <style>
   .work-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-6) var(--space-4);
+    container-type: inline-size;
+    container-name: work-list;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
     padding-bottom: var(--space-6);
-  }
-
-  @media (min-width: 40em) {
-    .work-list {
-      grid-template-columns: 1fr 1fr;
-    }
   }
 </style>

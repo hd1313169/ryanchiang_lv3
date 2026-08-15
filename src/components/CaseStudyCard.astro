@@ -8,8 +8,7 @@ interface Props {
   summary: string;
   tags: string[];
 }
-const { slug, order, title, summary, tags } = Astro.props;
-const ordinal = String(order).padStart(2, "0");
+const { slug, title, summary, tags } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
@@ -17,27 +16,42 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <span class="thumb">
     <PlaceholderBlock ratio="16 / 9" />
   </span>
-  <span class="meta-row">
-    <span class="ordinal">{ordinal}</span>
-    <span class="tags">
-      {tags.map((tag) => <span class="tag">{tag}</span>)}
+  <span class="body">
+    <span class="meta-row">
+      <span class="tags">
+        {tags.map((tag) => <span class="tag">{tag}</span>)}
+      </span>
     </span>
-  </span>
-  <span class="text">
-    <h2>{title}</h2>
-    <p class="summary">{summary}</p>
+    <span class="text">
+      <h2>{title}</h2>
+      <p class="summary">{summary}</p>
+    </span>
   </span>
 </a>
 
 <style>
   .feature {
-    display: block;
+    display: flex; /* horizontal card layout */
+    gap: var(--space-4);
+    align-items: center;
     text-decoration: none;
   }
 
   .thumb {
+    /* flex-basis 0 + proportional grow/shrink keeps this at a fixed 53%
+       share of the row's available width at every size, instead of
+       flex-basis percentages (which drift towards 50/50 as free space
+       gets distributed equally by two flex-grow: 1 tracks). */
     display: block;
-    margin-bottom: var(--space-3);
+    flex: 53 53 0%;
+    min-width: 0;
+  }
+
+  .body {
+    container-type: inline-size;
+    display: block;
+    flex: 47 47 0%;
+    min-width: 0;
   }
 
   .meta-row {
@@ -45,13 +59,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     align-items: center;
     gap: var(--space-3);
     margin-bottom: var(--space-2);
-  }
-
-  .ordinal {
-    font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-2xs);
-    letter-spacing: 0.06em;
-    color: var(--color-text-secondary);
   }
 
   .tags {
@@ -76,10 +83,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
 
   h2 {
-    font-size: var(--text-md);
+    /* Scales with the text column's own width (not the viewport), so it
+       never outgrows the space next to the thumbnail; hard-capped to 2
+       lines regardless of title length. */
+    font-size: clamp(1rem, 0.75rem + 1.6cqi, 1.1875rem);
     font-weight: 500;
     color: var(--color-text);
     margin-bottom: var(--space-2);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     transition: color var(--transition-hover);
   }
 
@@ -91,5 +106,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     color: var(--color-text-secondary);
     font-size: var(--text-sm);
     line-height: 1.7;
+  }
+
+  /* Below this container width, a side-by-side row squeezes the title/tags
+     onto too few characters per line — fall back to the original stacked
+     (thumbnail-on-top) card instead. */
+  @container work-list (max-width: 34rem) {
+    .feature {
+      display: block;
+    }
+
+    .thumb {
+      margin-bottom: var(--space-3);
+    }
   }
 </style>

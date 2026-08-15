@@ -48,22 +48,57 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
     </div>
     <MobileIntro />
     <Footer />
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
     <script>
-      const revealed = new Set<Element>();
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting && !revealed.has(entry.target)) {
-              entry.target.classList.add("is-visible");
-              revealed.add(entry.target);
-              observer.unobserve(entry.target);
-            }
-          }
-        },
-        { threshold: 0.15 }
-      );
+      const revealAll = () => {
+        document.querySelectorAll(".reveal:not(.is-visible)").forEach((el) => {
+          el.classList.add("is-visible");
+        });
+      };
 
-      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+      if (typeof IntersectionObserver === "undefined") {
+        // No IO support (or JS disabled at parse time): don't leave content invisible.
+        revealAll();
+      } else {
+        const revealed = new Set<Element>();
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting && !revealed.has(entry.target)) {
+                entry.target.classList.add("is-visible");
+                revealed.add(entry.target);
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          // Low threshold: even tall blocks (e.g. long case-study body copy)
+          // reveal as soon as any part enters view, instead of waiting for
+          // 15% of a multi-thousand-pixel element to be on screen.
+          { threshold: 0.01, rootMargin: "0px 0px -10% 0px" }
+        );
+
+        document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+        // Safety net: if the observer never fires for some elements (e.g. a
+        // stalled callback on some mobile browsers, or a page restored from
+        // bfcache without re-running this script), force everything visible
+        // shortly after load so copy is never stuck at opacity: 0.
+        window.addEventListener("load", () => setTimeout(revealAll, 1200));
+      }
+
+      // bfcache restore: some mobile browsers restore the page from cache on
+      // back/forward navigation without re-executing this script, which can
+      // leave .reveal elements permanently invisible.
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) revealAll();
+      });
     </script>
   </body>
 </html>

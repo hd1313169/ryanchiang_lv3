@@ -133,7 +133,7 @@ const sections = [
   }
 
   .meta > div {
-    background: #f8f7f4;
+    background: var(--color-block-bg);
     border: 1px solid var(--color-border);
     border-radius: 4px;
     padding: var(--space-2) var(--space-3);
@@ -217,6 +217,21 @@ const sections = [
   .prose :global(strong),
   .prose :global(b) {
     font-weight: 600;
+  }
+
+  .prose :global(blockquote) {
+    margin: var(--space-3) 0;
+    padding: var(--space-2) var(--space-3);
+    border-left: 2px solid var(--color-text);
+    background: var(--color-block-bg);
+  }
+
+  .prose :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(blockquote p:first-child) {
+    margin-bottom: var(--space-1);
   }
 
   .showcase {

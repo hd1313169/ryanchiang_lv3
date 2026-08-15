@@ -3,11 +3,11 @@
 
   /* Color — grayscale only. Near-white canvas throughout; hierarchy comes from
      hairlines, spacing and type, never from color-blocking. */
-  --color-bg: #faf9f7; /* page canvas — white with a whisper of warmth */
-  --color-text: #1a1a1a;
-  --color-text-secondary: #6b6b6b;
-  --color-border: #e3e1dc; /* hairline dividers */
-  --color-block-bg: #eae8e4; /* thumbnail / placeholder-image fill */
+  --color-bg: #ffffff; /* page canvas — near-white for maximum contrast */
+  --color-text: #141414;
+  --color-text-secondary: #5c5c5c;
+  --color-border: #dcdad5; /* hairline dividers */
+  --color-block-bg: #f0efec; /* thumbnail / placeholder-image fill */
 
   /* Type */
   --font-latin: "Archivo", sans-serif;
