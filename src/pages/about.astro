@@ -11,21 +11,24 @@ const facts = [
 
 const skills = [
   {
-    title: "設計執行",
-    description: "從 IA 規劃、Wireframe 到 Prototype 與 Handoff，完整參與每個交付節點。",
+    title: "介面設計",
+    description:
+      "有從零建立 Design System 的經驗，也熟悉在既有規範框架內工作。設計決策不只考慮當下畫面，也考慮後續迭代的邊界。",
   },
   {
     title: "系統思考",
-    description: "處理 RBAC 權限設計、複雜工作流與 Design System 建立，習慣從結構層面定義問題。",
+    description:
+      "處理 RBAC 權限設計、複雜業務工作流與多角色資料可見邊界。習慣從資料結構與依賴關係出發定義設計優先序，而不是從頁面出發。",
   },
   {
     title: "跨角色協作",
-    description: "橫跨設計、SA、PM 職責，參與需求釐清、UAT 定義與利害關係人溝通。",
+    description:
+      "橫跨設計、SA、PM 職責，參與需求釐清、UAT 定義與利害關係人溝通。習慣主動識別沒人負責的空白，而不是等待對口出現。",
   },
   {
-    title: "AI應用",
+    title: "AI 協作",
     description:
-      "以 AI 輔助 PRD 撰寫、前端原型生成與 SDD 開發流程（Open Spec、Superpower），明確區分哪些環節由 AI 加速、哪些關鍵節點由設計判斷介入——讓工具服務決策，而不是取代它。",
+      "為 AI 建立分工邊界——定義哪些環節交給 AI 加速、哪些節點必須由設計判斷介入。讓工具服務決策，而不是取代它。",
   },
 ];
 
@@ -41,20 +44,20 @@ const experience = [
     role: "數位行銷專員",
     org: "敦煌教育集團",
     period: "2020 — 2022",
-    description: "透過數據分析與用戶問卷，養成從行為數據與質化回饋推導優化方向的習慣。",
+    description: "透過數據分析與用戶問卷，建立從量化數據與質化回饋推導設計方向的工作習慣。",
   },
   {
     role: "平面設計師",
     org: "自由接案",
     period: "2019 — 2020",
-    description: "接觸各產業的視覺需求，培養基礎美感與需求釐清的能力。",
+    description: "接觸各產業的視覺需求，培養基礎美感判斷與需求釐清的能力。",
   },
 ];
 ---
 
 <BaseLayout
   title="About — Ryan Chiang"
-  description="我是 Ryan，UX/UI 設計師。我的核心價值是在問題還沒被清楚定義之前就開始工作。"
+  description="很多系統設計專案的真正難點，不在介面，而在介面背後那些沒有被說清楚的規則。我習慣在這個地方多停一下，把隱形的前提找出來，讓後續的設計有真正的依據。"
 >
   <article class="about">
     <section class="reveal intro-grid">
@@ -64,15 +67,15 @@ const experience = [
         </p>
 
         <p class="run-in">
-          在設計顧問公司三年，專注於行銷、室內設計及金融等產業 Web、B2B 系統與 SaaS 服務的設計。參與需求釐清、PRD 撰寫到 UAT 定義的完整流程，除了介面設計，也考慮業務規則與系統落地的現實。近年也與團隊共同將 AI 整合進工作流程，以 SDD 為基礎建立可迭代的 AI Workflow，提升協作效率與產品開發品質。
+          很多系統設計專案的真正難點，不在介面，而在介面背後那些沒有被說清楚的規則——業主知道怎麼運作，但說不出來；團隊各自有理解，但版本不同。我習慣在這個地方多停一下，把這些隱形的前提找出來，讓後續的設計有真正的依據。
         </p>
 
         <p class="run-in">
-          我的核心價值是在問題還沒被清楚定義之前就開始工作。在快速產出的時代，確認哪道題值得解，比把題目解得漂亮更重要。
+          在設計顧問公司的工作裡，我接觸過行銷、金融、SaaS 等不同產業的系統設計，從需求訪談、PRD 撰寫到 UAT 驗收，全程參與。每個案子的業務規則都不一樣，但每次做的是同一件事：把業務規則、系統邏輯、使用情境這三層之間的落差找出來，讓介面去承載這個判斷的結果。
         </p>
 
         <p class="run-in">
-          這讓討論更快收斂、決策更有依據，也讓團隊少走一段「做完才發現方向錯了」的路——對時程緊、跨角色多的專案來說，這個差距會在交付時才真正感受到。
+          長期做這件事，讓我確認了一件事——設計師在複雜專案裡最大的貢獻，不在於把介面做得更精緻，而在於在夠早的地方介入，在問題定義還模糊的時候幫助把方向收斂清楚。
         </p>
       </div>
 
@@ -161,6 +164,7 @@ const experience = [
     flex-direction: column;
     gap: var(--space-3);
     min-width: 0;
+    padding-top: 40px;
   }
 
   .intro {
@@ -202,7 +206,7 @@ const experience = [
   .photo {
     /* Shape the box itself, rather than the <img>, so the 16:9 ratio holds
        even before the (lazy-loaded) image has decoded. */
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
   }
 
   .photo :global(img) {
