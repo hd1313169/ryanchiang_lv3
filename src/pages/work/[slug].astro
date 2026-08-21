@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, summary, order, intro, mainDuties, team, timeline, tools } = entry.data;
+const { title, subtitle, summary, order, intro, mainDuties, team, timeline, tools } = entry.data;
 const ordinal = String(order).padStart(2, "0");
 
 const allCaseStudies = (await getCollection("case-studies")).sort(
@@ -36,7 +36,7 @@ const sections = [
       <div class="header-body">
         <div class="kicker">
           <span class="ordinal">{ordinal}</span>
-          <span class="kicker-label">Case Study</span>
+          <span class="kicker-label">{subtitle}</span>
         </div>
 
         <h1>{title}</h1>

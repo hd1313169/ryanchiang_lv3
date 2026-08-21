@@ -1,14 +1,18 @@
 ---
+import { Image } from "astro:assets";
 import PlaceholderBlock from "./PlaceholderBlock.astro";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   slug: string;
   order: number;
   title: string;
+  subtitle: string;
   summary: string;
   tags: string[];
+  cover?: ImageMetadata;
 }
-const { slug, order, title, summary, tags } = Astro.props;
+const { slug, order, title, subtitle, summary, tags, cover } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const ordinal = String(order).padStart(2, "0");
 
@@ -21,12 +25,19 @@ const titleTail = titleRest.join("——");
 
 <a class="feature" href={`${base}/work/${slug}`}>
   <span class="thumb">
-    <PlaceholderBlock ratio="16 / 9" />
+    {cover ? (
+      <Image class="cover-image" src={cover} alt="" width={800} height={600} />
+    ) : (
+      <PlaceholderBlock ratio="4 / 3" />
+    )}
   </span>
   <span class="body">
     <span class="text">
-      <span class="title-row">
-        <span class="ordinal">{ordinal}</span>
+      <span class="title-col">
+        <span class="meta-row">
+          <span class="ordinal">{ordinal}</span>
+          <span class="subtitle">{subtitle}</span>
+        </span>
         <h2>
           {titleHead}
           {titleTail && (
@@ -62,19 +73,34 @@ const titleTail = titleRest.join("——");
   }
 
   .thumb {
-    /* flex-basis 0 + proportional grow/shrink keeps this at a fixed 53%
+    /* flex-basis 0 + proportional grow/shrink keeps this at a fixed 45%
        share of the row's available width at every size, instead of
        flex-basis percentages (which drift towards 50/50 as free space
        gets distributed equally by two flex-grow: 1 tracks). */
     display: block;
-    flex: 53 53 0%;
+    flex: 45 45 0%;
     min-width: 0;
+    overflow: hidden; /* clips the zoomed image on hover to this box */
+    border-radius: 2px;
+  }
+
+  .cover-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .feature:hover .cover-image {
+    transform: scale(1.05);
   }
 
   .body {
     container-type: inline-size;
     display: block;
-    flex: 47 47 0%;
+    flex: 55 55 0%;
     min-width: 0;
   }
 
@@ -87,7 +113,7 @@ const titleTail = titleRest.join("——");
 
   .tag {
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-2xs);
+    font-size: 0.875rem; /* 14px */
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-text-secondary);
@@ -100,35 +126,35 @@ const titleTail = titleRest.join("——");
     display: block;
   }
 
-  .title-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-3);
+  .title-col {
+    display: block;
+    min-width: 0;
     margin-bottom: var(--space-3);
   }
 
+  .meta-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: var(--space-1);
+  }
+
   .ordinal {
-    /* Scales with the same container as the title so it keeps tracking
-       roughly the height of a 2-line title block at any card width. */
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: clamp(2rem, 1.4rem + 8.6cqi, 4.6rem);
+    font-size: 1.125rem; /* 18px */
     font-weight: 300;
-    line-height: 1;
     letter-spacing: -0.02em;
-    color: var(--color-border);
+    color: #7c7c7c;
   }
 
   h2 {
-    /* Scales with the text column's own width (not the viewport), so it
-       never outgrows the space next to the thumbnail; hard-capped to 2
-       lines regardless of title length. */
-    font-size: clamp(1rem, 0.75rem + 1.6cqi, 1.1875rem);
+    font-size: 1.625rem; /* 26px */
     font-weight: 500;
     color: var(--color-text);
     line-height: 1.55;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     transition: color var(--transition-hover);
@@ -138,9 +164,16 @@ const titleTail = titleRest.join("——");
     color: var(--color-text-secondary);
   }
 
+  .subtitle {
+    font-size: 1rem; /* 16px */
+    font-weight: 400;
+    color: #7c7c7c;
+    margin-top: 0;
+  }
+
   .summary {
     color: var(--color-text-secondary);
-    font-size: var(--text-sm);
+    font-size: 1rem; /* 16px */
     line-height: 1.7;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -158,6 +191,27 @@ const titleTail = titleRest.join("——");
 
     .thumb {
       margin-bottom: var(--space-3);
+    }
+  }
+
+  @media (min-width: 1440px) {
+    h2 {
+      font-size: 1.875rem; /* 30px */
+    }
+  }
+
+  @media (max-width: 960px) {
+    h2 {
+      font-size: 1.5rem; /* 24px */
+    }
+
+    .ordinal,
+    .subtitle {
+      font-size: 1rem; /* 16px */
+    }
+
+    .tag {
+      font-size: 0.75rem; /* 12px */
     }
   }
 </style>
