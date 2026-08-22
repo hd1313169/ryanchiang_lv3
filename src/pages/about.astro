@@ -4,10 +4,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import portrait from "../assets/photos/about-hero-portrait.png";
 
 const facts = [
-  { label: "Role", value: "UI/UX Designer" },
-  { label: "Focus", value: "SaaS、CRM、Web Design" },
+  { label: "Specialty", value: "SaaS、CRM、Web Design" },
   { label: "Experience", value: "3+ years" },
 ];
+
+const email = "wsad71155@gmail.com";
 
 const skills = [
   {
@@ -71,7 +72,7 @@ const experience = [
         </p>
 
         <p class="run-in">
-          在設計顧問公司的工作裡，我接觸過行銷、金融、SaaS 等不同產業的系統設計，從需求訪談、PRD 撰寫到 UAT 驗收，全程參與。每個案子的業務規則都不一樣，但每次做的是同一件事：把業務規則、系統邏輯、使用情境這三層之間的落差找出來，讓介面去承載這個判斷的結果。
+          在設計公司的工作經驗中，我接觸過行銷、證券、空間租借及室內裝修等不同產業的系統設計，從需求訪談、PRD 撰寫到 UAT 驗收全程參與。每個案子的業務規則都不一樣，但每次做的是同一件事：把業務規則、系統邏輯、使用情境這三層之間的落差找出來，讓介面去承載這個判斷的結果。
         </p>
 
         <p class="run-in">
@@ -100,6 +101,14 @@ const experience = [
               </div>
             ))
           }
+          <div class="fact">
+            <dt class="fact-label">Email</dt>
+            <dd class="fact-value">
+              <button type="button" class="email-copy" data-email={email}>
+                <span class="email-copy-text">{email}</span>
+              </button>
+            </dd>
+          </div>
         </dl>
       </div>
     </section>
@@ -143,6 +152,31 @@ const experience = [
 
   </article>
 </BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".email-copy").forEach((button) => {
+    const label = button.querySelector(".email-copy-text");
+    const original = label?.textContent ?? "";
+    let resetTimer: ReturnType<typeof setTimeout>;
+
+    button.addEventListener("click", async () => {
+      const email = button.dataset.email ?? "";
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        return;
+      }
+
+      if (label) label.textContent = "已複製";
+      button.classList.add("copied");
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        if (label) label.textContent = original;
+        button.classList.remove("copied");
+      }, 1600);
+    });
+  });
+</script>
 
 <style>
   .about {
@@ -244,6 +278,32 @@ const experience = [
     line-height: 1.6;
   }
 
+  .email-copy {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-text);
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: var(--color-border);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.15s ease;
+  }
+
+  .email-copy:hover {
+    text-decoration-color: var(--color-text);
+  }
+
+  .email-copy.copied {
+    color: var(--color-text-secondary);
+    text-decoration-color: var(--color-border);
+  }
+
   .section-row {
     padding-top: var(--space-5);
     border-top: 1px solid var(--color-border);
@@ -297,7 +357,7 @@ const experience = [
   .experience-item {
     display: flex;
     gap: var(--space-3);
-    padding-block: var(--space-4);
+    padding-block: var(--space-2);
   }
 
   .experience-item:first-child {
