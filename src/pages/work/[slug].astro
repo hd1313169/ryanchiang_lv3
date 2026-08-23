@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const { title, subtitle, summary, order, intro, mainDuties, team, timeline, tools } = entry.data;
 const ordinal = String(order).padStart(2, "0");
 
@@ -22,8 +22,17 @@ const currentIndex = allCaseStudies.findIndex((c) => c.id === entry.id);
 const next = allCaseStudies[(currentIndex + 1) % allCaseStudies.length];
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// "研究與洞察" has no fixed heading text of its own — it always points to
+// whichever h2 immediately follows 專案背景, since that heading's wording
+// differs per case study.
+const topHeadings = headings.filter((h) => h.depth === 2);
+const introIndex = topHeadings.findIndex((h) => h.slug === "專案背景");
+const researchHeading = introIndex >= 0 ? topHeadings[introIndex + 1] : undefined;
+
 const sections = [
   { href: "#專案背景", label: "專案背景" },
+  ...(researchHeading ? [{ href: `#${researchHeading.slug}`, label: "研究與洞察" }] : []),
   { href: "#設計決策", label: "設計決策" },
   { href: "#設計成果", label: "設計成果" },
   { href: "#心得與反思", label: "心得與反思" },
@@ -185,27 +194,65 @@ const sections = [
 
   .prose :global(h2) {
     font-size: var(--text-lg);
-    font-weight: 500;
+    font-weight: 700;
     margin-top: var(--space-5);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
     scroll-margin-top: var(--space-3);
+  }
+
+  /* 次標題 — either a one-line subtitle directly under a section's h2, or
+     one of several subsection headings grouped under 設計決策. */
+  .prose :global(h3) {
+    font-size: var(--text-md);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-1);
+  }
+
+  .prose :global(h2 + h3) {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
   }
 
   .prose :global(p) {
     font-size: var(--text-base);
     font-weight: 300;
     line-height: 1.85;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
   }
 
   .prose :global(ul) {
-    margin-bottom: var(--space-2);
-    padding-left: 1.2em;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0 0 var(--space-2);
+    padding: 0;
+    counter-reset: list-counter;
   }
 
   .prose :global(li) {
+    counter-increment: list-counter;
+    position: relative;
+    padding-left: 1.75rem;
     font-weight: 300;
     line-height: 1.8;
+  }
+
+  .prose :global(li::before) {
+    content: counter(list-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: 300;
+    color: var(--color-text);
+  }
+
+  /* Number picks up the same weight as whatever follows it — bold when the
+     item leads with a bold label, otherwise plain like ordinary body text. */
+  .prose :global(li:has(> strong:first-child)::before) {
+    font-weight: 600;
   }
 
   .prose :global(strong),
@@ -217,7 +264,7 @@ const sections = [
     margin: var(--space-3) 0;
     padding: var(--space-2) var(--space-3);
     border-left: 2px solid var(--color-text);
-    background: color-mix(in srgb, var(--color-text), white 98%);
+    background: color-mix(in srgb, var(--color-text), var(--color-bg) 98%);
   }
 
   .prose :global(blockquote p) {
@@ -226,6 +273,156 @@ const sections = [
 
   .prose :global(blockquote p:first-child) {
     margin-bottom: var(--space-1);
+  }
+
+  /* A short sequence of steps (e.g. an AI-assisted workflow): three tall
+     cards in a row on desktop, connected by a rightward arrow; on mobile
+     they fall back to wide cards stacked vertically with a downward arrow. */
+  .prose :global(.workflow-cards) {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: stretch;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .prose :global(.workflow-card) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 10rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-bottom: 3px solid var(--color-text);
+    border-radius: 4px;
+    padding: var(--space-4) var(--space-3);
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.85;
+  }
+
+  .prose :global(.workflow-card strong) {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+  }
+
+  .prose :global(.workflow-arrow) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(.workflow-cards) {
+      grid-template-columns: 1fr;
+    }
+
+    .prose :global(.workflow-card) {
+      min-height: 0;
+    }
+
+    .prose :global(.workflow-arrow) {
+      padding: var(--space-1) 0;
+      transform: rotate(90deg);
+    }
+  }
+
+  /* 痛點 / 設計挑戰 / 我的任務 table (a single data row) renders as three
+     side-by-side cards instead of a literal table row. Multi-row tables
+     (e.g. a competitor comparison grid) keep normal table layout below. */
+  .prose :global(table:has(tbody tr:only-of-type)) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--space-2);
+    width: 100%;
+    margin: var(--space-4) 0;
+  }
+
+  .prose :global(table:has(tbody tr:only-of-type) thead),
+  .prose :global(table:has(tbody tr:only-of-type) tbody),
+  .prose :global(table:has(tbody tr:only-of-type) tr) {
+    display: contents;
+  }
+
+  .prose :global(table:has(tbody tr:only-of-type) th) {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    text-align: left;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    padding: var(--space-2) var(--space-3) 0.25rem;
+  }
+
+  .prose :global(table:has(tbody tr:only-of-type) td) {
+    font-size: var(--text-sm);
+    font-weight: 300;
+    line-height: 1.7;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 0.25rem var(--space-3) var(--space-3);
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(table:has(tbody tr:only-of-type)) {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-2);
+    }
+
+    .prose :global(table:has(tbody tr:only-of-type) th:nth-child(1)) {
+      grid-row: 1;
+    }
+    .prose :global(table:has(tbody tr:only-of-type) th:nth-child(2)) {
+      grid-row: 3;
+    }
+    .prose :global(table:has(tbody tr:only-of-type) th:nth-child(3)) {
+      grid-row: 5;
+    }
+    .prose :global(table:has(tbody tr:only-of-type) td:nth-child(1)) {
+      grid-row: 2;
+    }
+    .prose :global(table:has(tbody tr:only-of-type) td:nth-child(2)) {
+      grid-row: 4;
+    }
+    .prose :global(table:has(tbody tr:only-of-type) td:nth-child(3)) {
+      grid-row: 6;
+    }
+  }
+
+  /* Any other table (e.g. a multi-row competitor comparison grid) keeps a
+     conventional layout, scrollable on narrow viewports. */
+  .prose :global(table:not(:has(tbody tr:only-of-type))) {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    margin: var(--space-4) 0;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .prose :global(table:not(:has(tbody tr:only-of-type)) th),
+  .prose :global(table:not(:has(tbody tr:only-of-type)) td) {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .prose :global(table:not(:has(tbody tr:only-of-type)) th) {
+    font-weight: 500;
+    background: color-mix(in srgb, var(--color-text), var(--color-bg) 96%);
+    white-space: nowrap;
   }
 
   .next-case {

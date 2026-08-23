@@ -1,0 +1,77 @@
+---
+// Renders both a light and dark image, always both in the DOM, with pure
+// CSS (driven by the `data-theme` attribute on <html>) controlling which
+// is visible — same stacking pattern as Illustration.astro's frame swap,
+// so the swap is instant and needs no client-side script.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  light: ImageMetadata;
+  dark: ImageMetadata;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+
+const { light, dark, alt, width, height, class: className } = Astro.props;
+
+// Gives the wrapper a definite box up front. Without this, the absolutely
+// positioned dark frame (top/bottom both pinned via inset:0, height:auto)
+// resolves its height against the containing block instead of the image's
+// own ratio, stretching it — while the light frame, sized in normal flow,
+// stayed correctly proportioned. Same fixed box for both frames removes
+// that mismatch.
+const ratioStyle = width && height ? `aspect-ratio: ${width} / ${height};` : undefined;
+---
+
+<span class="themed-image" style={ratioStyle}>
+  <Image
+    class:list={["themed-image-frame", "is-light", className]}
+    src={light}
+    alt={alt}
+    width={width}
+    height={height}
+  />
+  <Image
+    class:list={["themed-image-frame", "is-dark", className]}
+    src={dark}
+    alt={alt}
+    width={width}
+    height={height}
+  />
+</span>
+
+<style>
+  .themed-image {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  .themed-image-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  :global(.feature:hover) .themed-image-frame {
+    transform: scale(1.05);
+  }
+
+  .themed-image-frame.is-dark {
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .themed-image-frame.is-light {
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .themed-image-frame.is-dark {
+    opacity: 1;
+  }
+</style>

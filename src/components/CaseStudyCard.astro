@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import PlaceholderBlock from "./PlaceholderBlock.astro";
+import ThemedImage from "./ThemedImage.astro";
 import type { ImageMetadata } from "astro";
 
 interface Props {
@@ -11,8 +12,9 @@ interface Props {
   summary: string;
   tags: string[];
   cover?: ImageMetadata;
+  coverDark?: ImageMetadata;
 }
-const { slug, order, title, subtitle, summary, tags, cover } = Astro.props;
+const { slug, order, title, subtitle, summary, tags, cover, coverDark } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const ordinal = String(order).padStart(2, "0");
 
@@ -25,7 +27,9 @@ const titleTail = titleRest.join("——");
 
 <a class="feature" href={`${base}/work/${slug}`}>
   <span class="thumb">
-    {cover ? (
+    {cover && coverDark ? (
+      <ThemedImage class="cover-image" light={cover} dark={coverDark} alt="" width={800} height={600} />
+    ) : cover ? (
       <Image class="cover-image" src={cover} alt="" width={800} height={600} />
     ) : (
       <PlaceholderBlock ratio="4 / 3" />
@@ -145,7 +149,7 @@ const titleTail = titleRest.join("——");
     font-size: 1.125rem; /* 18px */
     font-weight: 300;
     letter-spacing: -0.02em;
-    color: #7c7c7c;
+    color: var(--color-text-secondary);
   }
 
   h2 {
@@ -167,12 +171,13 @@ const titleTail = titleRest.join("——");
   .subtitle {
     font-size: 1rem; /* 16px */
     font-weight: 400;
-    color: #7c7c7c;
+    color: var(--color-text-secondary);
     margin-top: 0;
   }
 
   .summary {
-    color: var(--color-text-secondary);
+    color: color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 20%);
+    font-weight: 300;
     font-size: 1rem; /* 16px */
     line-height: 1.7;
     display: -webkit-box;

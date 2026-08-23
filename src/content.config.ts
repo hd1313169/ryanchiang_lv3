@@ -17,6 +17,7 @@ const caseStudies = defineCollection({
       timeline: z.string(),
       tools: z.string(),
       cover: image().optional(),
+      coverDark: image().optional(),
     }),
 });
 

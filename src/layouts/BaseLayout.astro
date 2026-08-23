@@ -11,6 +11,7 @@ import "../styles/tokens.css";
 import Sidebar from "../components/Sidebar.astro";
 import MobileIntro from "../components/MobileIntro.astro";
 import Footer from "../components/Footer.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 
 interface Props {
   title: string;
@@ -25,8 +26,17 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
 <html lang="zh-Hant">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch (e) {}
+        document.documentElement.dataset.theme = stored === "dark" ? "dark" : "light";
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/png" href={`${base}/favicon.png`} />
     <meta name="generator" content={Astro.generator} />
 
@@ -48,6 +58,7 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
     </div>
     <MobileIntro />
     <Footer />
+    <ThemeToggle />
     <noscript>
       <style>
         .reveal {

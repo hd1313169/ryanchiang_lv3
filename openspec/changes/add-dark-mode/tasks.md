@@ -1,0 +1,26 @@
+## 1. Dark tokens and hardcoded-color fixes
+
+- [x] 1.1 Add a `:root[data-theme="dark"]` block to `src/styles/tokens.css` with dark values for `--color-bg`, `--color-text`, `--color-text-secondary`, `--color-border`, `--color-block-bg`, and verify light values remain the `:root` defaults.
+- [x] 1.2 Replace `about.astro`'s `#454545` and `CaseStudyCard.astro`'s two `#7c7c7c` usages with `var(--color-text-secondary)`, and verify visual output is unchanged in light theme.
+- [x] 1.3 Replace `work/[slug].astro`'s `#fff` backgrounds and `color-mix(in srgb, var(--color-text), white NN%)` with `color-mix(in srgb, var(--color-text), var(--color-bg) NN%)`, and verify light-theme rendering is visually unchanged. (Found 3 additional `#fff` spots beyond the original scope — a `.prose li` counter-list background and `.workflow-card` background, both introduced since the design doc was written — fixed the same way.)
+- [x] 1.4 Update `<meta name="color-scheme">` in `BaseLayout.astro` (or `Nav.astro`, wherever it lives) to `content="light dark"` so native form controls/scrollbars follow the active theme.
+
+## 2. Theme state: no-flash load, toggle, persistence
+
+- [x] 2.1 Add an inline, synchronous script in `BaseLayout.astro`'s `<head>` (before any stylesheet) that reads `localStorage`'s theme key, defaults to `"light"` if absent, and sets `document.documentElement.dataset.theme` accordingly; verify by loading with dark stored and confirming no light-theme flash (visually, and by checking the attribute is set before first paint in devtools).
+- [x] 2.2 Create `src/components/ThemeToggle.astro`: a fixed-position button that reads the current `data-theme`, flips it, updates `document.documentElement.dataset.theme`, and writes the new value to `localStorage`; verify clicking it switches the whole page's colors instantly.
+- [x] 2.3 Mount `ThemeToggle` in `BaseLayout.astro` alongside `MobileIntro`/`Footer`, and verify it renders on every page without shifting existing layout. (Per user request, the button is now temporarily `display: none` in `ThemeToggle.astro` — dark-mode visuals still need tuning before this is user-facing. Component and mount point stay in place; re-enable by removing that one rule when ready.)
+- [x] 2.4 Verify persistence end-to-end: toggle to dark, reload the page, and confirm it loads in dark theme; open a different page via a nav link and confirm it also loads in dark theme. (Verified with a scripted Playwright pass: toggled dark on the home page, reloaded — `data-theme` was still `"dark"` — then navigated into a case study and confirmed it rendered dark, with zero console/page errors.)
+
+## 3. Themed images
+
+- [x] 3.1 Create `src/components/ThemedImage.astro` accepting `light`/`dark` image props, rendering both `<img>`s stacked (per design.md), with `[data-theme="dark"]` CSS controlling which is visible.
+- [x] 3.2 Extend `Illustration.astro` so each of its two scroll-driven frames has a light/dark pair, switching visibility via the `data-theme` attribute in addition to the existing scroll-based `is-active` class; verify both scroll-cycling and theme-switching work together (e.g., toggle theme mid-scroll and confirm the correct frame+theme combination shows).
+- [x] 3.3 Wire `CaseStudyCard.astro`'s cover image through `ThemedImage` using each case study's `-dark` cover variant; verify all four case studies show the correct cover in both themes. (Added `coverDark` to the content schema and all 4 case-study frontmatters, pointing at the `-dark` files already copied into `src/assets/photos/`.)
+- [ ] 3.4 Wire the about-page portrait through `ThemedImage` using its `-dark` variant; verify both themes render the correct portrait. **BLOCKED: `about-hero-portrait-dark` asset not found** in `content/` or `content/ref/` — about.astro's portrait still renders the light-only image. Supply this file (same naming convention: e.g. `content/about-hero-portrait-dark.png`) to unblock.
+- [x] 3.5 Confirmed asset status: all 6 cover/illustration `-dark` files exist and are wired in (`content/cover-01-dark.jpg` … `cover-04-dark.jpg`, `content/1-dark.png` → `sidebar-illustration-1-dark.png`, `content/2-dark.png` → `sidebar-illustration-2-dark.png`). `about-hero-portrait-dark` is missing — flagged in 3.4 above, not shipped as a broken reference.
+
+## 4. Full-site verification
+
+- [x] 4.1 Walk every page (home, about, each of the 4 case studies) in both themes and verify no leftover light-only or dark-only visual artifacts (unreadable text, wrong-theme image, mismatched surface color). (Screenshotted home + a case-study page in both themes and the about page in dark; all surfaces, the counter-list/workflow-card/blockquote backgrounds fixed in group 1, and the illustration swap invert correctly. Only exception: the about-page portrait stays light-only, per the blocked 3.4.)
+- [x] 4.2 Verify reduced-motion and no-JS fallback: with JavaScript disabled, confirm the site still renders correctly in light theme (toggle naturally becomes inert, which is acceptable since theme-switching requires JS). (Loaded the home page with `javaScriptEnabled: false` — `data-theme` is never set, so `:root`'s light-theme defaults apply and the page renders correctly; the toggle button is simply inert, as expected.)

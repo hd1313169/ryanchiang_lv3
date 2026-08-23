@@ -2,10 +2,14 @@
 // The sidebar's illustrated figure. Two frames cross-fade into each other,
 // advancing to the next frame every time the page has been scrolled past
 // another fixed-height step (looping back and forth as the reader scrolls
-// up or down), rather than animating on a timer.
+// up or down), rather than animating on a timer. Each frame also has a
+// light/dark pair; the theme (data-theme on <html>) picks which of the
+// pair is visible for whichever frame the scroll step has made active.
 import { Image } from "astro:assets";
-import frame1 from "../assets/illustrations/sidebar-illustration-1.png";
-import frame2 from "../assets/illustrations/sidebar-illustration-2.png";
+import frame1Light from "../assets/illustrations/sidebar-illustration-1.png";
+import frame1Dark from "../assets/illustrations/sidebar-illustration-1-dark.png";
+import frame2Light from "../assets/illustrations/sidebar-illustration-2.png";
+import frame2Dark from "../assets/illustrations/sidebar-illustration-2-dark.png";
 
 interface Props {
   width?: number;
@@ -13,20 +17,35 @@ interface Props {
 }
 
 const { width = 220, class: className } = Astro.props;
-const frames = [frame1, frame2];
+const steps = [
+  { light: frame1Light, dark: frame1Dark },
+  { light: frame2Light, dark: frame2Dark },
+];
 ---
 
 <span class:list={["illustration-swap", className]}>
   {
-    frames.map((frame, i) => (
-      <Image
-        class:list={["illustration-frame", i === 0 && "is-active"]}
-        src={frame}
-        alt=""
-        width={width * 2}
-        quality={100}
-        loading={i === 0 ? "eager" : "lazy"}
-      />
+    steps.map((step, i) => (
+      <>
+        <Image
+          class:list={["illustration-frame", "is-light", i === 0 && "is-active"]}
+          data-step={i}
+          src={step.light}
+          alt=""
+          width={width * 2}
+          quality={100}
+          loading={i === 0 ? "eager" : "lazy"}
+        />
+        <Image
+          class:list={["illustration-frame", "is-dark", i === 0 && "is-active"]}
+          data-step={i}
+          src={step.dark}
+          alt=""
+          width={width * 2}
+          quality={100}
+          loading={i === 0 ? "eager" : "lazy"}
+        />
+      </>
     ))
   }
 </span>
@@ -55,7 +74,15 @@ const frames = [frame1, frame2];
     inset: 0;
   }
 
-  .illustration-frame.is-active {
+  .illustration-frame.is-active.is-light {
+    opacity: 1;
+  }
+
+  :global([data-theme="dark"]) .illustration-frame.is-active.is-light {
+    opacity: 0;
+  }
+
+  :global([data-theme="dark"]) .illustration-frame.is-active.is-dark {
     opacity: 1;
   }
 </style>
@@ -76,8 +103,9 @@ const frames = [frame1, frame2];
     const applyFrame = () => {
       const index = Math.floor(window.scrollY / STEP);
       for (const frames of groups.values()) {
-        const active = index % frames.length;
-        frames.forEach((frame, i) => frame.classList.toggle("is-active", i === active));
+        const stepCount = new Set(frames.map((frame) => frame.dataset.step)).size;
+        const activeStep = String(index % stepCount);
+        frames.forEach((frame) => frame.classList.toggle("is-active", frame.dataset.step === activeStep));
       }
     };
 

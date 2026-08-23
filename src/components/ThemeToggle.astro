@@ -1,0 +1,71 @@
+---
+---
+
+<button class="theme-toggle" type="button" aria-label="切換深色／淺色模式">
+  <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </svg>
+  <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    position: fixed;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    z-index: 10;
+    /* Temporarily hidden — dark-mode visuals still need tuning before this
+       is exposed to visitors. Implementation stays in place; only the
+       entry point is switched off. Re-enable by changing this to flex. */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color var(--transition-hover), border-color var(--transition-hover);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .icon {
+    position: absolute;
+  }
+
+  .icon-moon {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .icon-sun {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .icon-moon {
+    display: block;
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>(".theme-toggle");
+
+  button?.addEventListener("click", () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // localStorage unavailable (e.g. privacy mode) — theme still applies for this load.
+    }
+  });
+</script>
