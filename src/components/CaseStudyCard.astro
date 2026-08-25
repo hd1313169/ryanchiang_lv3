@@ -63,7 +63,7 @@ const titleTail = titleRest.join("——");
 <style>
   .feature {
     display: flex; /* horizontal card layout */
-    gap: var(--space-4);
+    gap: var(--space-5);
     align-items: center;
     text-decoration: none;
   }
@@ -77,12 +77,12 @@ const titleTail = titleRest.join("——");
   }
 
   .thumb {
-    /* flex-basis 0 + proportional grow/shrink keeps this at a fixed 45%
+    /* flex-basis 0 + proportional grow/shrink keeps this at a fixed 36%
        share of the row's available width at every size, instead of
        flex-basis percentages (which drift towards 50/50 as free space
        gets distributed equally by two flex-grow: 1 tracks). */
     display: block;
-    flex: 45 45 0%;
+    flex: 36 36 0%;
     min-width: 0;
     overflow: hidden; /* clips the zoomed image on hover to this box */
     border-radius: 2px;
@@ -104,7 +104,7 @@ const titleTail = titleRest.join("——");
   .body {
     container-type: inline-size;
     display: block;
-    flex: 55 55 0%;
+    flex: 64 64 0%;
     min-width: 0;
   }
 
@@ -117,7 +117,7 @@ const titleTail = titleRest.join("——");
 
   .tag {
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: 0.875rem; /* 14px */
+    font-size: 0.8125rem; /* 13px */
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-text-secondary);
@@ -153,7 +153,7 @@ const titleTail = titleRest.join("——");
   }
 
   h2 {
-    font-size: 1.625rem; /* 26px */
+    font-size: 1.5625rem; /* 25px */
     font-weight: 500;
     color: var(--color-text);
     line-height: 1.55;
@@ -199,17 +199,7 @@ const titleTail = titleRest.join("——");
     }
   }
 
-  @media (min-width: 1440px) {
-    h2 {
-      font-size: 1.875rem; /* 30px */
-    }
-  }
-
   @media (max-width: 960px) {
-    h2 {
-      font-size: 1.5rem; /* 24px */
-    }
-
     .ordinal,
     .subtitle {
       font-size: 1rem; /* 16px */
