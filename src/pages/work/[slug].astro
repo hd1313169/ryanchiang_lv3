@@ -284,6 +284,14 @@ const sections = [
     padding: 0;
   }
 
+  .prose :global(ol) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0 0 var(--space-2);
+    padding-left: 1.25em;
+  }
+
   .prose :global(li) {
     position: relative;
     font-weight: 300;
@@ -432,6 +440,60 @@ const sections = [
     .prose :global(table:has(tbody tr:only-of-type) td:nth-child(3)) {
       grid-row: 6;
     }
+  }
+
+  /* A side-by-side image pair (e.g. a before/after comparison) sitting on
+     a light backdrop, used to break up long text sections in the prose. */
+  .prose :global(.image-pair) {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+
+  .prose :global(.image-pair figure) {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .prose :global(.image-pair figure:last-child) {
+    flex-grow: 1.15;
+  }
+
+  .prose :global(.image-pair img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .prose :global(.image-pair figcaption) {
+    margin-top: var(--space-1);
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(.image-pair) {
+      flex-direction: column;
+    }
+  }
+
+  /* A single supporting screenshot dropped below a paragraph. */
+  .prose :global(.image-single) {
+    margin: var(--space-4) 0;
+  }
+
+  .prose :global(.image-single img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   /* Any other table (e.g. a multi-row competitor comparison grid) keeps a

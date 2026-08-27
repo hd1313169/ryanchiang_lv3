@@ -2,14 +2,16 @@
 import Nav from "./Nav.astro";
 import Illustration from "./Illustration.astro";
 
-const tagline = "UI/UX Designer\n專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <aside class="sidebar">
   <div class="identity">
     <a class="wordmark" href={`${base}/`}>Ryan Chiang</a>
-    <p class="tagline">{tagline}</p>
+    <p class="tagline">
+      <span class="role">UI/UX Designer</span>
+      <span class="line">在想要怎麼做之前，我會先確認我們在解決對的問題。</span>
+    </p>
   </div>
 
   <Nav />
@@ -54,7 +56,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     font-size: var(--text-sm);
     line-height: 1.7;
     max-width: 26ch;
-    white-space: pre-line;
+  }
+
+  .tagline .role,
+  .tagline .line {
+    display: block;
+  }
+
+  .tagline .line {
+    margin-top: var(--space-1);
   }
 
   .illustration-slot {
