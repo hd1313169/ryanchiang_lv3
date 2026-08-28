@@ -22,7 +22,7 @@
   --text-md: 1.3125rem; /* 21px — list titles, sub-headings */
   --text-lg: 1.6875rem; /* 27px — section headings */
   --text-xl: 2.1875rem; /* 35px — page titles */
-  --text-2xl: clamp(2.25rem, 4vw, 3rem); /* sidebar wordmark */
+  --text-2xl: clamp(1.75rem, 3vw, 2.75rem); /* sidebar wordmark */
 
   /* Spacing scale */
   --space-1: 0.5rem;
@@ -34,7 +34,7 @@
   --space-7: 7rem;
 
   /* Layout */
-  --content-max-width: min(90%, 56rem);
+  --content-max-width: min(90%, 60rem);
   --page-padding-inline: var(--space-3);
   --sidebar-width: 19rem;
 

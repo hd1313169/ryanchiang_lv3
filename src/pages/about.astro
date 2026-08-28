@@ -187,6 +187,15 @@ const experience = [
     gap: var(--space-5);
   }
 
+  /* Above 99em, main no longer reserves a column for the sidebar (it
+     overlays instead) — see BaseLayout.astro. Clear its width here to keep
+     content from sitting underneath it. */
+  @media (min-width: 99em) {
+    .about {
+      padding-left: var(--sidebar-width);
+    }
+  }
+
   .intro-grid {
     display: flex;
     flex-direction: column;

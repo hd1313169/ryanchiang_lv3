@@ -117,6 +117,15 @@ const sections = [
     padding-block: var(--space-4) var(--space-6);
   }
 
+  /* Below 90em there's no longer spare width beside the centered column for
+     the floating chapter index to sit in without crowding the text, so
+     reserve room for it on the right. */
+  @media (min-width: 48em) and (max-width: 89.99em) {
+    .case-study {
+      padding-right: var(--space-6);
+    }
+  }
+
   header {
     padding-bottom: var(--space-3);
     margin-bottom: var(--space-3);
@@ -193,13 +202,12 @@ const sections = [
     font-size: var(--text-sm);
   }
 
-  /* Floating chapter index — only shown once there's enough spare width
-     beside the centered article column for it not to crowd the text. */
+  /* Floating chapter index. */
   .section-nav-float {
     display: none;
   }
 
-  @media (min-width: 90em) {
+  @media (min-width: 48em) {
     .section-nav-float {
       display: flex;
       flex-direction: column;
@@ -466,7 +474,6 @@ const sections = [
     width: 100%;
     height: auto;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   .prose :global(.image-pair figcaption) {
@@ -483,6 +490,146 @@ const sections = [
     }
   }
 
+  /* A side-by-side pair of dark-canvas assets (e.g. phone-mockup GIFs)
+     sitting inside one shared black card, wide gap between them so each
+     still reads as its own unit. */
+  .prose :global(.image-pair-dark) {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--space-7);
+    margin: var(--space-4) 0;
+    padding: var(--space-3) var(--space-5);
+    background: #000;
+    border-radius: 4px;
+  }
+
+  .prose :global(.image-pair-dark figure) {
+    flex: 0 1 260px;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .prose :global(.image-pair-dark img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .prose :global(.image-pair-dark figcaption) {
+    padding: var(--space-2) 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    color: #ffffff;
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(.image-pair-dark) {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .prose :global(.image-pair-dark figure) {
+      flex: 0 1 auto;
+      width: 100%;
+      max-width: 260px;
+    }
+  }
+
+  /* A paragraph running alongside a supporting screenshot (text left, image
+     right) instead of stacked full-width — used when the copy is short
+     enough to sit level with the image. */
+  .prose :global(.split-media) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin: var(--space-4) 0;
+  }
+
+  /* Directly under a heading, fall back to the heading's own margin-bottom
+     instead of stacking this block's larger top margin on top of it. */
+  .prose :global(h2 + .split-media),
+  .prose :global(h3 + .split-media) {
+    margin-top: 0;
+  }
+
+  .prose :global(.split-media > p),
+  .prose :global(.split-media .split-text) {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .prose :global(.split-media > p) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(.split-media .split-text p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(.split-media img.split-image) {
+    flex: 1 1 0;
+    min-width: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+
+  .prose :global(.split-media .toggle-pair) {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .prose :global(.split-media .toggle-pair img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+
+  /* Hard-cut crossfade (no easing, no overlap): each frame is fully opaque
+     for exactly half the cycle, then instantly swaps — `steps(1, end)`
+     is what removes the interpolation between the two opacity values. */
+  .prose :global(.split-media .toggle-pair img:first-child) {
+    position: relative;
+    animation: toggle-pair-out 4s steps(1, end) infinite;
+  }
+
+  .prose :global(.split-media .toggle-pair img:last-child) {
+    position: absolute;
+    inset: 0;
+    animation: toggle-pair-in 4s steps(1, end) infinite;
+  }
+
+  @keyframes toggle-pair-out {
+    0%, 49.9% {
+      opacity: 1;
+    }
+    50%, 100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes toggle-pair-in {
+    0%, 49.9% {
+      opacity: 0;
+    }
+    50%, 100% {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(.split-media) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
   /* A single supporting screenshot dropped below a paragraph. */
   .prose :global(.image-single) {
     margin: var(--space-4) 0;
@@ -493,13 +640,16 @@ const sections = [
     width: 100%;
     height: auto;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   /* Any other table (e.g. a multi-row competitor comparison grid) keeps a
-     conventional layout, scrollable on narrow viewports. */
+     conventional layout, scrollable on narrow viewports. `display: table`
+     (rather than `block`) is required for the `width: 100%` below to reach
+     the actual rendered grid — with `display: block` the browser wraps the
+     table-row-group children in an anonymous inner table that ignores the
+     outer box's width and shrinks to fit its content instead. */
   .prose :global(table:not(:has(tbody tr:only-of-type))) {
-    display: block;
+    display: table;
     overflow-x: auto;
     width: 100%;
     margin: var(--space-4) 0;
@@ -511,6 +661,7 @@ const sections = [
   .prose :global(table:not(:has(tbody tr:only-of-type)) td) {
     padding: var(--space-2) var(--space-3);
     border: 1px solid var(--color-border);
+    background: var(--color-bg);
     text-align: left;
     vertical-align: top;
     line-height: 1.6;

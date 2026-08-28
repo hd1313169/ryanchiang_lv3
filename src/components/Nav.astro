@@ -1,10 +1,10 @@
 ---
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const items = [
-  { label: "Works", href: `${base}/` },
-  { label: "About", href: `${base}/about` },
-];
 const currentPath = Astro.url.pathname;
+const items = [
+  { label: "Works", href: `${base}/`, active: currentPath === `${base}/` || currentPath.startsWith(`${base}/work/`) },
+  { label: "About", href: `${base}/about`, active: currentPath === `${base}/about` },
+];
 ---
 
 <nav class="nav" aria-label="主要導覽">
@@ -12,7 +12,7 @@ const currentPath = Astro.url.pathname;
     {
       items.map((item) => (
         <li>
-          <a href={item.href} aria-current={currentPath === item.href ? "page" : undefined}>
+          <a href={item.href} aria-current={item.active ? "page" : undefined}>
             {item.label}
           </a>
         </li>
@@ -49,7 +49,7 @@ const currentPath = Astro.url.pathname;
     text-decoration: underline;
   }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1200px) {
     ul {
       flex-direction: row;
       gap: var(--space-3);

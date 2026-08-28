@@ -134,7 +134,7 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
     padding: var(--space-5) var(--page-padding-inline) 0;
   }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1200px) {
     .shell {
       display: block;
     }
@@ -146,6 +146,38 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
 
     main {
       padding: var(--space-4) var(--page-padding-inline) 0;
+    }
+  }
+
+  /* Beyond this width there's enough spare room that the sidebar column
+     would push centered content noticeably off the true center of the
+     screen (see e.g. the case-study article). Above it, the sidebar and
+     main share a single grid cell instead of separate columns — main spans
+     the full shell width so its own centered content centers on the whole
+     shell rather than on the leftover space beside a reserved column, while
+     the sidebar overlays on top. It's still a sticky item within that
+     shared cell (not `position: fixed`), so it releases at the bottom of
+     the content instead of floating over the footer. The activation
+     threshold (99em) is the minimum where the widest centered content
+     (--content-max-width) can't visually collide with the overlaid
+     sidebar; the shell's own max-width is set well above that so ultrawide
+     screens don't add a large empty margin in front of the sidebar. */
+  @media (min-width: 99em) {
+    .shell {
+      grid-template-columns: 1fr;
+      max-width: 120rem;
+    }
+
+    .shell :global(.sidebar),
+    main {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .shell :global(.sidebar) {
+      align-self: start;
+      width: var(--sidebar-width);
+      z-index: 2;
     }
   }
 </style>
