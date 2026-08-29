@@ -381,6 +381,104 @@ const sections = [
     }
   }
 
+  /* Three findings, each with a title above a problem/resolution card
+     pair connected by a rightward arrow; the three items stack vertically.
+     On mobile the arrow rotates to point down. */
+  .prose :global(.contrast-cards) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--space-2);
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .prose :global(.contrast-title) {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
+
+  .prose :global(.contrast-pair) {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+  }
+
+  .prose :global(.contrast-card) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: var(--space-2);
+    min-height: 4.5rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.9375rem;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .prose :global(.contrast-card--left) {
+    color: var(--color-text-secondary);
+    border-left: 3px solid color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 45%);
+  }
+
+  .prose :global(.contrast-card--right) {
+    border-left: 3px solid #22c55e;
+  }
+
+  .prose :global(.contrast-icon) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .prose :global(.contrast-icon--question) {
+    background: color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 45%);
+  }
+
+  .prose :global(.contrast-icon--check) {
+    background: #22c55e;
+  }
+
+  .prose :global(.contrast-icon svg) {
+    width: 11px;
+    height: 11px;
+  }
+
+  .prose :global(.contrast-arrow) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  @media (max-width: 40em) {
+    .prose :global(.contrast-pair) {
+      grid-template-columns: 1fr;
+    }
+
+    .prose :global(.contrast-card) {
+      min-height: 0;
+    }
+
+    .prose :global(.contrast-arrow) {
+      padding: var(--space-1) 0;
+      transform: rotate(90deg);
+    }
+  }
+
   /* 痛點 / 設計挑戰 / 我的任務 table (a single data row) renders as three
      side-by-side cards instead of a literal table row. Multi-row tables
      (e.g. a competitor comparison grid) keep normal table layout below. */
@@ -573,13 +671,59 @@ const sections = [
     margin-bottom: 0;
   }
 
-  .prose :global(.split-media img.split-image) {
+  .prose :global(.split-media img.split-image),
+  .prose :global(.split-media video.split-image) {
     flex: 1 1 0;
     min-width: 0;
     display: block;
     width: 100%;
     height: auto;
     border-radius: 4px;
+  }
+
+  /* Narrower variant: the media takes a smaller share of the row than the
+     text (aspect ratio unchanged — width:100% of a smaller flex-basis). */
+  .prose :global(.split-media img.split-image--narrow),
+  .prose :global(.split-media video.split-image--narrow) {
+    flex: 0 1 35%;
+    max-width: 35%;
+  }
+
+  /* Vertically center the text and image instead of top-aligning — for use
+     when the two panes end up different heights. */
+  .prose :global(.split-media.split-media--center) {
+    align-items: center;
+  }
+
+  /* Stacked variant: text on top, media below (instead of side by side),
+     with the media held to a fixed share of the column's width rather
+     than running full-bleed. Goes full width once the column itself is
+     narrow enough (tablet and below) that a partial-width media block
+     would feel cramped. */
+  .prose :global(.split-media.split-media--stacked) {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .prose :global(.split-media--stacked .split-text) {
+    flex: none;
+    width: 100%;
+  }
+
+  .prose :global(.split-media--stacked img.split-image--narrow),
+  .prose :global(.split-media--stacked video.split-image--narrow) {
+    flex: none;
+    width: 50%;
+    max-width: 50%;
+  }
+
+  @media (max-width: 48em) {
+    .prose :global(.split-media--stacked img.split-image--narrow),
+    .prose :global(.split-media--stacked video.split-image--narrow) {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 
   .prose :global(.split-media .toggle-pair) {
@@ -631,6 +775,11 @@ const sections = [
     .prose :global(.split-media) {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    .prose :global(.split-media img.split-image--narrow),
+    .prose :global(.split-media video.split-image--narrow) {
+      max-width: 100%;
     }
   }
 
