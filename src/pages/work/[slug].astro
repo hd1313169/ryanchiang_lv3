@@ -65,7 +65,7 @@ const sections = [
       {sections.map((s) => <a href={s.href}>{s.label}</a>)}
     </nav>
 
-    <div class="prose reveal">
+    <div class="prose">
       <Content />
     </div>
 
@@ -82,6 +82,49 @@ const sections = [
   if (researchSlug) {
     const researchEl = document.getElementById(researchSlug);
     researchEl?.classList.add("section-divider");
+  }
+
+  // Reveal each top-level block of the article (every heading, paragraph,
+  // list, table, custom card group, etc.) individually as it scrolls into
+  // view, rather than fading the whole chapter in at once — a single long
+  // chapter (e.g. 設計決策) would otherwise finish revealing the moment its
+  // heading appears, leaving everything below it static while scrolling.
+  const proseEl = document.querySelector(".prose");
+  if (proseEl) {
+    const targets = Array.from(proseEl.children);
+    targets.forEach((el) => el.classList.add("case-section"));
+
+    const revealAll = () => {
+      targets.forEach((el) => el.classList.add("is-visible"));
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      revealAll();
+    } else {
+      const sectionObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              sectionObserver.unobserve(entry.target);
+            }
+          }
+        },
+        // Deliberately lenient: fire as soon as any part of a block is on
+        // screen (no shrunk bottom margin) so blocks near the end of the
+        // page — where there isn't much scroll room left to satisfy a
+        // stricter margin — still reveal normally.
+        { threshold: 0, rootMargin: "0px 0px 0px 0px" }
+      );
+      targets.forEach((el) => sectionObserver.observe(el));
+
+      // Safety net matching the site-wide .reveal behavior: force everything
+      // visible shortly after load in case the observer never fires.
+      window.addEventListener("load", () => setTimeout(revealAll, 1200));
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) revealAll();
+      });
+    }
   }
 
   const navLinks = document.querySelectorAll(".section-nav-float a");
@@ -240,6 +283,25 @@ const sections = [
     color: var(--color-text);
     font-weight: 700;
     border-right-color: var(--color-text);
+  }
+
+  .prose :global(.case-section) {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .prose :global(.case-section.is-visible) {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose :global(.case-section) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   .prose :global(h2) {
