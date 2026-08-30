@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import portrait from "../assets/photos/about-hero-portrait.png";
+import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
 
 const facts = [
   { label: "Specialty", value: "SaaS、CRM、Web Design" },
@@ -38,20 +39,33 @@ const experience = [
     role: "UX/UI 設計師",
     org: "筑今數位設計",
     period: "2023 — 現在",
-    description:
-      "專注數位產品設計的顧問公司，負責橫跨金融、行銷、SaaS 等產業的系統設計，兼任 SA 職責，承接業務規則釐清、PRD 撰寫與工程師協作。",
+    description: [
+      "主要負責介面與使用體驗設計，橫跨行銷、證券及室內裝修等不同產業的系統設計",
+      "部分專案擔任 PM，擅長專案時程與風險的管控",
+      "有前端開發與 AI 應用的基礎，能夠積極與開發團隊溝通協作",
+    ],
   },
   {
     role: "數位行銷專員",
     org: "敦煌教育集團",
     period: "2020 — 2022",
-    description: "透過數據分析與用戶問卷，建立從量化數據與質化回饋推導設計方向的工作習慣。",
+    description: "負責線上成效追蹤與廣告投放，使用 GA 分析量化數據，並透過用戶問卷蒐集質化回饋。",
   },
   {
-    role: "平面設計師",
+    role: "識別設計師",
     org: "自由接案",
     period: "2019 — 2020",
-    description: "接觸各產業的視覺需求，培養基礎美感判斷與需求釐清的能力。",
+    description: "聚焦品牌訴求與設計理念，協助業主設計品牌視覺。",
+  },
+];
+
+const sideProjects = [
+  {
+    title: "Notion 專案績效管理模板",
+    summary:
+      "這是一個專為專案與績效管理設計的 Notion 模板，共 8 個關聯資料庫分為三層。以關聯關係與公式邏輯串聯，讓績效計算從複雜試算表變成自動化工具。",
+    href: "https://honey-agate-c33.notion.site/5904b56cf7778266860b012c8da88402",
+    cover: notionWorkflowCover,
   },
 ];
 ---
@@ -64,19 +78,19 @@ const experience = [
     <section class="reveal intro-grid">
       <div class="bio">
         <p class="intro">
-          我是 Ryan，UX/UI 設計師。
+          我是 Ryan，喜歡解決問題的 UX/UI 設計師。
         </p>
 
         <p class="run-in">
-          很多系統設計專案的真正難點，不在介面，而在介面背後那些沒有被說清楚的規則——業主知道怎麼運作，但說不出來；團隊各自有理解，但版本不同。我習慣在這個地方多停一下，把這些隱形的前提找出來，讓後續的設計有真正的依據。
+          面對複雜的需求，我習慣先將情境拆解成各種零件，找出隱藏其中的小問題，考慮不同情境的重新排列組合，組裝成有條理的討論架構。
         </p>
 
         <p class="run-in">
-          在設計公司的工作經驗中，我接觸過行銷、證券、空間租借及室內裝修等不同產業的系統設計，從需求訪談、PRD 撰寫到 UAT 驗收全程參與。每個案子的業務規則都不一樣，但每次做的是同一件事：把業務規則、系統邏輯、使用情境這三層之間的落差找出來，讓介面去承載這個判斷的結果。
+          跨足行銷、證券、空間租借與室內裝修等多種產業的系統與網站設計，參與從需求訪談、PRD 撰寫到 UAT 驗收的完整流程。即使跨領域的系統邏輯各異，我始終專注在「使用者行為」、「系統邏輯」與「真實情境」三者之間的落差，讓介面設計成為商業決策的載體。
         </p>
 
         <p class="run-in">
-          長期做這件事，讓我確認了一件事——設計師在複雜專案裡最大的貢獻，不在於把介面做得更精緻，而在於在夠早的地方介入，在問題定義還模糊的時候幫助把方向收斂清楚。
+          當需求模糊或跨部門理解分歧時，我會迅速凝聚共識、收斂方向；設計時確保每項設計決策都有據可循，大幅降低開發團隊來回溝通的摩擦成本。對團隊而言，我的設計不只是單純好看的交付物，更是推動專案前進的核心。
         </p>
       </div>
 
@@ -114,7 +128,7 @@ const experience = [
     </section>
 
     <section class="reveal section-row">
-      <h2>技能</h2>
+      <h2>我的技能</h2>
       <dl class="skills">
         {
           skills.map((skill, i) => (
@@ -131,7 +145,7 @@ const experience = [
     </section>
 
     <section class="reveal section-row">
-      <h2>經歷</h2>
+      <h2>我的經歷</h2>
       <ul class="experience">
         {
           experience.map((job) => (
@@ -142,8 +156,47 @@ const experience = [
                   {job.role}
                   <span class="job-org">{job.org}</span>
                 </p>
-                <p class="job-description">{job.description}</p>
+                {Array.isArray(job.description) ? (
+                  <ul class="job-description job-description-list">
+                    {job.description.map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="job-description">{job.description}</p>
+                )}
               </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="reveal section-row">
+      <h2>個人專案</h2>
+      <ul class="side-projects">
+        {
+          sideProjects.map((project, i) => (
+            <li>
+              <a class="side-project" href={project.href} target="_blank" rel="noopener noreferrer">
+                <span class="side-project-thumb">
+                  <Image
+                    class="side-project-cover"
+                    src={project.cover}
+                    alt=""
+                    width={800}
+                    height={450}
+                  />
+                </span>
+                <span class="side-project-body">
+                  <h3 class="side-project-title">
+                    <span class="side-project-num">{String(i + 1).padStart(2, "0")}</span>
+                    {project.title}
+                  </h3>
+                  <p class="side-project-summary">{project.summary}</p>
+                  <span class="side-project-cta">查看範例模板</span>
+                </span>
+              </a>
             </li>
           ))
         }
@@ -317,21 +370,33 @@ const experience = [
 
   .section-row {
     padding-top: var(--space-5);
-    border-top: 1px solid var(--color-border);
   }
 
   h2 {
-    font-size: var(--text-md);
+    font-size: var(--text-lg);
     font-weight: 500;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
     color: var(--color-text);
   }
 
   .skills {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-5);
+    gap: var(--space-4);
     margin: 0;
+  }
+
+  .skill {
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-text);
+    border-radius: 4px;
+    padding: var(--space-3);
+    transition: transform var(--transition-hover), box-shadow var(--transition-hover);
+  }
+
+  .skill:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--color-text), transparent 88%);
   }
 
   .skill dt {
@@ -418,8 +483,112 @@ const experience = [
     margin-top: var(--space-1);
   }
 
+  .job-description-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding-left: 1.1em;
+    list-style: disc;
+  }
+
+  /* Grid is pre-sized for a 2x2 card layout even though only one card
+     exists today — the empty cells simply collapse until more are added. */
+  .side-projects {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .side-project {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .side-project-thumb {
+    display: block;
+  }
+
+  .side-project-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .side-project:hover .side-project-cover {
+    transform: scale(1.05);
+  }
+
+  .side-project-body {
+    background: #fbfbfb;
+    padding: var(--space-3);
+  }
+
+  .side-project-title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+    transition: color var(--transition-hover);
+  }
+
+  .side-project-num {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+
+  .side-project:hover .side-project-title {
+    color: var(--color-text-secondary);
+  }
+
+  .side-project-summary {
+    color: var(--color-text-secondary);
+    font-weight: 300;
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .side-project-cta {
+    display: inline-flex;
+    align-items: center;
+    margin-top: var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-bg);
+    background: var(--color-text);
+    border: 1px solid var(--color-text);
+    border-radius: 4px;
+    padding: 0.5em 1em;
+    transition: opacity var(--transition-hover);
+  }
+
+  .side-project:hover .side-project-cta {
+    opacity: 0.8;
+  }
+
   @media (min-width: 40em) {
     .skills {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .side-projects {
       grid-template-columns: 1fr 1fr;
     }
   }

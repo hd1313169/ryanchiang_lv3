@@ -2,9 +2,12 @@
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const currentPath = Astro.url.pathname;
 const items = [
-  { label: "Works", href: `${base}/`, active: currentPath === `${base}/` || currentPath.startsWith(`${base}/work/`) },
-  { label: "About", href: `${base}/about`, active: currentPath === `${base}/about` },
+  { label: "專案實績", href: `${base}/`, active: currentPath === `${base}/` || currentPath.startsWith(`${base}/work/`) },
+  { label: "關於我", href: `${base}/about`, active: currentPath === `${base}/about` },
 ];
+
+// Resume link is hidden for now — flip to true to bring it back.
+const showResume = false;
 ---
 
 <nav class="nav" aria-label="主要導覽">
@@ -18,9 +21,11 @@ const items = [
         </li>
       ))
     }
-    <li>
-      <a href={`${base}/resume.pdf`} target="_blank" rel="noopener noreferrer">Resume</a>
-    </li>
+    {showResume && (
+      <li>
+        <a href={`${base}/resume.pdf`} target="_blank" rel="noopener noreferrer">我的履歷</a>
+      </li>
+    )}
   </ul>
 </nav>
 
