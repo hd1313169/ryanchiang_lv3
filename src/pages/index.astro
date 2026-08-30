@@ -36,35 +36,18 @@ const tagline = "UI/UX Designer，專注在把複雜的問題梳理清楚，做�
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* Cancel main's own padding-top so the left/right border runs flush up
-       to the top of the page through the blank space above the first card
-       — but no border-top here: that horizontal line only appears once the
-       first card starts (see .feature's own border-top), not at the very
-       top of the page. */
-    margin-top: calc(-1 * var(--space-5));
-    padding-top: var(--space-6);
-    /* Cancel the footer's own margin-top so the border runs flush down to
-       the footer, but keep the same visual breathing room by moving it
-       inside the box as padding instead of just deleting the whitespace. */
-    margin-bottom: calc(-1 * var(--space-6));
-    padding-bottom: var(--space-7);
-    border-inline: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
+    /* Plain, non-bleeding whitespace on both sides — the border only spans
+       the list itself, not the gaps around it. margin-top is tuned so the
+       border lines up with the sidebar wordmark (see Sidebar.astro). */
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-7);
+    border: 1px solid var(--color-border);
   }
 
-  /* Below this width, BaseLayout stacks the sidebar above main instead of
-     beside it (see BaseLayout.astro's matching breakpoint), and a
-     MobileIntro block sits between main and the footer. Bleeding the box's
-     margins to reach "the top of the page" or "the footer" no longer means
-     what it does on desktop — there's real stacked content above, and the
-     footer isn't the very next element below — so drop the bleed and use
-     plain, non-negative spacing instead. */
   @media (max-width: 1200px) {
     .work-list {
       margin-top: var(--space-4);
-      padding-top: 0;
       margin-bottom: var(--space-6);
-      padding-bottom: 0;
     }
   }
 

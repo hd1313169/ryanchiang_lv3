@@ -27,7 +27,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     flex-direction: column;
     justify-content: space-between;
     gap: var(--space-5);
-    padding: var(--space-4) var(--page-padding-inline) var(--space-5);
+    /* Top padding matches the gap index.astro's work-list uses above its
+       first card's border, so the wordmark lines up with that border. */
+    padding: var(--space-6) var(--page-padding-inline) var(--space-5);
   }
 
   .identity {

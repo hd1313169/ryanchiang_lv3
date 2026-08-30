@@ -68,22 +68,17 @@ const titleTail = titleRest.join("——");
     text-decoration: none;
     padding: var(--space-6) var(--space-4);
     transition: background-color var(--transition-hover);
-    /* Every card gets its own top divider — including the first, whose
-       line marks where the list actually starts, below the blank space
-       above it (the outer box's left/right border already runs through
-       that space without a top edge of its own). */
-    border-top: 1px solid var(--color-border);
   }
 
   .feature:hover {
     background-color: var(--color-block-bg);
   }
 
-  /* The last card also closes its own row immediately after its content,
-     separate from the outer box border further below (which extends down
-     to the footer with breathing room of its own in between). */
-  .feature:last-child {
-    border-bottom: 1px solid var(--color-border);
+  /* Cards sit flush against each other inside the shared outer border
+     (which already closes off the first and last rows); a hairline divider
+     between cards is all that's needed here. */
+  .feature:not(:first-child) {
+    border-top: 1px solid var(--color-border);
   }
 
   .thumb {
