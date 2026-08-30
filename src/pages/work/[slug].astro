@@ -69,6 +69,8 @@ const sections = [
       <Content />
     </div>
 
+    <p class="disclaimer reveal">（本文所有圖片與資料皆經過處理，僅用於展示設計不涉及任何商業資訊。）</p>
+
     <a class="next-case reveal" href={`${base}/work/${next.id}`}>
       <span class="next-label">下一篇案例</span>
       <span class="next-title">{next.data.title}</span>
@@ -824,6 +826,12 @@ const sections = [
     font-weight: 500;
     background: color-mix(in srgb, var(--color-text), var(--color-bg) 96%);
     white-space: nowrap;
+  }
+
+  .disclaimer {
+    margin-top: var(--space-4);
+    font-size: var(--text-xs);
+    color: color-mix(in srgb, var(--color-text-secondary), var(--color-bg) 40%);
   }
 
   .next-case {
