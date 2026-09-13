@@ -5,16 +5,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import CaseStudyCard from "../components/CaseStudyCard.astro";
 import heroIllustration1 from "../assets/illustrations/hero-1.png";
 import heroIllustration2 from "../assets/illustrations/hero-2.png";
+import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
 
 const caseStudies = (await getCollection("case-studies")).sort(
   (a, b) => a.data.order - b.data.order
 );
 
+const sideProjects = [
+  {
+    title: "Notion 專案績效管理模板",
+    summary:
+      "一個提供中小型團隊自動化管理的 Notion 模板，共 8 個關聯資料庫分為三層。以關聯關係與公式邏輯串聯，讓績效計算從複雜試算表變成自動化工具。",
+    href: "https://honey-agate-c33.notion.site/5904b56cf7778266860b012c8da88402",
+    cover: notionWorkflowCover,
+  },
+];
+
 const tagline = "UI/UX Designer，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-// Placeholder — swap in the real CakeResume / cloud-folder resume URL.
-const resumeHref = "https://www.cakeresume.com/";
+const resumeHref = "https://www.cake.me/ryanchiang_13";
 ---
 
 <BaseLayout title="Ryan Chiang" description={tagline}>
@@ -65,7 +75,7 @@ const resumeHref = "https://www.cakeresume.com/";
   <section class="work-section">
     <div class="work-heading">
       <span class="work-icon" aria-hidden="true"></span>
-      <h2>作品實績</h2>
+      <h2>精選專案</h2>
       <span class="work-rule" aria-hidden="true"></span>
     </div>
 
@@ -84,6 +94,41 @@ const resumeHref = "https://www.cakeresume.com/";
         ))
       }
     </div>
+  </section>
+
+  <section class="section-row">
+    <div class="section-heading reveal">
+      <span class="section-icon" aria-hidden="true"></span>
+      <h2>個人專案</h2>
+      <span class="section-rule" aria-hidden="true"></span>
+    </div>
+    <ul class="side-projects">
+      {
+        sideProjects.map((project, i) => (
+          <li class="reveal">
+            <a class="side-project" href={project.href} target="_blank" rel="noopener noreferrer">
+              <span class="side-project-thumb">
+                <Image
+                  class="side-project-cover"
+                  src={project.cover}
+                  alt=""
+                  width={800}
+                  height={450}
+                />
+              </span>
+              <span class="side-project-body">
+                <h3 class="side-project-title">
+                  <span class="side-project-num">{String(i + 1).padStart(2, "0")}</span>
+                  {project.title}
+                </h3>
+                <p class="side-project-summary">{project.summary}</p>
+                <span class="side-project-cta">查看範例模板</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 </BaseLayout>
 
@@ -381,6 +426,195 @@ const resumeHref = "https://www.cakeresume.com/";
     gap: clamp(2rem, 6vw, 4.5rem);
     width: 100%;
     margin-bottom: var(--space-7);
+  }
+
+  .section-row {
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .section-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+  }
+
+  .section-icon::before,
+  .section-icon::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #3e3e3e;
+  }
+
+  .section-icon::before {
+    bottom: 0;
+    right: 0;
+  }
+
+  .section-icon::after {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #fefefe;
+    border: 1px solid #3e3e3e;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(22px, 4.5vw, 38px);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-bottom: 0;
+    color: #1e1e1e;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .section-heading.reveal {
+    transform: translateY(1.5rem);
+    transition:
+      opacity 500ms ease-in-out,
+      transform 500ms ease-in-out;
+  }
+
+  .section-heading.reveal.is-visible {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-heading.reveal {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Grid is pre-sized for a 2x2 card layout even though only one card
+     exists today — the empty cells simply collapse until more are added. */
+  .side-projects {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 2rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: var(--space-7);
+  }
+
+  .side-projects > li.reveal {
+    transform: translateY(2rem);
+    transition:
+      opacity 500ms ease-in-out,
+      transform 500ms ease-in-out;
+  }
+
+  .side-projects > li.reveal.is-visible {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .side-projects > li.reveal {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  .side-project {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .side-project-thumb {
+    display: block;
+  }
+
+  .side-project-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .side-project:hover .side-project-cover {
+    transform: scale(1.05);
+  }
+
+  .side-project-body {
+    background: #fbfbfb;
+    padding: var(--space-3);
+  }
+
+  .side-project-title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: #1e1e1e;
+    margin-bottom: var(--space-1);
+    transition: color var(--transition-hover);
+  }
+
+  .side-project-num {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+
+  .side-project:hover .side-project-title {
+    color: var(--color-text-secondary);
+  }
+
+  .side-project-summary {
+    color: var(--color-text-secondary);
+    font-weight: 300;
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .side-project-cta {
+    display: inline-flex;
+    align-items: center;
+    margin-top: var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-bg);
+    background: var(--color-text);
+    border: 1px solid var(--color-text);
+    border-radius: 4px;
+    padding: 0.5em 1em;
+    transition: opacity var(--transition-hover);
+  }
+
+  .side-project:hover .side-project-cta {
+    opacity: 0.8;
+  }
+
+  @media (min-width: 40em) {
+    .side-projects {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .work-card {

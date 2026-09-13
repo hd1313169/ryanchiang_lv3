@@ -2,7 +2,6 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import portrait from "../assets/photos/avatar.png";
-import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
 import skillIcon01 from "../assets/icons/skill-01.png";
 import skillIcon02 from "../assets/icons/skill-02.png";
 import skillIcon03 from "../assets/icons/skill-03.png";
@@ -82,15 +81,6 @@ const experience = [
   },
 ];
 
-const sideProjects = [
-  {
-    title: "Notion 專案績效管理模板",
-    summary:
-      "一個提供中小型團隊自動化管理的 Notion 模板，共 8 個關聯資料庫分為三層。以關聯關係與公式邏輯串聯，讓績效計算從複雜試算表變成自動化工具。",
-    href: "https://honey-agate-c33.notion.site/5904b56cf7778266860b012c8da88402",
-    cover: notionWorkflowCover,
-  },
-];
 ---
 
 <BaseLayout
@@ -185,7 +175,7 @@ const sideProjects = [
             重複性高的工作交給 AI 跑，縮減設計與驗證的週期；我負責核心的設計與決策，將注意力放在真正需要介入的地方。
           </p>
           <button type="button" class="ai-flowchart-trigger" aria-haspopup="dialog" aria-controls="ai-lightbox">
-            <Image src={aiWorkflow} alt="AI 應用實踐高效設計六步驟流程圖：需求整理與知識管理、規格產出、概念發想、UIUX 設計、Prototype 製作、交付與驗收文件產出" width={2160} />
+            <Image src={aiWorkflow} alt="AI 應用實踐高效設計六步驟流程圖：需求整理與知識管理、規格產出、概念發想、UIUX 設計、Prototype 製作、交付與驗收文件產出" width={2160} quality={90} />
           </button>
         </div>
       </section>
@@ -224,47 +214,12 @@ const sideProjects = [
       </ul>
     </section>
 
-    <section class="section-row">
-      <div class="section-heading reveal">
-        <span class="section-icon" aria-hidden="true"></span>
-        <h2>個人專案</h2>
-        <span class="section-rule" aria-hidden="true"></span>
-      </div>
-      <ul class="side-projects">
-        {
-          sideProjects.map((project, i) => (
-            <li class="reveal">
-              <a class="side-project" href={project.href} target="_blank" rel="noopener noreferrer">
-                <span class="side-project-thumb">
-                  <Image
-                    class="side-project-cover"
-                    src={project.cover}
-                    alt=""
-                    width={800}
-                    height={450}
-                  />
-                </span>
-                <span class="side-project-body">
-                  <h3 class="side-project-title">
-                    <span class="side-project-num">{String(i + 1).padStart(2, "0")}</span>
-                    {project.title}
-                  </h3>
-                  <p class="side-project-summary">{project.summary}</p>
-                  <span class="side-project-cta">查看範例模板</span>
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
   </article>
 
   <Fragment slot="overlay">
     <div class="lightbox" id="ai-lightbox" hidden>
       <button type="button" class="lightbox-close" aria-label="關閉圖片">✕</button>
-      <Image src={aiWorkflow} alt="" width={3072} loading="eager" class="lightbox-image" />
+      <Image src={aiWorkflow} alt="" width={3072} quality={90} loading="eager" class="lightbox-image" />
     </div>
   </Fragment>
 </BaseLayout>
@@ -844,22 +799,19 @@ const sideProjects = [
 
   /* Each card enters bottom-to-top independently, right as it scrolls
      into view — not staggered off the others. */
-  .experience-item.reveal,
-  .side-projects > li.reveal {
+  .experience-item.reveal {
     transform: translateY(2rem);
     transition:
       opacity 500ms ease-in-out,
       transform 500ms ease-in-out;
   }
 
-  .experience-item.reveal.is-visible,
-  .side-projects > li.reveal.is-visible {
+  .experience-item.reveal.is-visible {
     transform: translateY(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .experience-item.reveal,
-    .side-projects > li.reveal {
+    .experience-item.reveal {
       transform: none;
       transition: none;
     }
@@ -963,98 +915,6 @@ const sideProjects = [
     border-radius: 2px;
   }
 
-  /* Grid is pre-sized for a 2x2 card layout even though only one card
-     exists today — the empty cells simply collapse until more are added. */
-  .side-projects {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(1.5rem, 4vw, 2rem);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .side-project {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    overflow: hidden;
-    text-decoration: none;
-  }
-
-  .side-project-thumb {
-    display: block;
-  }
-
-  .side-project-cover {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-
-  .side-project:hover .side-project-cover {
-    transform: scale(1.05);
-  }
-
-  .side-project-body {
-    background: #fbfbfb;
-    padding: var(--space-3);
-  }
-
-  .side-project-title {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-1);
-    font-size: var(--text-base);
-    font-weight: 500;
-    color: #1e1e1e;
-    margin-bottom: var(--space-1);
-    transition: color var(--transition-hover);
-  }
-
-  .side-project-num {
-    font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-xs);
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--color-text-secondary);
-  }
-
-  .side-project:hover .side-project-title {
-    color: var(--color-text-secondary);
-  }
-
-  .side-project-summary {
-    color: var(--color-text-secondary);
-    font-weight: 300;
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    margin: 0;
-  }
-
-  .side-project-cta {
-    display: inline-flex;
-    align-items: center;
-    margin-top: var(--space-3);
-    font-size: var(--text-xs);
-    font-weight: 500;
-    color: var(--color-bg);
-    background: var(--color-text);
-    border: 1px solid var(--color-text);
-    border-radius: 4px;
-    padding: 0.5em 1em;
-    transition: opacity var(--transition-hover);
-  }
-
-  .side-project:hover .side-project-cta {
-    opacity: 0.8;
-  }
-
   @media (min-width: 40em) {
     .skills-band {
       position: sticky;
@@ -1064,10 +924,6 @@ const sideProjects = [
 
     .ai-band {
       min-height: 100vh;
-    }
-
-    .side-projects {
-      grid-template-columns: 1fr 1fr;
     }
 
     .experience-item {
@@ -1118,13 +974,13 @@ const sideProjects = [
     }
 
     .side {
-      align-items: flex-end;
+      align-items: center;
       order: 0;
       flex: 2;
     }
 
     .photo {
-      width: min(100%, 22rem);
+      width: min(100%, 18rem);
     }
   }
 </style>
