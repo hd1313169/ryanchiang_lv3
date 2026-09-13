@@ -1,62 +1,132 @@
 ---
+import { Image } from "astro:assets";
+import logo from "../assets/brand/logo.svg";
+
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const currentPath = Astro.url.pathname;
+
 const items = [
-  { label: "專案實績", href: `${base}/`, active: currentPath === `${base}/` || currentPath.startsWith(`${base}/work/`) },
+  { label: "作品實績", href: `${base}/`, active: currentPath === `${base}/` || currentPath.startsWith(`${base}/work/`) },
   { label: "關於我", href: `${base}/about`, active: currentPath === `${base}/about` },
 ];
 
-// Resume link is hidden for now — flip to true to bring it back.
-const showResume = false;
+// Placeholder — swap in the real CakeResume / cloud-folder resume URL.
+const resumeHref = "https://www.cakeresume.com/";
 ---
 
 <nav class="nav" aria-label="主要導覽">
-  <ul>
-    {
-      items.map((item) => (
-        <li>
-          <a href={item.href} aria-current={item.active ? "page" : undefined}>
-            {item.label}
-          </a>
-        </li>
-      ))
-    }
-    {showResume && (
+  <div class="nav-inner">
+    <a class="brand" href={`${base}/`}>
+      <Image class="brand-logo" src={logo} alt="" width={32} height={32} />
+      <span class="brand-name">Ryan Chiang.</span>
+    </a>
+
+    <ul>
+      {
+        items.map((item) => (
+          <li>
+            <a href={item.href} aria-current={item.active ? "page" : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
       <li>
-        <a href={`${base}/resume.pdf`} target="_blank" rel="noopener noreferrer">我的履歷</a>
+        <a href={resumeHref} target="_blank" rel="noopener noreferrer">履歷</a>
       </li>
-    )}
-  </ul>
+    </ul>
+  </div>
 </nav>
 
 <style>
+  .nav {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 10;
+    height: var(--nav-height);
+    background: color-mix(in srgb, var(--color-bg), transparent 20%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav-inner {
+    max-width: 90rem;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-inline: var(--page-padding-inline);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: var(--color-text);
+  }
+
+  .brand-logo {
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 4px;
+  }
+
+  .brand-name {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-md);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
   ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
+    align-items: center;
+    gap: var(--space-4);
   }
 
   a {
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-xs);
+    font-size: 16px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
     color: var(--color-text-secondary);
   }
 
-  a:hover,
-  a[aria-current="page"] {
-    color: var(--color-text);
-    text-decoration: underline;
+  ul a {
+    background-image: linear-gradient(#feffbf, #feffbf);
+    background-repeat: no-repeat;
+    background-size: 0% 66%;
+    background-position: 0 100%;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    transition: background-size 300ms ease, color 150ms ease;
   }
 
-  @media (max-width: 1200px) {
+  ul a:hover {
+    color: var(--color-text);
+    background-size: 100% 66%;
+  }
+
+  ul a[aria-current="page"] {
+    color: var(--color-text);
+  }
+
+  @media (max-width: 30em) {
+    .brand-name {
+      display: none;
+    }
+
     ul {
-      flex-direction: row;
       gap: var(--space-3);
     }
   }

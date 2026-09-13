@@ -1,76 +1,167 @@
 ---
-const year = new Date().getFullYear();
+import { Image } from "astro:assets";
+import gmailIcon from "../assets/icons/gmail.png";
+import linkedinIcon from "../assets/icons/linkedin.png";
+import cakeIcon from "../assets/icons/cake.png";
+
 const email = "wsad71155@gmail.com";
+// Placeholders — swap in the real profile URLs.
+const linkedinHref = "https://www.linkedin.com/";
+const cakeHref = "https://www.cakeresume.com/";
 ---
 
 <footer class="footer reveal">
   <div class="footer-inner">
-    <button class="mail-link" type="button" data-email={email}>
-      <svg
-        class="mail-icon"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="m2 7 9.1 6.4a1.7 1.7 0 0 0 1.8 0L22 7" />
-      </svg>
-      <span class="mail-text">{email}</span>
-    </button>
-    <p>&copy; {year} Ryan Chiang. All rights reserved.</p>
+    <div class="footer-heading">
+      <div class="footer-heading-main">
+        <p>任何合作機會</p>
+        <p>歡迎隨時和我聊聊 :)</p>
+      </div>
+      <p class="footer-caption">Ryan Chiang · UIUX Designer · Taipei, Taiwan</p>
+    </div>
+
+    <div class="footer-contacts">
+      <button class="contact-link" type="button" data-email={email}>
+        <Image class="contact-icon" src={gmailIcon} alt="" width={40} height={32} />
+        <span class="contact-text">{email}</span>
+        <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="9" width="12" height="12" rx="2" />
+          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+        </svg>
+      </button>
+      <a class="contact-link" href={linkedinHref} target="_blank" rel="noopener noreferrer">
+        <Image class="contact-icon" src={linkedinIcon} alt="" width={40} height={40} />
+        <span class="contact-text">LinkedIn</span>
+        <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17 17 7" />
+          <path d="M7 7h10v10" />
+        </svg>
+      </a>
+      <a class="contact-link" href={cakeHref} target="_blank" rel="noopener noreferrer">
+        <Image class="contact-icon contact-icon--round" src={cakeIcon} alt="" width={40} height={40} />
+        <span class="contact-text">CakeResume</span>
+        <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17 17 7" />
+          <path d="M7 7h10v10" />
+        </svg>
+      </a>
+    </div>
   </div>
 </footer>
 
 <style>
   .footer {
     background: var(--color-text);
-    margin-top: var(--space-6);
+    margin-top: var(--space-7);
   }
 
   .footer-inner {
     max-width: 90rem;
     margin: 0 auto;
-    padding: 10px var(--page-padding-inline);
+    padding: var(--space-7) var(--page-padding-inline);
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-3);
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--space-4);
   }
 
-  .mail-link {
-    display: inline-flex;
+  .footer-heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-lg);
+    font-weight: 500;
+    color: var(--color-bg);
+    line-height: 1.4;
+  }
+
+  .footer-heading-main p {
+    margin: 0;
+  }
+
+  .footer-caption {
+    margin: 0;
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: 1rem; /* 16px */
+    font-weight: 300;
+    color: #f9f9f9;
+  }
+
+  @media (max-width: 39.9375em) {
+    .footer-caption {
+      margin-top: var(--space-3);
+    }
+  }
+
+  .footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 28rem;
+  }
+
+  .contact-link {
+    display: flex;
     align-items: center;
-    gap: 0.4em;
+    gap: var(--space-2);
+    width: 100%;
     font-size: var(--text-sm);
     color: var(--color-bg);
     background: none;
-    border: none;
-    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--color-bg), transparent 70%);
+    border-radius: 999px;
+    padding: 14px;
     font-family: inherit;
+    text-decoration: none;
     cursor: pointer;
+    transition: transform var(--transition-hover), box-shadow var(--transition-hover);
   }
 
-  .mail-icon {
+  .contact-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--color-bg), transparent 93%);
+  }
+
+  .contact-icon {
+    display: block;
     flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
   }
 
-  .footer-inner p {
-    color: var(--color-bg);
-    opacity: 0.7;
-    font-size: var(--text-xs);
+  .contact-icon--round {
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-bg), transparent 70%);
+  }
+
+  .contact-text {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-weight: 400;
+  }
+
+  .trailing-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-left: auto;
+    color: color-mix(in srgb, var(--color-bg), transparent 30%);
+  }
+
+  @media (min-width: 40em) {
+    .footer-inner {
+      flex-direction: row;
+      align-items: stretch;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
   }
 </style>
 
 <script>
-  document.querySelectorAll<HTMLButtonElement>(".mail-link").forEach((btn) => {
-    const textEl = btn.querySelector<HTMLElement>(".mail-text");
+  document.querySelectorAll<HTMLButtonElement>(".contact-link[data-email]").forEach((btn) => {
+    const textEl = btn.querySelector<HTMLElement>(".contact-text");
     const email = btn.dataset.email ?? "";
     const original = textEl?.textContent ?? email;
     let resetTimer: ReturnType<typeof setTimeout>;

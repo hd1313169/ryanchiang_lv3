@@ -12,8 +12,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
-const { title, subtitle, summary, order, intro, mainDuties, team, timeline, tools } = entry.data;
-const ordinal = String(order).padStart(2, "0");
+const { title, subtitle, summary, mainDuties, team, timeline, tools } = entry.data;
 
 const allCaseStudies = (await getCollection("case-studies")).sort(
   (a, b) => a.data.order - b.data.order
@@ -44,13 +43,10 @@ const sections = [
     <header class="reveal">
       <div class="header-body">
         <div class="kicker">
-          <span class="ordinal">{ordinal}</span>
           <span class="kicker-label">{subtitle}</span>
         </div>
 
         <h1>{title}</h1>
-
-        <p class="intro" set:html={intro} />
 
         <dl class="meta">
           <div><dt>主要職責</dt><dd>{mainDuties}</dd></div>
@@ -157,14 +153,18 @@ const sections = [
 
 <style>
   .case-study {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
+    width: 100%;
     padding-block: var(--space-4) var(--space-6);
   }
 
-  /* Below 90em there's no longer spare width beside the centered column for
-     the floating chapter index to sit in without crowding the text, so
-     reserve room for it on the right. */
+  /* Only in this band does <main> have no natural outer margin of its own
+     (it's narrower than 90em, so <main> fills the viewport edge-to-edge
+     apart from its inline padding) — that's the one range where the fixed
+     floating chapter index has no spare room beside .case-study and would
+     crowd the text, so reserve some on the right here only. At ≥90em,
+     <main> is already centered with margin outside its 90rem box, which is
+     where the index actually sits — adding the same padding there would
+     just make .case-study's content lopsided for no reason. */
   @media (min-width: 48em) and (max-width: 89.99em) {
     .case-study {
       padding-right: var(--space-6);
@@ -187,57 +187,42 @@ const sections = [
     margin-bottom: var(--space-2);
   }
 
-  .ordinal {
-    font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-  }
-
   .kicker-label {
     font-family: var(--font-latin), var(--font-cjk), sans-serif;
-    font-size: var(--text-2xs);
+    font-size: var(--text-xs);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-text-secondary);
   }
 
   h1 {
-    font-size: var(--text-xl);
+    font-size: var(--text-2xl);
     font-weight: 500;
     margin-bottom: var(--space-3);
   }
 
-  .intro {
-    font-size: var(--text-base);
-    font-weight: 300;
-    line-height: 1.85;
-    margin-bottom: var(--space-4);
-  }
-
-  .intro :global(strong) {
-    font-weight: 600;
-  }
-
   .meta {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-3);
+    margin: var(--space-3) 0 0;
   }
 
   .meta > div {
     display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
     padding-block: var(--space-2);
     border-top: 1px solid var(--color-border);
   }
 
-  .meta > div:last-child {
+  .meta > div:nth-child(3),
+  .meta > div:nth-child(4) {
     border-bottom: 1px solid var(--color-border);
   }
 
   .meta dt {
-    flex: 0 0 6rem;
     font-size: var(--text-xs);
     color: var(--color-text-secondary);
   }
@@ -305,11 +290,45 @@ const sections = [
   }
 
   .prose :global(h2) {
+    position: relative;
+    /* Reserves room for the two-square icon below (21px icon + the
+       homepage's .work-heading gap of var(--space-2)) instead of an extra
+       wrapping element, since these headings come from rendered Markdown. */
+    padding-left: calc(21px + var(--space-2));
     font-size: var(--text-lg);
     font-weight: 700;
     margin-top: var(--space-6);
     margin-bottom: var(--space-2);
     scroll-margin-top: var(--space-3);
+  }
+
+  /* Same overlapping-squares mark as the homepage's "作品實績" heading
+     (.work-icon there) — reproduced here with ::before/::after directly on
+     the heading since Markdown output gives us no wrapping <span> to hang
+     a dedicated icon element on. */
+  .prose :global(h2)::before,
+  .prose :global(h2)::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+  }
+
+  .prose :global(h2)::before {
+    left: 5px;
+    /* Centers the 21px-tall icon (16px square + 5px diagonal offset)
+       against the heading's line box: (line-height 1.25 × font-size 27px −
+       21px) ÷ 2 ≈ 0.236em from the top. */
+    top: calc(0.236em + 5px);
+    background: #3e3e3e;
+  }
+
+  .prose :global(h2)::after {
+    left: 0;
+    top: 0.236em;
+    z-index: 1;
+    background: #fefefe;
+    border: 1px solid #3e3e3e;
   }
 
   /* 次標題 — either a one-line subtitle directly under a section's h2, or
@@ -616,24 +635,21 @@ const sections = [
      a light backdrop, used to break up long text sections in the prose. */
   .prose :global(.image-pair) {
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
     gap: var(--space-3);
     margin: var(--space-4) 0;
   }
 
   .prose :global(.image-pair figure) {
-    flex: 0 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     margin: 0;
   }
 
   .prose :global(.image-pair img) {
     display: block;
-    height: 340px;
-    width: auto;
-    max-width: 100%;
+    width: 100%;
+    height: auto;
     border-radius: 4px;
   }
 
@@ -648,11 +664,6 @@ const sections = [
   @media (max-width: 40em) {
     .prose :global(.image-pair) {
       flex-direction: column;
-    }
-
-    .prose :global(.image-pair img) {
-      height: auto;
-      width: 100%;
     }
   }
 
@@ -925,11 +936,5 @@ const sections = [
     font-weight: 600;
     color: var(--color-text);
     transition: color var(--transition-hover);
-  }
-
-  @media (max-width: 28em) {
-    .meta dt {
-      flex-basis: 4.5rem;
-    }
   }
 </style>

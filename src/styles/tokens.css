@@ -36,7 +36,7 @@
   /* Layout */
   --content-max-width: min(90%, 60rem);
   --page-padding-inline: var(--space-3);
-  --sidebar-width: 19rem;
+  --nav-height: 4.5rem;
 
   /* Motion */
   --transition-hover: 180ms ease;
@@ -48,14 +48,10 @@
   }
 }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --color-bg: #141414;
-  --color-text: #f0efec;
-  --color-text-secondary: #a8a8a8;
-  --color-border: #3a3a3a;
-  --color-block-bg: #1e1e1e;
+@media (min-width: 90em) {
+  :root {
+    --page-padding-inline: 160px;
+  }
 }
 
 *,
@@ -68,6 +64,18 @@ html,
 body {
   margin: 0;
   padding: 0;
+}
+
+/* Full-bleed sections (e.g. the About page's skills band) size themselves
+   with 100vw, which is wider than the visible viewport whenever a vertical
+   scrollbar is present — clip that sliver instead of letting it open a
+   horizontal scrollbar. Applied to `html` only (not `body` too): setting
+   overflow-x on both independently triggers the CSS spec's "overflow-y
+   becomes auto" fallback on each of them separately, producing two
+   competing scroll containers — the extra scrollbar / momentarily
+   unresponsive scroll on load some visitors saw. */
+html {
+  overflow-x: hidden;
 }
 
 @media (prefers-reduced-motion: no-preference) {

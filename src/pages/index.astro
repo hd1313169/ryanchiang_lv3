@@ -1,66 +1,485 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CaseStudyCard from "../components/CaseStudyCard.astro";
+import heroIllustration1 from "../assets/illustrations/hero-1.png";
+import heroIllustration2 from "../assets/illustrations/hero-2.png";
 
 const caseStudies = (await getCollection("case-studies")).sort(
   (a, b) => a.data.order - b.data.order
 );
 
 const tagline = "UI/UX Designer，專注在把複雜的問題梳理清楚，做出有依據的設計決策。";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// Placeholder — swap in the real CakeResume / cloud-folder resume URL.
+const resumeHref = "https://www.cakeresume.com/";
 ---
 
 <BaseLayout title="Ryan Chiang" description={tagline}>
-  <section class="work-list reveal" aria-label="作品列表">
-    {
-      caseStudies.map((entry) => (
-        <CaseStudyCard
-          slug={entry.id}
-          order={entry.data.order}
-          title={entry.data.title}
-          subtitle={entry.data.subtitle}
-          summary={entry.data.summary}
-          tags={entry.data.tags}
-          cover={entry.data.cover}
-          coverDark={entry.data.coverDark}
+  <section class="hero reveal" aria-label="自我介紹">
+    <div class="hero-illustration">
+      <div class="hero-illustration-frame">
+        <Image src={heroIllustration1} alt="" width={480} class="hero-illustration-img is-active" />
+        <Image
+          src={heroIllustration2}
+          alt=""
+          width={480}
+          class="hero-illustration-img hero-illustration-img--overlay"
         />
-      ))
-    }
+      </div>
+    </div>
+    <div class="hero-text">
+      <p class="hero-eyebrow">UI/UX Designer</p>
+      <h1 class="hero-title">Hi！我是 <span class="latin">Ryan</span></h1>
+      <p class="hero-headline">以邏輯思考拆解複雜問題，轉化成清晰直覺的介面設計。</p>
+      <div class="hero-body">
+        <p>
+          4年 Web、SAAS使用者體驗與介面設計的實務經驗，
+          擅長將複雜需求轉化為可落地的產品與系統介面。經歷橫跨整合行銷、證券業、空間租借服務、室內設計...等客製化系統專案。負責建立使用行為、系統邏輯與技術限制三者之間的橋樑，並轉化成清晰直覺的使用體驗設計。
+        </p>
+        <p>
+          目前專注於 AI 協作設計流程、大型資料與複雜產品的體驗設計。持續研究新技術加速驗證與迭代的過程，讓設計職能成為產品推進的核心。
+        </p>
+      </div>
+      <div class="hero-actions">
+        <a class="hero-btn hero-btn--primary" href={`${base}/about`}>關於我</a>
+        <a class="hero-btn hero-btn--secondary" href={resumeHref} target="_blank" rel="noopener noreferrer">
+          履歷
+          <svg class="hero-btn-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true">
+            <path
+              d="M4.5 11.5l7-7M5.5 4.5h6v6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="work-section">
+    <div class="work-heading">
+      <span class="work-icon" aria-hidden="true"></span>
+      <h2>作品實績</h2>
+      <span class="work-rule" aria-hidden="true"></span>
+    </div>
+
+    <div class="work-list" aria-label="作品列表">
+      {
+        caseStudies.map((entry) => (
+          <div class="work-card reveal">
+            <CaseStudyCard
+              slug={entry.id}
+              title={entry.data.title}
+              summary={entry.data.summary}
+              tags={entry.data.tags}
+              cover={entry.data.cover}
+            />
+          </div>
+        ))
+      }
+    </div>
   </section>
 </BaseLayout>
 
+<script>
+  const wrap = document.querySelector(".hero-illustration");
+
+  if (wrap) {
+    const imgs = Array.from(wrap.querySelectorAll(".hero-illustration-img"));
+    let autoIndex = 0;
+    let hovering = false;
+    let intervalId: number | undefined;
+
+    const render = () => {
+      const activeIndex = hovering ? 1 : autoIndex;
+      imgs.forEach((img, i) => img.classList.toggle("is-active", i === activeIndex));
+    };
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const start = () => {
+      if (reduceMotion || intervalId !== undefined) return;
+      intervalId = window.setInterval(() => {
+        autoIndex = autoIndex === 0 ? 1 : 0;
+        if (!hovering) render();
+      }, 6000);
+    };
+
+    const stop = () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+        intervalId = undefined;
+      }
+    };
+
+    render();
+    start();
+
+    wrap.addEventListener("mouseenter", () => {
+      hovering = true;
+      render();
+    });
+
+    wrap.addEventListener("mouseleave", () => {
+      hovering = false;
+      render();
+    });
+
+    // Stop the loop while the tab isn't visible instead of letting it
+    // accumulate timers in the background.
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+  }
+</script>
+
 <style>
-  .work-list {
-    container-type: inline-size;
-    container-name: work-list;
+  .hero {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    /* Plain, non-bleeding whitespace on both sides — the border only spans
-       the list itself, not the gaps around it. margin-top is tuned so the
-       border lines up with the sidebar wordmark (see Sidebar.astro). */
-    margin-top: var(--space-3);
-    margin-bottom: var(--space-7);
-    border: 1px solid var(--color-border);
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 80px;
+    margin-top: clamp(1.5rem, 6vw, 4.5rem);
+    margin-bottom: calc(var(--space-7) + var(--space-4));
   }
 
-  @media (max-width: 1200px) {
-    .work-list {
-      margin-top: var(--space-4);
-      margin-bottom: var(--space-6);
+  /* Enters as one block (image + text together), bottom-to-top. */
+  .hero.reveal {
+    transform: translateY(2rem);
+    transition:
+      opacity 600ms ease-in-out,
+      transform 600ms ease-in-out;
+  }
+
+  .hero.reveal.is-visible {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero.reveal {
+      transform: none;
+      transition: none;
     }
   }
 
-  /* Beyond this width, BaseLayout collapses the sidebar and main into a
-     shared grid cell (the sidebar overlays main rather than sitting in its
-     own column) — see BaseLayout.astro's matching breakpoint. A full-width
-     work-list would then render underneath the overlaid sidebar, so cap and
-     center it again here, same as before it went full-bleed. */
-  @media (min-width: 99em) {
+  .hero-illustration {
+    flex: none;
+    width: min(60%, 20rem);
+  }
+
+  /* Sized by the base illustration (normal flow, like a single <img> would
+     be); the overlay illustration is absolutely positioned on top of it so
+     both breakpoints below don't need separate overlay sizing rules. */
+  .hero-illustration-frame {
+    position: relative;
+    width: 100%;
+  }
+
+  .hero-illustration :global(img) {
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+  }
+
+  .hero-illustration :global(img.is-active) {
+    opacity: 1;
+  }
+
+  /* Crossfades over the base illustration (auto-rotation + hover state —
+     see the script below). */
+  .hero-illustration :global(.hero-illustration-img--overlay) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-illustration :global(img) {
+      transition: none;
+    }
+  }
+
+  .hero-text {
+    text-align: center;
+    color: #3e3e3e;
+  }
+
+  .hero-text .latin {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-sm);
+    color: #1e1e1e;
+    margin-bottom: var(--space-1);
+  }
+
+  .hero-title {
+    /* Floor (2rem/32px) stays comfortably above .hero-headline's fixed
+       27px at every viewport — the old clamp(1.75rem, 3vw, 2.75rem) could
+       shrink below the headline's size on narrower screens. */
+    font-size: clamp(2rem, 4vw, 2.625rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #1e1e1e;
+    margin-bottom: var(--space-3);
+  }
+
+  .hero-headline {
+    /* display: inline (rather than block) so the highlight background
+       below wraps tightly around each line of text individually — a
+       highlighter-marker effect — instead of spanning the full block width. */
+    display: inline;
+    color: var(--color-text);
+    background-image: linear-gradient(#feffbf, #feffbf);
+    background-repeat: no-repeat;
+    /* Starts at 0 width and grows in on entrance (see .reveal.is-visible
+       below) for a hand-drawn highlighter-sweep effect. */
+    background-size: 0% 66%;
+    background-position: 0 100%;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    /* Delay covers the .hero block's slide-in (600ms) plus a 400ms pause,
+       so the highlighter only sweeps in once the block has fully arrived. */
+    transition: background-size 700ms ease-in-out 1000ms;
+    /* Scales continuously alongside .hero-title (clamp(2rem, 4vw, 2.625rem))
+       instead of a separate fixed size + single breakpoint, so the two
+       don't visibly drift out of proportion as the viewport narrows. */
+    font-size: clamp(20px, 2.6vw, 27px);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .reveal.is-visible .hero-headline {
+    background-size: 100% 66%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-headline {
+      background-size: 100% 66%;
+      transition: none;
+    }
+  }
+
+  .hero-body {
+    margin: var(--space-2) auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: 42rem;
+  }
+
+  .hero-body p {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.85;
+  }
+
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+
+  .hero-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    width: 8rem;
+    height: 2.75rem;
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: var(--text-base);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: opacity 150ms ease;
+  }
+
+  .hero-btn:hover {
+    opacity: 0.85;
+  }
+
+  .hero-btn-icon {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .hero-btn--primary {
+    background: #1e1e1e;
+    color: #fefefe;
+  }
+
+  .hero-btn--secondary {
+    background: #e5e5e5;
+    color: #1e1e1e;
+  }
+
+  .work-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: clamp(1.5rem, 6vw, 4.5rem);
+  }
+
+  .work-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+  }
+
+  .work-icon::before,
+  .work-icon::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #3e3e3e;
+  }
+
+  .work-icon::before {
+    bottom: 0;
+    right: 0;
+  }
+
+  .work-icon::after {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #fefefe;
+    border: 1px solid #3e3e3e;
+  }
+
+  .work-heading h2 {
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .work-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .work-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 6vw, 4.5rem);
+    width: 100%;
+    margin-bottom: var(--space-7);
+  }
+
+  .work-card {
+    transform: translateY(2rem);
+    transition:
+      opacity 500ms ease-in-out,
+      transform 500ms ease-in-out;
+  }
+
+  .work-card.is-visible {
+    transform: translateY(0);
+  }
+
+  /* Cascades bottom-to-top, one card after another. */
+  .work-card:nth-child(1) {
+    transition-delay: 0ms;
+  }
+
+  .work-card:nth-child(2) {
+    transition-delay: 120ms;
+  }
+
+  .work-card:nth-child(3) {
+    transition-delay: 240ms;
+  }
+
+  .work-card:nth-child(4) {
+    transition-delay: 360ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* From 640px up, the hero switches from centered mobile stacking to
+     left-aligned — first still stacked (text above image), then as a
+     side-by-side grid once there's enough width (see the 62em query). */
+  @media (min-width: 40em) {
+    .hero {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .hero-illustration {
+      margin-inline: 0;
+    }
+
+    .hero-text {
+      text-align: left;
+    }
+
+    .hero-body {
+      margin-inline: 0;
+      max-width: none;
+    }
+
+    .hero-body p {
+      font-size: var(--text-base);
+    }
+
+    .hero-actions {
+      justify-content: flex-start;
+    }
+
     .work-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* 640–992px: text above image, both left-aligned (flex-direction stays
+     column-reverse from the mobile default — only alignment changes). */
+  @media (min-width: 40em) and (max-width: 61.9375em) {
+    .hero-illustration {
+      width: min(50%, 20rem);
+    }
+  }
+
+  /* ≥992px: side-by-side grid, image left / text right. */
+  @media (min-width: 62em) {
+    .hero {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .hero-illustration {
       width: auto;
-      max-width: var(--content-max-width);
-      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-illustration-frame {
+      width: 100%;
+      max-width: 16rem;
     }
   }
 </style>
