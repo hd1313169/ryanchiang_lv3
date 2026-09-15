@@ -302,6 +302,12 @@ const sections = [
     scroll-margin-top: var(--space-3);
   }
 
+  @media (min-width: 62em) {
+    .prose :global(h2) {
+      font-size: 28px;
+    }
+  }
+
   /* Same overlapping-squares mark as the homepage's "作品實績" heading
      (.work-icon there) — reproduced here with ::before/::after directly on
      the heading since Markdown output gives us no wrapping <span> to hang
