@@ -6,6 +6,7 @@ import CaseStudyCard from "../components/CaseStudyCard.astro";
 import heroIllustration1 from "../assets/illustrations/hero-1.png";
 import heroIllustration2 from "../assets/illustrations/hero-2.png";
 import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
+import worktimeToolCover from "../assets/photos/cover-worktime-tool.png";
 
 const caseStudies = (await getCollection("case-studies")).sort(
   (a, b) => a.data.order - b.data.order
@@ -19,6 +20,14 @@ const sideProjects = [
     href: "https://honey-agate-c33.notion.site/5904b56cf7778266860b012c8da88402",
     cover: notionWorkflowCover,
     tags: ["Notion", "自動化流程"],
+  },
+  {
+    title: "複合收入薪資管理工具",
+    summary:
+      "為非月薪工作者或小型工作室設計的薪資計算工具，可自訂時薪、計件等多種計薪項目，即時計算每日、每週與每月薪資總計，支援 CSV 匯出，以 AI 協作開發完成。",
+    href: "https://hd1313169.github.io/partime/",
+    cover: worktimeToolCover,
+    tags: ["AI 開發", "Web App"],
   },
 ];
 
@@ -113,8 +122,9 @@ const resumeHref = "https://www.cake.me/ryanchiang_13";
                   class="side-project-cover"
                   src={project.cover}
                   alt=""
-                  width={800}
-                  height={450}
+                  width={1184}
+                  height={888}
+                  quality={90}
                 />
               </span>
               <span class="side-project-body">
@@ -519,7 +529,7 @@ const resumeHref = "https://www.cake.me/ryanchiang_13";
   .side-projects {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(1.5rem, 4vw, 2rem);
+    gap: clamp(2rem, 6vw, 4.5rem);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -567,7 +577,7 @@ const resumeHref = "https://www.cake.me/ryanchiang_13";
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
     transition: transform 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
   }
