@@ -7,6 +7,8 @@ import skillIcon02 from "../assets/icons/skill-02.png";
 import skillIcon03 from "../assets/icons/skill-03.png";
 import skillIcon04 from "../assets/icons/skill-04.png";
 import aiWorkflow from "../assets/illustrations/ai-workflow.png";
+import communityOnline from "../assets/photos/about-community-online.png";
+import communityOffline from "../assets/photos/about-community-offline.png";
 
 const facts = [
   { label: "Specialty", value: "SaaS、CRM、Web Design" },
@@ -79,6 +81,11 @@ const experience = [
       "協助規劃親子體驗課程的活動場佈與場復流程，平均準備時間縮短 20 分鐘",
     ],
   },
+];
+
+const communityCards = [
+  { image: communityOnline, caption: "線上工作坊 & Side Project" },
+  { image: communityOffline, caption: "線下講座 & 社群活動" },
 ];
 
 ---
@@ -214,6 +221,32 @@ const experience = [
       </ul>
     </section>
 
+    <div class="community-band-clip">
+      <section class="community-band">
+        <div class="community-band-inner">
+          <div class="section-heading reveal">
+            <span class="section-icon" aria-hidden="true"></span>
+            <h2>積極參與設計社群與課程</h2>
+            <span class="section-rule" aria-hidden="true"></span>
+          </div>
+          <ul class="community-cards">
+            <span class="community-glow community-glow-left" aria-hidden="true"></span>
+            <span class="community-glow community-glow-right" aria-hidden="true"></span>
+            {
+              communityCards.map((card) => (
+                <li class="community-card reveal">
+                  <div class="community-card-image">
+                    <Image src={card.image} alt="" width={1200} quality={90} />
+                  </div>
+                  <p class="community-card-caption">{card.caption}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+    </div>
+
   </article>
 
   <Fragment slot="overlay">
@@ -305,7 +338,10 @@ const experience = [
 <style>
   .about {
     width: 100%;
-    padding-block: clamp(1.5rem, 4vw, 2rem) clamp(3rem, 6vw, 4.5rem);
+    /* No bottom padding: the page always ends in .community-band-clip now,
+       which provides its own 160px padding-bottom as the page's closing
+       whitespace — an extra value here would just stack on top of it. */
+    padding-block: clamp(1.5rem, 4vw, 2rem) 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
@@ -921,6 +957,159 @@ const experience = [
     border-radius: 2px;
   }
 
+  /* Wraps only .community-band, extended 560px past its own top edge (the
+     margin-top/padding-top pair cancel out, so the band's visible position
+     is unchanged) so the glow blobs inside can bleed upward into 工作經歷
+     without being clipped. The wrapper's own bottom edge is NOT extended,
+     so nothing escapes downward past it into the Footer below. z-index:-1
+     drops the whole subtree (band + glows) behind 工作經歷's static content
+     in that overlap region, instead of painting over its text. */
+  .community-band-clip {
+    position: relative;
+    z-index: -1;
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-top: -560px;
+    padding-top: 560px;
+  }
+
+  /* Footer.astro's own margin-top is meant for pages whose last section has
+     no bottom padding of its own. This section already ends in 160px of
+     padding-bottom, so the two would otherwise stack into a much bigger gap
+     than intended — zero it out here, scoped to the About page only.
+     !important is needed to beat Footer's own scoped rule, whose
+     Astro-injected [data-astro-cid-*] attribute selector otherwise outranks
+     an unscoped :global() override of the same specificity shape. */
+  :global(footer.footer) {
+    margin-top: 0 !important;
+  }
+
+  .community-band {
+    padding-block: 160px;
+    padding-inline: var(--page-padding-inline);
+  }
+
+  .community-band-inner {
+    max-width: calc(90rem - (var(--page-padding-inline) * 2));
+    margin-inline: auto;
+  }
+
+  /* .community-cards is a positioned element (see below), which by default
+     paints above static in-flow siblings regardless of DOM order — without
+     this, the glow it carries would render on top of this heading instead
+     of behind it. Explicit z-index above .community-cards' own (0) fixes
+     the stacking order between these two siblings. */
+  .community-band-inner .section-heading {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Decorative ambient glows, not part of the design system's usual
+     grayscale palette (see tokens.css) — a deliberate, scoped exception
+     for this closing section. Anchored to the cards row itself (vertically
+     centered on it, sitting just outside its left/right edge) rather than
+     the section's corners. */
+  .community-cards {
+    position: relative;
+    z-index: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .community-glow {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    width: 600px;
+    height: 600px;
+    max-width: 140vw;
+    max-height: 140vw;
+    border-radius: 50%;
+    filter: blur(600px);
+    pointer-events: none;
+  }
+
+  .community-glow-left {
+    left: 0;
+    transform: translate(-50%, -50%);
+    background: #fff4e4;
+  }
+
+  .community-glow-right {
+    right: 0;
+    transform: translate(50%, -50%);
+    background: #fffde5;
+  }
+
+  .community-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding-block: clamp(1.5rem, 6vw, 2.5rem);
+  }
+
+  /* The two cards enter one after another rather than together — same
+     bottom-to-top entrance as .experience-item.reveal, staggered like
+     .skill:nth-child below. Both share one on-screen moment (they're
+     observed as soon as either is visible per BaseLayout's IntersectionObserver),
+     so the delay is what creates the sequential feel. */
+  .community-card.reveal {
+    transform: translateY(2rem);
+    transition:
+      opacity 500ms ease-in-out,
+      transform 500ms ease-in-out;
+  }
+
+  .community-card.reveal.is-visible {
+    transform: translateY(0);
+  }
+
+  /* nth-of-type, not nth-child: the two glow <span>s are earlier siblings
+     within .community-cards, which would throw off a plain nth-child count. */
+  .community-card:nth-of-type(1) {
+    transition-delay: 0ms;
+  }
+
+  .community-card:nth-of-type(2) {
+    transition-delay: 180ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .community-card.reveal {
+      transform: none;
+      transition: none;
+    }
+  }
+
+  .community-card-image {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .community-card-image :global(img) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 468px;
+  }
+
+  .community-card-caption {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    color: #1e1e1e;
+  }
+
   @media (min-width: 40em) {
     .skills-band {
       position: sticky;
@@ -987,6 +1176,15 @@ const experience = [
 
     .photo {
       width: min(100%, 18rem);
+    }
+
+    .community-cards {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0 80px;
+    }
+
+    .community-card {
+      gap: 24px;
     }
   }
 </style>
