@@ -9,7 +9,7 @@ import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
 import worktimeToolCover from "../assets/photos/cover-worktime-tool.png";
 
 const caseStudies = (await getCollection("case-studies")).sort(
-  (a, b) => a.data.order - b.data.order
+  (a, b) => Number(b.id) - Number(a.id)
 );
 
 const sideProjects = [
@@ -713,6 +713,10 @@ const resumeHref = "https://www.cake.me/ryanchiang_13";
 
   .work-card:nth-child(4) {
     transition-delay: 360ms;
+  }
+
+  .work-card:nth-child(5) {
+    transition-delay: 480ms;
   }
 
   @media (prefers-reduced-motion: reduce) {
