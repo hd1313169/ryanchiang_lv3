@@ -1131,11 +1131,6 @@ const communityCards = [
       flex-shrink: 0;
     }
 
-    .job-meta {
-      flex-wrap: nowrap;
-      white-space: nowrap;
-    }
-
     .run-in,
     .ai-summary {
       font-size: var(--text-base);
@@ -1154,6 +1149,14 @@ const communityCards = [
   }
 
   @media (min-width: 62em) {
+    /* org + period stay on one line only when the 35% meta column is wide
+       enough for them; between 40em and 62em they wrap instead of running
+       into the content column. */
+    .job-meta {
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
     .skills {
       grid-template-columns: repeat(4, 1fr);
       gap: 0;

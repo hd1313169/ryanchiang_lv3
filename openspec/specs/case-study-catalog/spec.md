@@ -15,6 +15,7 @@ Each case study SHALL have a two-digit number that is unique across the catalog,
 - **WHEN** a sixth case study is added later
 - **THEN** it takes number 06 and no existing case study needs to change its number
 
+---
 ### Requirement: Case study page address is its number
 The system SHALL serve each case study at `/work/<NN>`, where `<NN>` is its two-digit number, for 01 through 05. No redirects from previous number assignments are required.
 
@@ -22,6 +23,7 @@ The system SHALL serve each case study at `/work/<NN>`, where `<NN>` is its two-
 - **WHEN** a visitor navigates to `/work/01`
 - **THEN** the Echorise case study renders, and `/work/05` renders the 規格驅動 Prototype case study
 
+---
 ### Requirement: Homepage lists case studies newest first
 The homepage work list SHALL show every case study in descending number order (05, 04, 03, 02, 01), and ordering SHALL be derived from the case number alone rather than from a separately maintained order value.
 
@@ -33,6 +35,7 @@ The homepage work list SHALL show every case study in descending number order (0
 - **WHEN** the work list has five cards in the two-column layout
 - **THEN** the last row contains one card and the remaining cell may stay empty, with every card still revealing on scroll
 
+---
 ### Requirement: Next-case link follows the homepage order
 Each case study page SHALL link to "下一篇案例", which is the case study with the next lower number, and the case study numbered 01 SHALL link back to 05.
 
@@ -44,6 +47,7 @@ Each case study page SHALL link to "下一篇案例", which is the case study wi
 - **WHEN** a visitor is on case 01 and follows "下一篇案例"
 - **THEN** they land on case 05
 
+---
 ### Requirement: Cover image is optional
 A case study SHALL be publishable without a cover image. When no cover is supplied, its homepage card SHALL render the site's gray placeholder block in the cover position; when a cover is later supplied, the card SHALL show it without other changes to the page.
 
@@ -51,6 +55,7 @@ A case study SHALL be publishable without a cover image. When no cover is suppli
 - **WHEN** the homepage renders case 05 and no cover image has been provided
 - **THEN** its card shows the gray placeholder block with the same title, tags and summary layout as the other cards
 
+---
 ### Requirement: Case 05 follows the established case study format
 Case 05 SHALL provide the same metadata as cases 01–04 (title, subtitle, summary, three tags, one-line intro, 主要職責, 團隊成員, 專案時程, 使用工具) and SHALL render the sections 專案背景, 設計挑戰, 設計決策, 設計成果 and 心得與反思 in that order, using the copy from `content/case05.md`. Image slots that have no image yet SHALL NOT be rendered, annotated, or left as empty blocks, and the source's closing image disclaimer SHALL NOT appear twice because the page template already renders it.
 
@@ -62,9 +67,84 @@ Case 05 SHALL provide the same metadata as cases 01–04 (title, subtitle, summa
 - **WHEN** the rendered HTML of `/work/05` is inspected
 - **THEN** it contains no image placeholder, no HTML comment describing a missing image, and the disclaimer sentence appears exactly once
 
+---
 ### Requirement: Case assets are addressed by the same number
 Each case study's images, videos and cover SHALL be stored and referenced under that case's current number, so a case's assets and its page can be matched by number alone.
 
 #### Scenario: Echorise assets after renumbering
 - **WHEN** case 01 (Echorise) renders
 - **THEN** all of its in-content images load from `/images/case-01/` and its cover comes from `cover-01`, with no image broken or showing another case's artwork
+
+---
+### Requirement: Project info block is a single column on mobile
+Below 40em, the case study page's project info block (主要職責, 團隊成員, 專案時程, 使用工具) SHALL render as a single column with one row per item — the item's icon and label on the left and its value on the right — instead of the two-column grid used at 40em and above. The block's inner padding SHALL follow the mobile card-padding rule of the `site-responsive-layout` capability.
+
+#### Scenario: Mobile project info is one item per row
+- **WHEN** a case study page is opened at a 375px-wide viewport
+- **THEN** the four project info items appear stacked one per row, in their existing order, none of them sharing a row with another
+
+#### Scenario: A long value wraps within its own row
+- **WHEN** an item's value is longer than the space to the right of its label at 375px
+- **THEN** the value wraps onto additional lines within that item's row and does not overlap or push into the next item
+
+#### Scenario: Desktop project info is unchanged
+- **WHEN** a case study page is opened at 40em or wider
+- **THEN** the project info block keeps its two-column layout
+
+
+<!-- @trace
+source: unify-mobile-layout
+updated: 2026-09-20
+code:
+  - src/pages/index.astro
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+  - .spectra.yaml
+  - src/pages/about.astro
+  - src/pages/work/[slug].astro
+-->
+
+---
+### Requirement: Prev/next pager stacks on mobile
+Below 40em, the pager at the end of a case study page SHALL stack its two links vertically at full width, with 下一篇案例 above 上一篇案例, so that long case titles are not compressed into half-width columns. At 40em and above the two links SHALL remain side by side, with 上一篇案例 on the left and 下一篇案例 on the right.
+
+#### Scenario: Mobile pager is stacked with next first
+- **WHEN** a case study page is scrolled to its end at 375px wide
+- **THEN** 下一篇案例 and its title appear on the first row and 上一篇案例 and its title on the row beneath, each spanning the content width
+
+#### Scenario: Desktop pager is unchanged
+- **WHEN** the same page is viewed at 40em or wider
+- **THEN** 上一篇案例 is on the left and 下一篇案例 is on the right on one row
+
+
+<!-- @trace
+source: unify-mobile-layout
+updated: 2026-09-20
+code:
+  - src/pages/index.astro
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+  - .spectra.yaml
+  - src/pages/about.astro
+  - src/pages/work/[slug].astro
+-->
+
+---
+### Requirement: Stacked media blocks use a mobile gap
+When the case study page's side-by-side media blocks (paired dark-canvas images, and text-beside-image blocks) stack into one column below 40em, the space between the stacked items SHALL use the reduced mobile spacing rather than the desktop side-by-side gap.
+
+#### Scenario: Paired phone mockups stacked on mobile
+- **WHEN** a case study containing two paired dark-canvas images is viewed at 375px
+- **THEN** the two images are stacked and the vertical space between them is no more than 32px
+
+<!-- @trace
+source: unify-mobile-layout
+updated: 2026-09-20
+code:
+  - src/pages/index.astro
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+  - .spectra.yaml
+  - src/pages/about.astro
+  - src/pages/work/[slug].astro
+-->

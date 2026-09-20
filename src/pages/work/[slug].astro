@@ -241,7 +241,7 @@ const sections = [
     column-gap: var(--space-3);
     row-gap: var(--space-4);
     margin: var(--space-3) 0 0;
-    padding: 40px;
+    padding: var(--card-padding);
     background: #fafafa;
     border-radius: 12px;
   }
@@ -278,6 +278,30 @@ const sections = [
     margin: 0;
     font-size: 16px;
     font-weight: 400;
+  }
+
+  /* Mobile: one row per item (icon + label in a fixed left column, value beside it) instead of the
+     2×2 grid, which left each column about 110px wide at phone widths. */
+  @media (max-width: 39.9375em) {
+    .meta {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-2);
+    }
+
+    .meta > div {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--space-2);
+    }
+
+    .meta dt {
+      flex: 0 0 6rem;
+    }
+
+    .meta dd {
+      flex: 1 1 0;
+      min-width: 0;
+    }
   }
 
   /* Floating chapter index. */
@@ -482,8 +506,8 @@ const sections = [
   }
 
   /* Callout (關鍵洞察 / 業主回饋): dark card with light text, left-aligned
-     text inside a horizontally centered card; capped at 60% of the
-     container on desktop. */
+     text inside a horizontally centered card; full width up to 62em,
+     capped at 60% of the container above that. */
   .prose :global(blockquote) {
     margin: var(--space-5) auto var(--space-4);
     padding: var(--space-3) var(--space-4);
@@ -491,6 +515,12 @@ const sections = [
     background: #1e1e1e;
     color: #ffffff;
     text-align: left;
+  }
+
+  @media (max-width: 39.9375em) {
+    .prose :global(blockquote) {
+      padding: var(--space-3);
+    }
   }
 
   .prose :global(blockquote p) {
@@ -532,7 +562,8 @@ const sections = [
     mask: var(--callout-icon) center / contain no-repeat;
   }
 
-  @media (min-width: 48em) {
+  /* Full column width below 62em; only the wide desktop layout caps it. */
+  @media (min-width: 62em) {
     .prose :global(blockquote) {
       max-width: 60%;
     }
@@ -693,9 +724,24 @@ const sections = [
     line-height: 1;
   }
 
-  @media (max-width: 40em) {
-    .prose :global(.workflow-cards),
-    .prose :global(.workflow-cards--row),
+  /* Tablet and below (< 62em): the three-across variants (with or without
+     arrows) stack; the two-up variant keeps its columns until phone width. */
+  @media (max-width: 61.9375em) {
+    .prose :global(.workflow-cards:not(.workflow-cards--two)) {
+      grid-template-columns: 1fr;
+    }
+
+    .prose :global(.workflow-card) {
+      min-height: 0;
+    }
+
+    .prose :global(.workflow-arrow) {
+      padding: var(--space-1) 0;
+      transform: rotate(90deg);
+    }
+  }
+
+  @media (max-width: 39.9375em) {
     .prose :global(.workflow-cards--two) {
       grid-template-columns: 1fr;
     }
@@ -835,7 +881,7 @@ const sections = [
     }
   }
 
-  @media (max-width: 40em) {
+  @media (max-width: 39.9375em) {
     .prose :global(.contrast-pair) {
       grid-template-columns: 1fr;
     }
@@ -887,7 +933,9 @@ const sections = [
     padding: 0.25rem var(--space-3) var(--space-3);
   }
 
-  @media (max-width: 40em) {
+  /* Tablet and below (< 62em): three cards across leave ~140px of text per
+     card at 768px, so they stack. */
+  @media (max-width: 61.9375em) {
     .prose :global(table:has(tbody tr:only-of-type)) {
       grid-template-columns: 1fr;
       row-gap: 0;
@@ -1045,7 +1093,7 @@ const sections = [
     border-bottom: 0;
   }
 
-  @media (max-width: 40em) {
+  @media (max-width: 39.9375em) {
     .prose :global(.gantt-head) {
       grid-template-columns: 1fr;
     }
@@ -1090,7 +1138,7 @@ const sections = [
     color: var(--color-text-secondary);
   }
 
-  @media (max-width: 40em) {
+  @media (max-width: 39.9375em) {
     .prose :global(.image-pair) {
       flex-direction: column;
     }
@@ -1131,10 +1179,12 @@ const sections = [
     color: #ffffff;
   }
 
-  @media (max-width: 40em) {
+  @media (max-width: 39.9375em) {
     .prose :global(.image-pair-dark) {
       flex-direction: column;
       align-items: center;
+      gap: var(--space-3);
+      padding-inline: var(--card-padding);
     }
 
     .prose :global(.image-pair-dark figure) {
@@ -1275,10 +1325,11 @@ const sections = [
     }
   }
 
-  @media (max-width: 40em) {
+  @media (max-width: 39.9375em) {
     .prose :global(.split-media) {
       flex-direction: column;
       align-items: stretch;
+      gap: var(--space-3);
     }
 
     .prose :global(.split-media img.split-image--narrow),
@@ -1331,6 +1382,24 @@ const sections = [
     white-space: nowrap;
   }
 
+  /* Mobile: a 4-column grid can't fit a phone column (≈470px of content in
+     ≈327px), and left as `display: table` it widens the whole page. As a
+     block it scrolls horizontally on its own instead, with tighter cells. */
+  @media (max-width: 39.9375em) {
+    .prose :global(table:not(:has(tbody tr:only-of-type))) {
+      display: block;
+    }
+
+    .prose :global(table:not(:has(tbody tr:only-of-type)) th),
+    .prose :global(table:not(:has(tbody tr:only-of-type)) td) {
+      padding: var(--space-1) var(--space-2);
+    }
+
+    .prose :global(table:not(:has(tbody tr:only-of-type)) td) {
+      min-width: 7.5rem;
+    }
+  }
+
   /* Disclaimer and prev/next pager follow the same centered 960px column as
      the header and .prose. */
   .disclaimer {
@@ -1363,6 +1432,24 @@ const sections = [
     align-items: flex-end;
     text-align: right;
     margin-left: auto;
+  }
+
+  /* Mobile: stack the two links full width, 下一篇 first, so long case titles
+     aren't squeezed into half-width columns. Visual order only — DOM order
+     stays prev → next. */
+  @media (max-width: 39.9375em) {
+    .case-pager {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-3);
+    }
+
+    .pager-link--next {
+      order: -1;
+      align-items: flex-start;
+      text-align: left;
+      margin-left: 0;
+    }
   }
 
   .pager-link:hover .pager-title {

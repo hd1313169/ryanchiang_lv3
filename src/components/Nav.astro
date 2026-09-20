@@ -16,7 +16,19 @@ const resumeHref = "https://drive.google.com/file/d/1WFdIZ3OhQ0Omj0V8jWoCspvMuQJ
       <span class="brand-name">Ryan Chiang</span>
     </a>
 
-    <ul>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      aria-label="開啟選單"
+    >
+      <span class="menu-bar" aria-hidden="true"></span>
+      <span class="menu-bar" aria-hidden="true"></span>
+      <span class="menu-bar" aria-hidden="true"></span>
+    </button>
+
+    <ul id="nav-menu">
       {
         items.map((item) => (
           <li>
@@ -33,6 +45,39 @@ const resumeHref = "https://drive.google.com/file/d/1WFdIZ3OhQ0Omj0V8jWoCspvMuQJ
   </div>
 </nav>
 
+<script>
+  const nav = document.querySelector<HTMLElement>(".nav");
+  const toggle = nav?.querySelector<HTMLButtonElement>(".menu-toggle");
+  const menu = nav?.querySelector<HTMLElement>("#nav-menu");
+
+  if (nav && toggle && menu) {
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "關閉選單" : "開啟選單");
+    };
+
+    toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+
+    // Following a link (incl. the in-page anchor case) or pressing Escape closes the panel.
+    menu.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.classList.contains("is-open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Widening past the mobile breakpoint shows the inline links again, so
+    // reset the open state instead of leaving it stuck.
+    window.matchMedia("(min-width: 40em)").addEventListener("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>
+
 <style>
   .nav {
     position: fixed;
@@ -40,10 +85,21 @@ const resumeHref = "https://drive.google.com/file/d/1WFdIZ3OhQ0Omj0V8jWoCspvMuQJ
     inset-inline: 0;
     z-index: 10;
     height: var(--nav-height);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* The translucent blurred surface lives on a pseudo-element, not on .nav:
+     an element with backdrop-filter becomes a "backdrop root", so the mobile
+     dropdown panel nested inside it would only ever blur the nav's own
+     (empty) content instead of the page behind it. */
+  .nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: color-mix(in srgb, var(--color-bg), transparent 20%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-border);
   }
 
   .nav-inner {
@@ -108,9 +164,96 @@ const resumeHref = "https://drive.google.com/file/d/1WFdIZ3OhQ0Omj0V8jWoCspvMuQJ
     color: var(--color-text);
   }
 
-  @media (max-width: 30em) {
+  .menu-toggle {
+    display: none;
+  }
+
+  /* Mobile (< 40em): links collapse into a dropdown panel under the bar. The
+     panel is absolutely positioned (not fixed) because .nav's backdrop-filter
+     makes it the containing block for fixed descendants. */
+  @media (max-width: 39.9375em) {
+    .menu-toggle {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      margin-right: -10px;
+      padding: 0 10px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      color: var(--color-text);
+    }
+
+    .menu-bar {
+      display: block;
+      height: 2px;
+      background: currentColor;
+      transition: transform 200ms ease, opacity 200ms ease;
+    }
+
+    .nav.is-open .menu-bar:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav.is-open .menu-bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav.is-open .menu-bar:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* The panel starts at the very top of the nav and pads itself down past
+       the bar, so bar + panel are ONE element with ONE backdrop blur while
+       open. Two separate blurred surfaces would each sample only their own
+       box, leaving a visible brightness step where they meet. */
+    .brand,
+    .menu-toggle {
+      position: relative;
+      z-index: 1;
+    }
+
     ul {
-      gap: var(--space-3);
+      display: none;
+      position: absolute;
+      top: 0;
+      inset-inline: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: calc(var(--nav-height) + var(--space-1)) var(--page-padding-inline) var(--space-2);
+      background: color-mix(in srgb, var(--color-bg), transparent 20%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav.is-open ul {
+      display: flex;
+    }
+
+    /* Open: the panel's surface covers the bar too, so the bar's own surface
+       and hairline are hidden (no dividers or border anywhere). */
+    .nav.is-open {
+      border-bottom-color: transparent;
+    }
+
+    .nav.is-open::before {
+      display: none;
+    }
+
+    ul a {
+      display: block;
+      padding-block: var(--space-2);
+      background-image: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-bar {
+      transition: none;
     }
   }
 </style>

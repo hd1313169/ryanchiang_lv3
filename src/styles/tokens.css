@@ -36,15 +36,28 @@
   /* Layout */
   --content-max-width: min(90%, 60rem);
   --page-padding-inline: var(--space-3);
+  --card-padding: 20px; /* inner padding of boxed blocks — 40px from 40em up */
   --nav-height: 4.5rem;
 
   /* Motion */
   --transition-hover: 180ms ease;
 }
 
-@media (min-width: 48em) {
+/* Mobile (< 40em): the three largest spacing steps shrink so gaps between
+   sections, headings and stacked blocks don't stay at desktop size. Steps 1–4
+   are unchanged. 40em is the site's single mobile/desktop boundary. */
+@media (max-width: 39.9375em) {
+  :root {
+    --space-5: 2rem;
+    --space-6: 3rem;
+    --space-7: 4rem;
+  }
+}
+
+@media (min-width: 40em) {
   :root {
     --page-padding-inline: var(--space-5);
+    --card-padding: 40px;
   }
 }
 

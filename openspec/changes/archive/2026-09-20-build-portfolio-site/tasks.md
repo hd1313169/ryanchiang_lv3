@@ -1,7 +1,7 @@
 ## 1. Project Setup
 
 - [x] 1.1 Scaffold Astro project in the repo root (`npm create astro@latest`), commit initial structure
-- [ ] 1.2 Initialize git, create private GitHub repo, push initial commit
+- [x] 1.2 Initialize git, create private GitHub repo, push initial commit
 - [x] 1.3 Add `@fontsource/archivo` and `@fontsource/noto-sans-tc`, wire into base layout
 - [x] 1.4 Create `src/styles/tokens.css` with the five grayscale color custom properties and shared spacing/font-stack variables
 - [x] 1.5 Build `BaseLayout.astro` (fonts, tokens, `<head>` meta including shared OG image tag)
@@ -39,10 +39,10 @@
 
 ## 7. Deployment
 
-- [ ] 7.1 Create Cloudflare Pages project connected to the private GitHub repo (build command `npm run build`, output `dist`)
-- [ ] 7.2 Verify the deployed site on the `*.pages.dev` preview URL against all specs
-- [ ] 7.3 Add `ryan-chiang.com` as a custom domain on the Cloudflare Pages project and point DNS at it
-- [ ] 7.4 Confirm the old site is fully replaced at `ryan-chiang.com` and the new deployment is live
+- [x] 7.1 Create Cloudflare Pages project connected to the private GitHub repo (build command `npm run build`, output `dist`)
+- [x] 7.2 Verify the deployed site on the `*.pages.dev` preview URL against all specs
+- [x] 7.3 Add `ryan-chiang.com` as a custom domain on the Cloudflare Pages project and point DNS at it
+- [x] 7.4 Confirm the old site is fully replaced at `ryan-chiang.com` and the new deployment is live
 
 ## 8. Verification
 

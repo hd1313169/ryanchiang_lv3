@@ -15,6 +15,7 @@ The About page SHALL display an "AI 應用實踐高效設計" section immediatel
 - **WHEN** the "AI 應用實踐高效設計" section is visible
 - **THEN** its heading, summary paragraph, and flowchart image are shown against a black, full-bleed background
 
+---
 ### Requirement: Sticky cover-scroll transition
 On wider viewports, as a visitor scrolls from the skills section into the AI workflow section, the skills section SHALL remain pinned in place while the AI workflow section visually rises to fully cover it, before scrolling continues normally into the AI workflow section's own content. On narrow viewports, where the skills section's single-column content is taller than the viewport, this pin-and-cover transition SHALL be skipped so the skills section instead scrolls normally and all of its content remains reachable.
 
@@ -30,6 +31,7 @@ On wider viewports, as a visitor scrolls from the skills section into the AI wor
 - **WHEN** a visitor has JavaScript disabled and scrolls through the same region on a wide viewport
 - **THEN** the cover-scroll transition still occurs, since it relies only on CSS positioning
 
+---
 ### Requirement: Flowchart lightbox
 The flowchart image SHALL be expandable into a lightbox view on click/tap, allowing visitors to view it at a larger size against a dimmed backdrop, and SHALL be dismissible.
 
@@ -49,6 +51,7 @@ The flowchart image SHALL be expandable into a lightbox view on click/tap, allow
 - **WHEN** the lightbox is open on a touch device
 - **THEN** the visitor can use the browser's native pinch-to-zoom gesture to magnify the image, without any in-page zoom control
 
+---
 ### Requirement: Viewport-responsive section and card spacing
 Vertical spacing between and within About page sections — page-level section gaps, section top padding, full-bleed band padding, experience item padding, grid gaps for the skills and side-project lists, the gap between a section heading and the content below it (我擅長的事/工作經歷/個人專案 alike), the gap between the AI workflow section's heading/summary/flowchart image, and the internal spacing within a skill card (icon-to-title, title-to-description) — SHALL scale with viewport size rather than using a single fixed spacing value across all breakpoints. Spacing on narrow viewports SHALL be visibly reduced relative to the value used on wide viewports.
 
@@ -68,6 +71,7 @@ Vertical spacing between and within About page sections — page-level section g
 - **WHEN** the About page's section-to-section and band padding is viewed on a mobile-width viewport
 - **THEN** it is reduced from the desktop value but still reads as deliberate section separation, not a near-collapse down to the page's smallest spacing values
 
+---
 ### Requirement: Section heading outranks nested card/item titles
 Each section's `<h2>` heading SHALL render at a font size at least as large as any card or item title nested within that section, at every supported viewport width.
 
@@ -79,6 +83,7 @@ Each section's `<h2>` heading SHALL render at a font size at least as large as a
 - **WHEN** the "我擅長的事" section heading and a skill card's title are both rendered, at any viewport width
 - **THEN** the section heading's font size is greater than or equal to the skill card title's font size
 
+---
 ### Requirement: Intro heading scales with viewport
 The "我是 Ryan，UI/UX Designer" intro heading SHALL scale its font size down as the viewport narrows, rather than rendering at one fixed size on every viewport width.
 
@@ -86,6 +91,7 @@ The "我是 Ryan，UI/UX Designer" intro heading SHALL scale its font size down 
 - **WHEN** the intro heading is viewed on a mobile-width viewport
 - **THEN** its font size is smaller than when the same heading is viewed on a wide desktop viewport
 
+---
 ### Requirement: Mobile body copy size
 On mobile-width viewports, About page body copy (the intro/bio paragraphs and the AI workflow summary paragraph) SHALL render at 14px.
 
@@ -97,6 +103,7 @@ On mobile-width viewports, About page body copy (the intro/bio paragraphs and th
 - **WHEN** the AI workflow section's summary paragraph is viewed on a mobile-width viewport
 - **THEN** its font size is 14px
 
+---
 ### Requirement: Intro section side-by-side breakpoint
 The intro section (bio text and portrait) SHALL render side by side (bio text on the left, portrait on the right) at 992px viewport width and above, and SHALL only stack below 992px. When side by side, the portrait SHALL shrink proportionally with the available width rather than the layout switching to stacked early to accommodate a narrower viewport.
 
@@ -112,6 +119,7 @@ The intro section (bio text and portrait) SHALL render side by side (bio text on
 - **WHEN** the intro section is side by side and the viewport narrows toward 992px
 - **THEN** the portrait's rendered size decreases proportionally with the available space rather than the layout switching to stacked
 
+---
 ### Requirement: Stacked intro layout order and alignment
 When the intro section is stacked (below its side-by-side breakpoint), the portrait image SHALL render above the bio text, and the portrait image SHALL be horizontally centered.
 
@@ -123,6 +131,7 @@ When the intro section is stacked (below its side-by-side breakpoint), the portr
 - **WHEN** the intro section is stacked on a narrow viewport
 - **THEN** the portrait image is horizontally centered within its container
 
+---
 ### Requirement: Stacked intro portrait sizing and spacing
 When the intro section is stacked, the portrait image SHALL render smaller than its side-by-side (desktop) size, and the gap between the portrait and the bio text below it SHALL be shorter than the section-to-section spacing elsewhere on the page.
 
@@ -134,6 +143,7 @@ When the intro section is stacked, the portrait image SHALL render smaller than 
 - **WHEN** the intro section is stacked
 - **THEN** the vertical gap between the portrait and the bio text below it is visibly shorter than the page's section-level spacing
 
+---
 ### Requirement: Facts list wraps cleanly
 The facts list (Specialty, Experience, Email) SHALL render as either a single column (each fact on its own row) or a single row (all facts side by side), and SHALL NOT render as a partial wrap where some facts share a row and others do not.
 
@@ -149,6 +159,7 @@ The facts list (Specialty, Experience, Email) SHALL render as either a single co
 - **WHEN** the facts list is viewed on a mobile-width viewport
 - **THEN** the gap between facts is smaller than the gap rendered on a wide desktop viewport
 
+---
 ### Requirement: Skills grid intermediate 2x2 layout
 The skills grid (four skill cards) SHALL render as a single column below 576px viewport width, as a 2x2 grid between 576px and 992px viewport width, and as a single row of four columns at 992px viewport width and above.
 
@@ -164,6 +175,7 @@ The skills grid (four skill cards) SHALL render as a single column below 576px v
 - **WHEN** the skills grid is viewed at 992px viewport width or above
 - **THEN** the four skill cards render in a single row of four columns
 
+---
 ### Requirement: Skill icon proportion
 The skill card illustration icon SHALL maintain a size proportionate to its card at every skills-grid layout (single column, 2x2, and four-column row), and SHALL NOT shrink to a size that appears visually unbalanced against the card's title and description text.
 
@@ -171,6 +183,7 @@ The skill card illustration icon SHALL maintain a size proportionate to its card
 - **WHEN** the skills grid renders in its 2x2 layout
 - **THEN** each skill card's icon renders large enough to remain visually balanced against that card's title and description text
 
+---
 ### Requirement: Skill card spacing when stacked or 2x2
 When the skills grid renders as a single column or as a 2x2 grid, the vertical gap between skill cards SHALL be large enough that adjacent cards do not visually appear connected or touching.
 
@@ -182,6 +195,7 @@ When the skills grid renders as a single column or as a 2x2 grid, the vertical g
 - **WHEN** the skills grid renders as a 2x2 grid
 - **THEN** a visible gap separates the top row of cards from the bottom row, distinct from the spacing used between elements within a single card
 
+---
 ### Requirement: Community participation section
 The About page SHALL display a "積極參與設計社群與課程" section as the final section of the page, immediately after 工作經歷, using the page's existing section-heading treatment (icon + `<h2>` + rule). The section SHALL have 160px of padding above its content and 160px of padding below it, at every supported viewport width. No additional gap SHALL be added between this section and the Footer beyond that 160px of padding — the Footer SHALL sit immediately after it.
 
@@ -189,6 +203,7 @@ The About page SHALL display a "積極參與設計社群與課程" section as th
 - **WHEN** a visitor scrolls to the bottom of the About page
 - **THEN** the "積極參與設計社群與課程" heading and its content render as the last section on the page, with 160px of space above the heading and 160px of space between the section's content and the Footer that follows it, and no additional gap
 
+---
 ### Requirement: Community showcase cards
 The section SHALL contain exactly two image-and-caption cards, each consisting of an image and a caption below it, with no border, shadow, or background applied to the card:
 - The first card SHALL show `content/img/web/online.png` with the caption "線上工作坊 & Side Project".
@@ -200,6 +215,7 @@ Each card's image SHALL render at a maximum height of 468px (0.9× the section's
 - **WHEN** the section renders on any viewport
 - **THEN** each of the two images renders no taller than 468px and keeps its original aspect ratio, with the caption visible below it in 20px/400 weight `#1e1e1e` text
 
+---
 ### Requirement: Community showcase card layout
 At desktop viewport widths, the two cards SHALL render side by side, each occupying an equal-width half of the section's content area with an 80px gap between the two halves; within each half, the image and its caption SHALL be horizontally centered. The gap between an image and its caption SHALL be 24px at desktop widths.
 
@@ -213,6 +229,7 @@ At mobile viewport widths, the two cards SHALL stack vertically, each spanning t
 - **WHEN** the section renders at a mobile viewport width
 - **THEN** the two cards render stacked vertically, each full width with its image and caption centered, and 12px between each card's image and caption
 
+---
 ### Requirement: Section background decoration
 The section SHALL render two large blurred circles in its background, horizontally aligned with the cards row (vertically centered on it) and positioned to the outer sides of the cards (one beside the left card, one beside the right card) rather than at the section's corners:
 - A circle filled `#FFF4E4`, blurred, positioned beside the left card.
@@ -228,9 +245,69 @@ The circles SHALL render behind the section's heading and cards, and SHALL NOT o
 - **WHEN** a visitor views the boundary between 工作經歷 and the community section, and separately the boundary between the community section and the Footer
 - **THEN** the glow's soft diffusion is visible extending upward past the community section's own top edge into 工作經歷, and is not visible anywhere within the Footer
 
+---
 ### Requirement: Staggered card entrance
 The two cards SHALL animate into view one after another (not simultaneously) the first time they scroll into the viewport, each entering with the same bottom-to-top fade/slide treatment already used elsewhere on the About page (e.g. 工作經歷's items).
 
 #### Scenario: Cards enter in sequence
 - **WHEN** a visitor scrolls the two cards into view for the first time
 - **THEN** the left card begins its entrance animation before the right card does, rather than both animating in at the same instant
+
+---
+### Requirement: About page renders finalized content sections
+The About page SHALL render, in order, the sections finalized in `content/About_頁面內容_v1.md`: photo, 人, 思維, 經歷, 技能, and Experience.
+
+#### Scenario: Visitor loads About page
+- **WHEN** a visitor loads the About page
+- **THEN** the photo, 人, 思維, 經歷, 技能, and Experience sections are all present, in that order
+
+
+<!-- @trace
+source: build-portfolio-site
+updated: 2026-09-20
+code:
+  - src/pages/work/[slug].astro
+  - src/pages/index.astro
+  - .spectra.yaml
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+-->
+
+---
+### Requirement: Beyond Work placeholder
+Until real Beyond Work content is supplied, the About page SHALL render the placeholder text "AI 相關的個人專案整理中，稍後補上。" in the Beyond Work section instead of leaving the section empty or omitting it.
+
+#### Scenario: Beyond Work section shown with placeholder
+- **WHEN** a visitor reaches the Beyond Work section on the About page
+- **THEN** the text "AI 相關的個人專案整理中，稍後補上。" is displayed
+
+
+<!-- @trace
+source: build-portfolio-site
+updated: 2026-09-20
+code:
+  - src/pages/work/[slug].astro
+  - src/pages/index.astro
+  - .spectra.yaml
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+-->
+
+---
+### Requirement: About page email contact
+The About page SHALL display the owner's email address as a `mailto:` link.
+
+#### Scenario: Visitor views email section
+- **WHEN** a visitor reaches the email section of the About page
+- **THEN** a `mailto:` link addressed to `wsad71155@gmail.com` is shown
+
+<!-- @trace
+source: build-portfolio-site
+updated: 2026-09-20
+code:
+  - src/pages/work/[slug].astro
+  - src/pages/index.astro
+  - .spectra.yaml
+  - src/styles/tokens.css
+  - src/components/Nav.astro
+-->

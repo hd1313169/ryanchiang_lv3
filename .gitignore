@@ -25,3 +25,5 @@ desktop.ini
 
 # jetbrains setting folder
 .idea/
+.spectra/
+openspec/.vector-search.db*
