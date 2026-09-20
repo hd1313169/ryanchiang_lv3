@@ -426,6 +426,38 @@ const sections = [
     padding-left: 1.25em;
   }
 
+  /* Ordered list with a dark numbered circle in place of the default marker. */
+  .prose :global(ol.badge-list) {
+    padding-left: 0;
+    list-style: none;
+    counter-reset: badge;
+  }
+
+  .prose :global(ol.badge-list > li) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    counter-increment: badge;
+  }
+
+  .prose :global(ol.badge-list > li::before) {
+    content: counter(badge);
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 50%;
+    background: #1e1e1e;
+    color: #fefefe;
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
   .prose :global(li) {
     position: relative;
     font-weight: 400;
@@ -604,8 +636,67 @@ const sections = [
     text-align: center;
   }
 
+  /* Row variant: three parallel points side by side, no arrows, same flat
+     panel as the stacked cards. Collapses to one column on mobile. */
+  .prose :global(.workflow-cards--row) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+
+  .prose :global(.workflow-cards--row .workflow-card) {
+    display: block;
+    min-height: 0;
+    padding: var(--space-3);
+    background: #fff7ed;
+    border: none;
+    border-radius: 12px;
+    line-height: 1.75;
+  }
+
+  .prose :global(.workflow-cards--row .workflow-card strong) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-bottom: var(--space-1);
+    line-height: 1.5;
+  }
+
+  /* Two-up variant of the row, in the green of the 04 contrast cards: pale
+     green panel with a solid green numbered circle. */
+  .prose :global(.workflow-cards--two) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .prose :global(.workflow-cards--two .workflow-card) {
+    background: #f4fef7;
+  }
+
+  .prose :global(.workflow-cards--two .card-badge) {
+    background: #22c55e;
+  }
+
+  /* Numbered circle before the card title. */
+  .prose :global(.card-badge) {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 50%;
+    background: #f97316;
+    color: #ffffff;
+    font-family: var(--font-latin), var(--font-cjk), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
   @media (max-width: 40em) {
-    .prose :global(.workflow-cards) {
+    .prose :global(.workflow-cards),
+    .prose :global(.workflow-cards--row),
+    .prose :global(.workflow-cards--two) {
       grid-template-columns: 1fr;
     }
 
@@ -1201,7 +1292,8 @@ const sections = [
     margin: var(--space-4) 0;
   }
 
-  .prose :global(.image-single img) {
+  .prose :global(.image-single img),
+  .prose :global(.image-single video) {
     display: block;
     width: 100%;
     height: auto;
