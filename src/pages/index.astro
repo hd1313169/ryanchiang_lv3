@@ -10,10 +10,19 @@ import notionWorkflowCover from "../assets/photos/cover-notion-workflow.jpg";
 import worktimeToolCover from "../assets/photos/cover-worktime-tool.png";
 import oddbirdCover from "../assets/photos/cover-oddbird.png";
 import wildRescueCover from "../assets/photos/cover-wild-rescue.png";
+import tidelineCover from "../assets/photos/cover-tideline.png";
 
 const caseStudies = sortByCaseOrder(await getCollection("case-studies"));
 
 const sideProjects = [
+  {
+    title: "Partime 複合收入薪資管理",
+    summary:
+      "為非月薪工作者或小型工作室設計的薪資計算工具，可自訂時薪、計件等多種計薪項目，即時計算每日、每週與每月薪資總計，支援 CSV 匯出，以 AI 協作開發完成。",
+    href: "https://hd1313169.github.io/partime/",
+    cover: worktimeToolCover,
+    tags: ["AI Coding", "Web App"],
+  },
   {
     title: "OddBird 羽球賽事管理",
     summary:
@@ -23,12 +32,12 @@ const sideProjects = [
     tags: ["AI Coding", "Web App"],
   },
   {
-    title: "Partime 複合收入薪資管理",
+    title: "Tideline 潮間相望",
     summary:
-      "為非月薪工作者或小型工作室設計的薪資計算工具，可自訂時薪、計件等多種計薪項目，即時計算每日、每週與每月薪資總計，支援 CSV 匯出，以 AI 協作開發完成。",
-    href: "https://hd1313169.github.io/partime/",
-    cover: worktimeToolCover,
-    tags: ["AI Coding", "Web App"],
+      "以情感依附理論為基礎設計的雙人合作型卡牌遊戲，透過故事與合作幫助玩家探索不同依附類型在人際與親密關係中的互動模式，以 AI 協作開發完成。",
+    href: "https://hbgp.pages.dev/tideline/",
+    cover: tidelineCover,
+    tags: ["AI Coding", "互動遊戲設計"],
   },
   {
     title: "Wild Rescue 野生動物救傷通報APP",
