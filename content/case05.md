@@ -10,7 +10,7 @@
 證券業
 
 主要職責
-UIUX 設計 · Prototype 製作 · AI 工作流設計
+UI/UX 設計 · Prototype 製作 · AI 工作流設計
 
 團隊成員
 SA · PM · 外部開發團隊
