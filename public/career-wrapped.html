@@ -43,6 +43,7 @@
   --mint:#6fe3b4;
   --pink:#ff9ec7;
   --lilac:#b9a8ff;
+  --speed:1.2; /* global motion multiplier: every animation duration/delay scales by this */
   --font-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
   --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   color-scheme:dark;
@@ -61,10 +62,21 @@ body{margin:0;background:#000;color:var(--ink);font-family:var(--font-body);
 .brand{position:absolute;z-index:5;top:26px;left:16px;right:16px;display:flex;justify-content:space-between;
   font:700 11px/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);pointer-events:none}
 .card{position:absolute;inset:0;padding:64px 26px 30px;display:flex;flex-direction:column;gap:18px;color:var(--ink);
-  visibility:hidden;opacity:0;transition:opacity .35s ease, visibility 0s linear .35s;overflow:hidden}
-.card.on{visibility:visible;opacity:1;transition:opacity .35s ease}
+  visibility:hidden;overflow:hidden}
+.card.on{visibility:visible}
+/* page turn: the outgoing card sits on top and is cut away along a diagonal.
+   next → it folds away toward the top-left corner; prev → toward the bottom-right. */
+.card.leave{visibility:visible;z-index:2;animation:turn-next calc(.6s*var(--speed)) cubic-bezier(.55,.05,.35,1) both}
+.stage[data-dir=prev] .card.leave{animation-name:turn-prev}
+@keyframes turn-next{from{clip-path:polygon(0 0,200% 0,0 200%)}to{clip-path:polygon(0 0,0 0,0 0)}}
+@keyframes turn-prev{from{clip-path:polygon(100% 100%,100% -100%,-100% 100%)}to{clip-path:polygon(100% 100%,100% 100%,100% 100%)}}
+/* soft shadow cast on the incoming card while the page lifts away */
+.card.on.turning::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(135deg,rgb(22 19 31 / .22),rgb(22 19 31 / 0) 70%);animation:turn-shade calc(.6s*var(--speed)) ease-out both}
+.stage[data-dir=prev] .card.on.turning::after{background:linear-gradient(315deg,rgb(22 19 31 / .22),rgb(22 19 31 / 0) 70%)}
+@keyframes turn-shade{from{opacity:1}to{opacity:0}}
 .card>*{position:relative;z-index:1}
-.eyebrow{font:700 12px/1.3 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.eyebrow{font:700 14px/1.3 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
 h1,h2{margin:0;font-family:var(--font-body);font-weight:900;line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
 h1{font-size:clamp(38px,11vw,50px)}
 h2{font-size:clamp(28px,8vw,36px)}
@@ -73,7 +85,18 @@ p{margin:0;font-size:16px;line-height:1.65}
 .big{font:800 clamp(80px,26vw,128px)/.9 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .grow{flex:1}
 .hint{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
-.shape{position:absolute;z-index:0;border-radius:50%;pointer-events:none}
+.shape{position:absolute;z-index:0;border-radius:50%;pointer-events:none;
+  /* gentle idle float; uses the individual translate/rotate properties so each shape's own transform (e.g. rotate(18deg)) is kept */
+  animation:float calc(6s*var(--speed)) ease-in-out infinite}
+.shape.b{animation-name:float-b;animation-duration:calc(4.6s*var(--speed));animation-delay:calc(-1.2s*var(--speed))}
+/* top-right morphing shape on cards 2–8: circle → rounded square → circle, turning a quarter each loop */
+.shape.m{width:210px;height:210px;right:-70px;top:-70px;
+  animation:morph calc(5s*var(--speed)) ease-in-out infinite,float calc(6s*var(--speed)) ease-in-out infinite}
+/* each cycle (~3s) is ONE quick morph (~1s) followed by a rest: circle → rounded square, rest, rounded square → circle, rest.
+   the rotation is invisible on a circle, so the loop restart doesn't show */
+@keyframes morph{0%{border-radius:50%;rotate:0deg}17%,50%{border-radius:28%;rotate:45deg}67%,100%{border-radius:50%;rotate:90deg}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:-6px -14px}}
+@keyframes float-b{0%,100%{translate:0 0;rotate:0deg}50%{translate:4px -12px;rotate:6deg}}
 .bar{height:12px;border-radius:6px;background:rgb(22 19 31 / .14);overflow:hidden}
 .bar i{display:block;height:100%;width:var(--w);background:var(--cobalt);border-radius:6px;transform-origin:left}
 
@@ -81,7 +104,22 @@ p{margin:0;font-size:16px;line-height:1.65}
 .c-cover{background:var(--periwinkle)}
 .c-cover .shape.a{width:340px;height:340px;background:var(--tomato);right:-140px;bottom:-120px}
 .c-cover .shape.b{width:130px;height:130px;background:var(--butter);right:30px;top:120px;border-radius:36px;transform:rotate(18deg)}
-.c-cover .year{font:800 clamp(96px,30vw,150px)/.85 var(--font-display);letter-spacing:-.05em}
+.c-cover .year{font:800 clamp(96px,30vw,150px)/.85 var(--font-display);letter-spacing:-.05em;perspective:600px}
+/* cover entrance: shapes burst in from their corners, the year's digits flip up one by one with a little overshoot,
+   then title and hint follow; the hint keeps a soft pulse to invite the first tap */
+.c-cover h1{font-size:clamp(26px,8.5vw,40px)}
+.c-cover h1 .nw{white-space:nowrap} /* keep the name and 的 on one line */
+.c-cover .dg{display:inline-block;transform-origin:50% 100%}
+.c-cover.on.play .dg{animation:digit-in calc(.75s*var(--speed)) cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc((.35s + var(--i)*.11s)*var(--speed))}
+@keyframes digit-in{from{opacity:0;transform:translateY(55%) rotateX(-80deg)}to{opacity:1;transform:none}}
+.c-cover.on.play .shape.a{animation:cover-burst calc(1s*var(--speed)) cubic-bezier(.22,1.4,.36,1) both,float calc(6s*var(--speed)) ease-in-out calc(1s*var(--speed)) infinite}
+.c-cover.on.play .shape.b{animation:cover-pop calc(.9s*var(--speed)) cubic-bezier(.34,1.56,.64,1) calc(.2s*var(--speed)) both,float-b calc(4.6s*var(--speed)) ease-in-out calc(1.1s*var(--speed)) infinite}
+@keyframes cover-burst{from{scale:0;opacity:0}to{scale:1;opacity:1}}
+@keyframes cover-pop{from{scale:0;rotate:-120deg;opacity:0}to{scale:1;rotate:0deg;opacity:1}}
+.c-cover .shape.a{transform-origin:100% 100%}
+.c-cover.on.play .hint{animation:appear calc(.4s*var(--speed)) ease-out calc(1.8s*var(--speed)) both,hint-pulse calc(1.6s*var(--speed)) ease-in-out calc(2.6s*var(--speed)) infinite}
+@keyframes appear{from{opacity:0}to{opacity:1}} /* fades in on the spot, no slide */
+@keyframes hint-pulse{0%,100%{opacity:1}50%{opacity:.45}}
 
 /* opener */
 .c-open{background:var(--lavender);gap:0}
@@ -90,8 +128,8 @@ p{margin:0;font-size:16px;line-height:1.65}
 .c-open .glyph{font:800 150px/.7 var(--font-display);color:var(--tomato);margin-top:64px;height:72px}
 .quote{font-weight:700;font-size:clamp(20px,5.6vw,23px);line-height:1.6;margin-top:6px;color:var(--ink-2)}
 .quote .strike{background:linear-gradient(var(--tomato),var(--tomato)) no-repeat 0 58%/0% 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.card.on.play .quote .strike{animation:strike .5s linear .5s forwards}
-.card.on.play .quote .strike.s2{animation:strike .35s linear 1s forwards}
+.card.on.play .quote .strike{animation:strike calc(.5s*var(--speed)) linear calc(.5s*var(--speed)) forwards}
+.card.on.play .quote .strike.s2{animation:strike calc(.35s*var(--speed)) linear calc(1s*var(--speed)) forwards}
 @keyframes strike{to{background-size:100% 3px}}
 .c-open .down{font:800 34px/1 var(--font-display);margin-top:36px;color:var(--ink)}
 .quote mark{background:none;color:inherit;font-weight:inherit}
@@ -116,7 +154,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 /* persona */
 .c-persona{background:var(--mint);gap:24px}
 .c-persona .lens{margin-top:22px}
-.c-persona .shape.a{width:260px;height:260px;background:var(--butter);right:-100px;top:-80px}
+.c-persona .shape.a{background:var(--pink)}
 .c-persona .lead{font-size:19px;font-weight:700;line-height:1.6}
 .lens{display:flex;flex-direction:column;gap:20px}
 .credit{font-size:12px;font-weight:500;color:var(--ink-2);text-align:right;margin-top:-6px}
@@ -139,14 +177,18 @@ p{margin:0;font-size:16px;line-height:1.65}
 /* who am I */
 .c-who{background:var(--periwinkle);gap:24px}
 .c-who .path{margin-top:12px}
-.c-who .shape.a{width:220px;height:220px;background:var(--butter);right:-80px;top:-70px}
+.c-who .shape.a{background:var(--butter)}
 .c-who h1{font-size:clamp(40px,11.5vw,54px);line-height:1.15}
 .path{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
-.path span{font:700 15px/1 var(--font-body);background:rgb(255 255 255 / .55);border-radius:999px;padding:10px 14px}
-.path span.now{background:var(--ink);color:#fff}
-.path span.goal{background:#c6ccff;color:var(--ink-2)}
-.path i{font-style:normal;font:800 16px/1 var(--font-display);padding-left:16px}
+.path span{font:700 18px/1 var(--font-body);background:rgb(255 255 255 / .55);border-radius:999px;padding:12px 17px}
+.path span.now{background:var(--butter);color:var(--ink)}
+.path span.goal{background:var(--ink);color:var(--mist)}
+.path i{font-style:normal;font:800 19px/1 var(--font-display);padding-left:19px}
 .c-who .then{font-size:clamp(15px,4.4vw,17px);font-weight:900;line-height:1.9;margin-top:36px;white-space:nowrap}
+.c-who .then{display:flex;flex-direction:column;gap:4px}
+/* tagline lines are revealed left → right, one after the other */
+.card.on.play .then.wipe span{animation:wipe-in calc(.6s*var(--speed)) cubic-bezier(.65,0,.35,1) both;animation-delay:calc(var(--d,0s)*var(--speed))}
+@keyframes wipe-in{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .c-who .then span{display:block;width:fit-content;background:#fff;padding:4px 8px;line-height:1.5}
 
 /* data cards */
@@ -157,6 +199,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 .rows{display:grid;grid-template-columns:1fr 1fr;gap:34px 12px;text-align:center}
 .rows .row{display:flex;flex-direction:column;align-items:center;gap:8px}
 .rows .row.solo{grid-column:1/-1}
+.rows .row b .suf{font:inherit;letter-spacing:inherit;margin:0;padding:0;color:inherit} /* reset the label span styles */
 .rows .row b{font:800 clamp(64px,19vw,84px)/1 var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--cobalt)}
 .rows .row span{font-size:19px;font-weight:900;line-height:1.35}
 .rows .row span small{display:block;font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
@@ -166,11 +209,24 @@ p{margin:0;font-size:16px;line-height:1.65}
 .c-next{background:var(--butter);gap:22px}
 .quests{margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .quests li{list-style:none;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+/* quest cards slide in from the left, overlapping (0.15s apart) rather than waiting for each other */
+.card.on.play .quests li{animation:slide-in calc(.7s*var(--speed)) cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d,0s)*var(--speed))}
+@keyframes slide-in{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
 .quests small{font:800 11px/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase}
 .quests b{font-size:18px;line-height:1.4}
 .c-next{padding-bottom:104px}
-.nowtag{background:var(--cobalt);color:#fff;padding:0 .12em;border-radius:0}
-.c-next .then{font:900 clamp(38px,11vw,46px)/1.22 'Inter Tight',system-ui,sans-serif;letter-spacing:-.025em;color:var(--ink);margin-top:40px}
+/* typewriter: chars start hidden and are revealed one by one; the tag fills in once its first letter types */
+.then .ch{visibility:hidden}
+.then .ch.in{visibility:inherit} /* inherit, so typed chars stay hidden with their card */
+/* NOW types in as plain ink; once typing ends it gets a selection-style highlight sweeping left → right */
+.then.typing .nowtag{background-size:0 100%;color:var(--ink)}
+.nowtag.sweep{animation:now-sweep calc(.45s*var(--speed)) cubic-bezier(.3,.7,.2,1) both}
+@keyframes now-sweep{from{background-size:0 100%;color:var(--ink)}to{background-size:100% 100%;color:#fff}}
+.caret{display:inline-block;width:.08em;height:.9em;margin-left:.04em;vertical-align:-.08em;background:currentColor;animation:caret .9s steps(1) infinite;transition:opacity .4s}
+.caret.out{opacity:0}
+@keyframes caret{50%{opacity:0}}
+.nowtag{background:linear-gradient(var(--cobalt),var(--cobalt)) no-repeat 0 0/100% 100%;color:#fff;padding:0 .12em;border-radius:0}
+.c-next .then{font:900 clamp(38px,11vw,46px)/1.4 'Inter Tight',system-ui,sans-serif;letter-spacing:-.025em;color:var(--ink);margin-top:40px}
 .reload{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:6;width:52px;height:52px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer}
 .reload:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:6}
@@ -193,9 +249,9 @@ p{margin:0;font-size:16px;line-height:1.65}
 @keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.card.on.play .r{animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
-.card.on.play .bar i{animation:fill 1s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--bd,.3s)}
-.progress span.now i{transform-origin:left;animation:prog .5s ease-out}
+.card.on.play .r{animation:rise calc(.7s*var(--speed)) cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d,0s)*var(--speed))}
+.card.on.play .bar i{animation:fill calc(1s*var(--speed)) cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--bd,.3s)*var(--speed))}
+.progress span.now i{transform-origin:left;animation:prog calc(.5s*var(--speed)) ease-out}
 @media (max-width:430px){
   body{height:100dvh;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
   .stage{max-width:none;height:100%;border-radius:0;box-shadow:none}
@@ -203,7 +259,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 @media (prefers-reduced-motion:reduce){
   .quote .strike{background-size:100% 3px}
   .card.on.play .quote .strike{animation:none}
-  .card,.card.on{transition:none}
+  .card.on.play .quests li,.card.on.play .then.wipe span,.card.leave,.card.on.turning::after,.shape,.shape.m,.c-cover.on.play .shape.a,.c-cover.on.play .shape.b,.c-cover.on.play .dg,.c-cover.on.play .hint{animation:none}
   .card.on.play .r,.card.on.play .bar i,.progress span.now i{animation:none}
 }
 @media (max-height:700px){
@@ -224,14 +280,15 @@ p{margin:0;font-size:16px;line-height:1.65}
   <section class="card c-cover on" aria-label="封面">
     <div class="shape a"></div><div class="shape b"></div>
     <div class="grow"></div>
-    <div class="year r" style="--d:.1s">2026</div>
-    <h1 class="r" style="--d:.6s">我的<br>職涯回顧</h1>
+    <div class="year" aria-label="2026"><span class="dg" style="--i:0">2</span><span class="dg" style="--i:1">0</span><span class="dg" style="--i:2">2</span><span class="dg" style="--i:3">6</span></div>
+    <h1 class="r" style="--d:1.15s"><span class="nw">Ryan Chiang 的</span><br>職涯回顧</h1>
     <div class="grow"></div>
-    <div class="hint r" style="--d:1.3s">點一下畫面開始</div>
+    <div class="hint">點一下畫面開始</div>
   </section>
 
   <!-- 2 opener -->
   <section class="card c-open" aria-label="起點">
+    <div class="shape m" style="background:var(--periwinkle)"></div>
     <div class="eyebrow r" style="--d:0s">從一個念頭開始</div>
     <div class="glyph r" style="--d:.2s" aria-hidden="true">“</div>
     <p class="quote"><span class="strike">我覺得自己的能力和經歷，</span><br><span class="strike s2"><mark>跟不上市場</mark></span></p>
@@ -240,6 +297,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 
   <!-- 3 top keywords -->
   <section class="card c-top" aria-label="Top 3 職涯關鍵字">
+    <div class="shape m" style="background:var(--coral)"></div>
     <div class="eyebrow r" style="--d:0s">我的職涯關鍵字</div>
     <h1 class="r" style="--d:.15s">TOP 3</h1>
     <ol class="rank r" style="--d:.35s">
@@ -252,7 +310,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 
   <!-- 4 persona -->
   <section class="card c-persona" aria-label="職場人格">
-    <div class="shape a"></div>
+    <div class="shape a m"></div>
     <div class="r" style="--d:.1s;display:flex;flex-direction:column;gap:16px">
       <div class="eyebrow">我的職場人格</div>
       <h1>整合流程的<br>工匠</h1>
@@ -268,7 +326,7 @@ p{margin:0;font-size:16px;line-height:1.65}
 
   <!-- 5 who am I -->
   <section class="card c-who" aria-label="我是誰">
-    <div class="shape a"></div>
+    <div class="shape a m"></div>
     <div class="eyebrow r" style="--d:0s">我是誰？</div>
     <h1 class="r" style="--d:.3s">喜歡動手<br>做產品的<br>設計師</h1>
     <div class="path">
@@ -276,43 +334,46 @@ p{margin:0;font-size:16px;line-height:1.65}
       <span class="now r" style="--d:1.14s">Product Designer</span><i class="r" style="--d:1.26s">↓</i>
       <span class="goal r" style="--d:1.38s">Product Builder</span>
     </div>
-    <p class="then r" style="--d:2s"><span>下一步：</span><span>從設計畫面，走到親手把產品做出來</span></p>
+    <p class="then wipe"><span style="--d:2s">下一步：</span><span style="--d:2.35s">從設計畫面，走到親手把產品做出來</span></p>
   </section>
 
   <!-- 6 input -->
   <section class="card c-in" aria-label="我的投入">
+    <div class="shape m" style="background:var(--lilac)"></div>
     <div class="eyebrow r" style="--d:0s">我的投入</div>
-    <h2 class="r" style="--d:.3s">信心不是前提，<br>而是結果</h2>
+    <h2 class="r" style="--d:.3s">信心不是前提，<br>而是行動的結果</h2>
     <div class="rows-wrap"><div class="rows r" style="--d:.8s">
       <div class="row"><b data-count="1">1</b><span>線下社團</span></div>
       <div class="row"><b data-count="3">3</b><span>職涯課程</span></div>
       <div class="row"><b data-count="5">5</b><span>專業諮詢</span></div>
-      <div class="row"><b data-count="20" data-suffix="+">20+</b><span>作業練習</span></div>
+      <div class="row"><b data-count="20" data-suffix="+">20<span class="suf">+</span></b><span>作業練習</span></div>
     </div></div>
   </section>
 
   <!-- 7 output -->
   <section class="card c-out" aria-label="我的收穫">
+    <div class="shape m" style="background:var(--periwinkle)"></div>
     <div class="eyebrow r" style="--d:0s">我的收穫</div>
     <h2 class="r" style="--d:.3s">方向清楚之後，<br>腳步也更加踏實</h2>
     <div class="rows-wrap"><div class="rows r" style="--d:.8s">
-      <div class="row"><b data-count="20" data-suffix="+">20+</b><span>人脈拓展</span></div>
+      <div class="row"><b data-count="20" data-suffix="+">20<span class="suf">+</span></b><span>人脈拓展</span></div>
       <div class="row"><b data-count="5">5</b><span>個人作品</span></div>
       <div class="row"><b data-count="6">6</b><span>面試邀請</span></div>
-      <div class="row"><b>?</b><span>錄取<small>待確認</small></span></div>
+      <div class="row"><b>N</b><span>錄取</span></div>
     </div></div>
   </section>
 
   <!-- 8 next year -->
   <section class="card c-next" aria-label="2027 預告">
+    <div class="shape m" style="background:var(--mint)"></div>
     <div class="eyebrow r" style="--d:0s">2027 預告</div>
     <h2 class="r" style="--d:.3s">下一階段的目標</h2>
-    <ul class="quests r" style="--d:.8s">
-      <li><small>Side Quest</small><b>分享 6 篇與設計和工作經驗相關的文章</b></li>
-      <li><small>Main Quest</small><b>做一個有真實使用者的產品</b></li>
-      <li><small>Long Quest</small><b>回饋設計社群，把自己走過的路分享出去</b></li>
+    <ul class="quests">
+      <li style="--d:.8s"><small>Side Quest</small><b>分享 6 篇與設計和工作經驗相關的文章</b></li>
+      <li style="--d:.95s"><small>Main Quest</small><b>做一個有真實使用者的產品</b></li>
+      <li style="--d:1.1s"><small>Long Quest</small><b>回饋設計社群，把自己走過的路分享出去</b></li>
     </ul>
-    <p class="then r" style="--d:1.6s">The Second<br>Best Time<br>Is <span class="nowtag">NOW</span></p>
+    <p class="then" data-type="1.6" aria-label="The Second Best Time Is NOW.">The Second<br>Best Time<br>Is <span class="nowtag">NOW</span>.</p>
     <button class="reload" id="restart" type="button" aria-label="從頭再看一次"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
   </section>
 
@@ -327,15 +388,18 @@ p{margin:0;font-size:16px;line-height:1.65}
   var counter=document.getElementById('counter');
   var nextBtn=document.getElementById('tapNext');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var i=0, timers=[];
+  var i=0, timers=[], turning=null, inited=false;
+  var st=document.getElementById('stage');
+  var speed=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--speed'))||1;
   cards.forEach(function(){var s=document.createElement('span');s.appendChild(document.createElement('i'));prog.appendChild(s);});
   var segs=[].slice.call(prog.children);
 
   function delayOf(el){
     var host=el.closest('.r'); if(!host) return 0;
     var v=parseFloat(getComputedStyle(host).getPropertyValue('--d'));
-    return isNaN(v)?0:v*1000;
+    return isNaN(v)?0:v*1000*speed;
   }
+  function final(el){ var suf=el.getAttribute('data-suffix'); el.textContent=el.getAttribute('data-count'); if(suf){ var sp=document.createElement('span'); sp.className='suf'; sp.textContent=suf; el.appendChild(sp); } }
   function countUp(card){
     timers.forEach(clearTimeout); timers=[];
     if(reduce) return;
@@ -343,16 +407,63 @@ p{margin:0;font-size:16px;line-height:1.65}
       var to=+el.getAttribute('data-count'), suf=el.getAttribute('data-suffix')||'';
       el.textContent='0';
       timers.push(setTimeout(function(){
-        var t0=null, dur=900;
-        function step(t){ if(!t0)t0=t; var p=Math.min(1,(t-t0)/dur); el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); else el.textContent=to+suf; }
+        var t0=null, dur=900*speed;
+        function step(t){ if(!t0)t0=t; var p=Math.min(1,(t-t0)/dur); el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); else final(el); }
         requestAnimationFrame(step);
-      }, delayOf(el)+350));
+      }, delayOf(el)+350*speed));
     });
   }
-  function show(n){
+  // Typewriter for [data-type] lines: wraps every character in a hidden span,
+  // then reveals them in order behind a blinking caret.
+  function typeIn(card){
+    card.querySelectorAll('[data-type]').forEach(function(p){
+      if(!p.dataset.ready){
+        (function wrap(node){
+          [].slice.call(node.childNodes).forEach(function(ch){
+            if(ch.nodeType===3){
+              var frag=document.createDocumentFragment();
+              ch.textContent.split('').forEach(function(c){var sp=document.createElement('span');sp.className='ch';sp.textContent=c;frag.appendChild(sp);});
+              node.replaceChild(frag,ch);
+            } else if(ch.nodeType===1&&ch.tagName!=='BR'){ wrap(ch); }
+          });
+        })(p);
+        p.dataset.ready='1';
+      }
+      var chars=[].slice.call(p.querySelectorAll('.ch'));
+      var tag=p.querySelector('.nowtag');
+      var old=p.querySelector('.caret'); if(old) old.remove();
+      if(reduce){ chars.forEach(function(c){c.classList.add('in');}); p.classList.remove('typing'); return; }
+      chars.forEach(function(c){c.classList.remove('in');});
+      if(tag) tag.classList.remove('sweep');
+      p.classList.add('typing');
+      var caret=document.createElement('span'); caret.className='caret'; caret.setAttribute('aria-hidden','true');
+      var start=parseFloat(p.getAttribute('data-type'))*1000*speed, step=70*speed;
+      timers.push(setTimeout(function(){ p.insertBefore(caret,p.firstChild); },start));
+      chars.forEach(function(c,k){
+        timers.push(setTimeout(function(){
+          c.classList.add('in');
+          c.parentNode.insertBefore(caret,c.nextSibling);
+        },start+step*(k+1)));
+      });
+      var end=start+step*(chars.length+1);
+      // typing done: the caret goes away as NOW gets its highlight, so the two never overlap
+      timers.push(setTimeout(function(){ caret.remove(); p.classList.remove('typing'); if(tag) tag.classList.add('sweep'); },end));
+    });
+  }
+  function show(n,dir){
     n=Math.max(0,Math.min(cards.length-1,n));
-    cards[i].classList.remove('on','play');
-    cards[i].querySelectorAll('[data-count]').forEach(function(el){el.textContent=el.getAttribute('data-count')+(el.getAttribute('data-suffix')||'');});
+    if(inited&&n===i) return;
+    if(turning) return; // ignore input while a page turn is running
+    var prev=cards[i], first=!inited; inited=true;
+    st.dataset.dir=dir||((n<i)?'prev':'next');
+    prev.classList.remove('on','play');
+    if(!first&&!reduce){
+      prev.classList.add('leave');
+      cards[n].classList.add('turning');
+      var done=function(){ prev.classList.remove('leave'); cards[n].classList.remove('turning'); turning=null; };
+      turning=setTimeout(done,600*speed+50);
+    }
+    cards[i].querySelectorAll('[data-count]').forEach(final);
     i=n;
     var c=cards[i];
     c.classList.add('on'); void c.offsetWidth; c.classList.add('play');
@@ -360,17 +471,18 @@ p{margin:0;font-size:16px;line-height:1.65}
     counter.textContent=(i+1)+' / '+cards.length;
     document.getElementById('stage').classList.toggle('dark',c.hasAttribute('data-dark'));
     countUp(c);
+    typeIn(c);
     nextBtn.hidden=(i===cards.length-1);
   }
   nextBtn.addEventListener('click',function(){show(i+1);});
   document.getElementById('tapPrev').addEventListener('click',function(){show(i-1);});
-  document.getElementById('restart').addEventListener('click',function(){show(0);});
+  document.getElementById('restart').addEventListener('click',function(){show(0,'next');});
   document.addEventListener('keydown',function(e){
     if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
     else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
-    else if(e.key==='Home'){show(0);}
+    else if(e.key==='Home'){show(0,'next');}
   });
-  var sx=null, sy=null, st=document.getElementById('stage');
+  var sx=null, sy=null;
   st.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
   st.addEventListener('touchend',function(e){
     if(sx===null)return; var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
