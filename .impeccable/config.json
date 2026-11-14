@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "src/components/CareerWrappedFab.astro"
+        ],
+        "createdAt": "2026-11-14T15:00:09.232Z",
+        "reason": "user confirmed: requested gradient on the decorative FAB star icon only"
+      }
+    ]
+  }
+}

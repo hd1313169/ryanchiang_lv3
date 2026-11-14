@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2026 職涯回顧</title>
+<meta name="description" content="用 8 張卡片回顧我的 2026 職涯：做過的專案、學到的事與下一步。">
+<link rel="canonical" href="https://ryan-chiang.com/career-wrapped.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2026 職涯回顧">
+<meta property="og:description" content="用 8 張卡片回顧我的 2026 職涯：做過的專案、學到的事與下一步。">
+<meta property="og:url" content="https://ryan-chiang.com/career-wrapped.html">
+<meta property="og:image" content="https://ryan-chiang.com/og-career-wrapped.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2026 職涯回顧">
+<meta name="twitter:description" content="用 8 張卡片回顧我的 2026 職涯：做過的專案、學到的事與下一步。">
+<meta name="twitter:image" content="https://ryan-chiang.com/og-career-wrapped.png">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter+Tight:wght@800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: a phone-shaped story stage; one full-bleed pastel card at a time with ink text, segmented progress on top, tap/swipe/arrow to advance (single deliberate look, no light/dark split). */
+:root{
+  --ink:#16131f;
+  --ink-2:#3b3550;
+  --frame:#2a2540;
+  --cobalt:#2b3be6;
+  --periwinkle:#9aa5ff;
+  --sky:#b3bcff;
+  --lavender:#d8d2ea;
+  --mist:#ece8f6;
+  --heather:#d0c9e8;
+  --butter:#ffe45c;
+  --tomato:#ff5a36;
+  --coral:#ffad96;
+  --peach:#fff1ec;
+  --mint:#6fe3b4;
+  --pink:#ff9ec7;
+  --lilac:#b9a8ff;
+  --font-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:#000;color:var(--ink);font-family:var(--font-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden}
+*{box-sizing:border-box}
+.stage{position:relative;width:100%;max-width:430px;height:min(100%,880px);border-radius:22px;overflow:hidden;
+  background:var(--mist);box-shadow:0 30px 80px rgb(0 0 0 / .35);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.progress{position:absolute;z-index:5;top:0;left:0;right:0;display:flex;gap:4px;padding:14px 14px 0}
+.progress span{flex:1;height:3px;border-radius:2px;background:rgb(22 19 31 / .2);overflow:hidden}
+.progress span i{display:block;height:100%;width:0;background:var(--ink)}
+.progress span.done i,.progress span.now i{width:100%}
+.brand{position:absolute;z-index:5;top:26px;left:16px;right:16px;display:flex;justify-content:space-between;
+  font:700 11px/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);pointer-events:none}
+.card{position:absolute;inset:0;padding:64px 26px 30px;display:flex;flex-direction:column;gap:18px;color:var(--ink);
+  visibility:hidden;opacity:0;transition:opacity .35s ease, visibility 0s linear .35s;overflow:hidden}
+.card.on{visibility:visible;opacity:1;transition:opacity .35s ease}
+.card>*{position:relative;z-index:1}
+.eyebrow{font:700 12px/1.3 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2{margin:0;font-family:var(--font-body);font-weight:900;line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(38px,11vw,50px)}
+h2{font-size:clamp(28px,8vw,36px)}
+p{margin:0;font-size:16px;line-height:1.65}
+.sub{color:var(--ink-2)}
+.big{font:800 clamp(80px,26vw,128px)/.9 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.grow{flex:1}
+.hint{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.shape{position:absolute;z-index:0;border-radius:50%;pointer-events:none}
+.bar{height:12px;border-radius:6px;background:rgb(22 19 31 / .14);overflow:hidden}
+.bar i{display:block;height:100%;width:var(--w);background:var(--cobalt);border-radius:6px;transform-origin:left}
+
+/* cover */
+.c-cover{background:var(--periwinkle)}
+.c-cover .shape.a{width:340px;height:340px;background:var(--tomato);right:-140px;bottom:-120px}
+.c-cover .shape.b{width:130px;height:130px;background:var(--butter);right:30px;top:120px;border-radius:36px;transform:rotate(18deg)}
+.c-cover .year{font:800 clamp(96px,30vw,150px)/.85 var(--font-display);letter-spacing:-.05em}
+
+/* opener */
+.c-open{background:var(--lavender);gap:0}
+.c-open .shape.a{width:300px;height:300px;background:var(--periwinkle);right:-130px;bottom:-110px}
+.c-open .shape.b{width:90px;height:90px;background:var(--butter);left:-30px;bottom:150px;border-radius:24px;transform:rotate(-14deg)}
+.c-open .glyph{font:800 150px/.7 var(--font-display);color:var(--tomato);margin-top:64px;height:72px}
+.quote{font-weight:700;font-size:clamp(20px,5.6vw,23px);line-height:1.6;margin-top:6px;color:var(--ink-2)}
+.quote .strike{background:linear-gradient(var(--tomato),var(--tomato)) no-repeat 0 58%/0% 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.card.on.play .quote .strike{animation:strike .5s linear .5s forwards}
+.card.on.play .quote .strike.s2{animation:strike .35s linear 1s forwards}
+@keyframes strike{to{background-size:100% 3px}}
+.c-open .down{font:800 34px/1 var(--font-display);margin-top:36px;color:var(--ink)}
+.quote mark{background:none;color:inherit;font-weight:inherit}
+.c-open .then{color:var(--ink);font:900 clamp(28px,8vw,34px)/1.5 var(--font-body);margin-top:48px}
+.hl{background:var(--cobalt);color:#fff;padding:.05em .25em;border-radius:0;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* top keywords */
+.c-top{background:var(--butter);gap:26px}
+.c-top .rank{margin-top:8px}
+.c-top .manifesto{margin-top:60px}
+.rank{margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
+.rank li{list-style:none;display:grid;grid-template-columns:44px 1fr;gap:8px 12px;align-items:center}
+.rank .n{font:800 40px/1 var(--font-display);grid-row:span 2}
+.rank .k{font-weight:900;font-size:22px;line-height:1.3}
+.rank .meter{display:flex;align-items:center;gap:10px}
+.rank .meter .bar{flex:1}
+.rank .pct{font:800 14px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.manifesto{display:flex;flex-direction:column;gap:6px}
+.manifesto p{font-size:clamp(16px,4.6vw,19px);line-height:1.65;font-weight:700}
+.manifesto .tag{background:#fff;padding:4px 8px;border-radius:0;white-space:nowrap;font-weight:900}
+
+/* persona */
+.c-persona{background:var(--mint);gap:24px}
+.c-persona .lens{margin-top:22px}
+.c-persona .shape.a{width:260px;height:260px;background:var(--butter);right:-100px;top:-80px}
+.c-persona .lead{font-size:19px;font-weight:700;line-height:1.6}
+.lens{display:flex;flex-direction:column;gap:20px}
+.credit{font-size:12px;font-weight:500;color:var(--ink-2);text-align:right;margin-top:-6px}
+.axis{display:flex;flex-direction:column;gap:8px}
+.axis .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:19px;font-weight:900}
+.axis .top b{font:800 22px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.axis .bar{height:16px;border-radius:8px}
+.axis .bar i{background:var(--cobalt);border-radius:8px}
+
+/* hidden talent (dark) */
+.c-hidden{background:#1b1730;color:#fff}
+.c-hidden .eyebrow{color:#cfc8ea}
+.c-hidden .shape.a{width:300px;height:300px;background:radial-gradient(circle,rgb(154 165 255 / .35),transparent 70%);right:-120px;top:-60px}
+.c-hidden h1{font-size:clamp(40px,11.5vw,52px)}
+.plays{margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
+.plays li{list-style:none;display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;font-size:19px;line-height:1.5;font-weight:700}
+.plays li b{font:800 18px/1 var(--font-display);background:var(--butter);color:var(--ink);border-radius:50%;width:36px;height:36px;display:grid;place-items:center}
+.plays small{display:block;color:#cfc8ea;font-size:13px;font-weight:700;letter-spacing:.08em;margin-bottom:2px}
+
+/* who am I */
+.c-who{background:var(--periwinkle);gap:24px}
+.c-who .path{margin-top:12px}
+.c-who .shape.a{width:220px;height:220px;background:var(--butter);right:-80px;top:-70px}
+.c-who h1{font-size:clamp(40px,11.5vw,54px);line-height:1.15}
+.path{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.path span{font:700 15px/1 var(--font-body);background:rgb(255 255 255 / .55);border-radius:999px;padding:10px 14px}
+.path span.now{background:var(--ink);color:#fff}
+.path span.goal{background:#c6ccff;color:var(--ink-2)}
+.path i{font-style:normal;font:800 16px/1 var(--font-display);padding-left:16px}
+.c-who .then{font-size:clamp(15px,4.4vw,17px);font-weight:900;line-height:1.9;margin-top:36px;white-space:nowrap}
+.c-who .then span{display:block;width:fit-content;background:#fff;padding:4px 8px;line-height:1.5}
+
+/* data cards */
+.c-in{background:var(--coral);gap:18px}
+.c-out{background:var(--mint);gap:18px}
+.c-in .eyebrow,.c-out .eyebrow{color:var(--ink)}
+.rows-wrap{position:absolute;left:26px;right:26px;top:50%;transform:translateY(-50%);z-index:1}
+.rows{display:grid;grid-template-columns:1fr 1fr;gap:34px 12px;text-align:center}
+.rows .row{display:flex;flex-direction:column;align-items:center;gap:8px}
+.rows .row.solo{grid-column:1/-1}
+.rows .row b{font:800 clamp(64px,19vw,84px)/1 var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--cobalt)}
+.rows .row span{font-size:19px;font-weight:900;line-height:1.35}
+.rows .row span small{display:block;font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.04em}
+.c-out .then{font-size:20px;font-weight:900;line-height:1.45;margin-top:auto}
+
+/* next year */
+.c-next{background:var(--butter);gap:22px}
+.quests{margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.quests li{list-style:none;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.quests small{font:800 11px/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase}
+.quests b{font-size:18px;line-height:1.4}
+.c-next{padding-bottom:104px}
+.nowtag{background:var(--cobalt);color:#fff;padding:0 .12em;border-radius:0}
+.c-next .then{font:900 clamp(38px,11vw,46px)/1.22 'Inter Tight',system-ui,sans-serif;letter-spacing:-.025em;color:var(--ink);margin-top:40px}
+.reload{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:6;width:52px;height:52px;border-radius:50%;border:0;background:var(--ink);color:#fff;display:grid;place-items:center;cursor:pointer}
+.reload:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:6}
+.btn{font:700 14px/1 var(--font-body);border:0;border-radius:999px;padding:12px 16px;background:var(--ink);color:#fff;cursor:pointer}
+
+/* dark card chrome */
+.stage.dark .progress span{background:rgb(255 255 255 / .25)}
+.stage.dark .progress span i{background:#fff}
+.stage.dark .brand{color:#fff}
+.stage.dark .tap:focus-visible{outline-color:#fff}
+
+/* tap zones */
+.tap{position:absolute;z-index:4;top:44px;bottom:0;border:0;background:transparent;cursor:pointer;padding:0}
+.tap.prev{left:0;width:30%}
+.tap.next{right:0;width:70%}
+.tap:focus-visible{outline:3px solid var(--ink);outline-offset:-6px}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+/* entrance motion: elements reveal one after another via --d; all are visible at rest */
+@keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.card.on.play .r{animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+.card.on.play .bar i{animation:fill 1s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--bd,.3s)}
+.progress span.now i{transform-origin:left;animation:prog .5s ease-out}
+@media (max-width:430px){
+  body{height:100dvh;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+  .stage{max-width:none;height:100%;border-radius:0;box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .quote .strike{background-size:100% 3px}
+  .card.on.play .quote .strike{animation:none}
+  .card,.card.on{transition:none}
+  .card.on.play .r,.card.on.play .bar i,.progress span.now i{animation:none}
+}
+@media (max-height:700px){
+  .card{padding-top:56px;gap:12px}
+  p{font-size:15px}
+  .rows{gap:22px 12px}
+  .rows .row b{font-size:56px}
+}
+</style>
+</head>
+<body>
+
+<main class="stage" id="stage" aria-roledescription="故事" aria-label="我的職涯回顧">
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <div class="brand" aria-hidden="true"><span>Career Wrapped</span><span id="counter">1 / 8</span></div>
+
+  <!-- 1 cover -->
+  <section class="card c-cover on" aria-label="封面">
+    <div class="shape a"></div><div class="shape b"></div>
+    <div class="grow"></div>
+    <div class="year r" style="--d:.1s">2026</div>
+    <h1 class="r" style="--d:.6s">我的<br>職涯回顧</h1>
+    <div class="grow"></div>
+    <div class="hint r" style="--d:1.3s">點一下畫面開始</div>
+  </section>
+
+  <!-- 2 opener -->
+  <section class="card c-open" aria-label="起點">
+    <div class="eyebrow r" style="--d:0s">從一個念頭開始</div>
+    <div class="glyph r" style="--d:.2s" aria-hidden="true">“</div>
+    <p class="quote"><span class="strike">我覺得自己的能力和經歷，</span><br><span class="strike s2"><mark>跟不上市場</mark></span></p>
+    <p class="then r" style="--d:1.5s">真正的差距是有沒有<br>找到<span class="hl">自己累積的優勢</span></p>
+  </section>
+
+  <!-- 3 top keywords -->
+  <section class="card c-top" aria-label="Top 3 職涯關鍵字">
+    <div class="eyebrow r" style="--d:0s">我的職涯關鍵字</div>
+    <h1 class="r" style="--d:.15s">TOP 3</h1>
+    <ol class="rank r" style="--d:.35s">
+      <li><span class="n">1</span><span class="k">解決真實問題</span><span class="meter"><span class="bar"><i style="--w:100%;--bd:.6s"></i></span><span class="pct">50%</span></span></li>
+      <li><span class="n">2</span><span class="k">累積專業深度</span><span class="meter"><span class="bar"><i style="--w:60%;--bd:.6s"></i></span><span class="pct">30%</span></span></li>
+      <li><span class="n">3</span><span class="k">提升設計影響力</span><span class="meter"><span class="bar"><i style="--w:40%;--bd:.6s"></i></span><span class="pct">20%</span></span></li>
+    </ol>
+    <div class="manifesto r" style="--d:1.15s"><p><span class="tag">設計只是現在的工具，不是我的目的</span></p><p>就算有一天設計行業消失，我也會找到別條路繼續走下去</p></div>
+  </section>
+
+  <!-- 4 persona -->
+  <section class="card c-persona" aria-label="職場人格">
+    <div class="shape a"></div>
+    <div class="r" style="--d:.1s;display:flex;flex-direction:column;gap:16px">
+      <div class="eyebrow">我的職場人格</div>
+      <h1>整合流程的<br>工匠</h1>
+      <p class="lead">核心是把東西做好，也忍不住想顧好流程和團隊</p>
+    </div>
+    <div class="lens r" style="--d:.7s">
+      <div class="axis"><div class="top"><span>天生傾向｜總管</span><b>13 / 15</b></div><span class="bar"><i style="--w:87%;--bd:.9s"></i></span></div>
+      <div class="axis"><div class="top"><span>實際工作｜工匠</span><b>12 / 15</b></div><span class="bar"><i style="--w:80%;--bd:.9s"></i></span></div>
+      <div class="axis"><div class="top"><span>職涯成熟度</span><b>19 / 25</b></div><span class="bar"><i style="--w:76%;--bd:.9s"></i></span></div>
+      <p class="credit">by 大人學的職涯升級系統</p>
+    </div>
+  </section>
+
+  <!-- 5 who am I -->
+  <section class="card c-who" aria-label="我是誰">
+    <div class="shape a"></div>
+    <div class="eyebrow r" style="--d:0s">我是誰？</div>
+    <h1 class="r" style="--d:.3s">喜歡動手<br>做產品的<br>設計師</h1>
+    <div class="path">
+      <span class="r" style="--d:.9s">UI/UX Designer</span><i class="r" style="--d:1.02s">↓</i>
+      <span class="now r" style="--d:1.14s">Product Designer</span><i class="r" style="--d:1.26s">↓</i>
+      <span class="goal r" style="--d:1.38s">Product Builder</span>
+    </div>
+    <p class="then r" style="--d:2s"><span>下一步：</span><span>從設計畫面，走到親手把產品做出來</span></p>
+  </section>
+
+  <!-- 6 input -->
+  <section class="card c-in" aria-label="我的投入">
+    <div class="eyebrow r" style="--d:0s">我的投入</div>
+    <h2 class="r" style="--d:.3s">信心不是前提，<br>而是結果</h2>
+    <div class="rows-wrap"><div class="rows r" style="--d:.8s">
+      <div class="row"><b data-count="1">1</b><span>線下社團</span></div>
+      <div class="row"><b data-count="3">3</b><span>職涯課程</span></div>
+      <div class="row"><b data-count="5">5</b><span>專業諮詢</span></div>
+      <div class="row"><b data-count="20" data-suffix="+">20+</b><span>作業練習</span></div>
+    </div></div>
+  </section>
+
+  <!-- 7 output -->
+  <section class="card c-out" aria-label="我的收穫">
+    <div class="eyebrow r" style="--d:0s">我的收穫</div>
+    <h2 class="r" style="--d:.3s">方向清楚之後，<br>腳步也更加踏實</h2>
+    <div class="rows-wrap"><div class="rows r" style="--d:.8s">
+      <div class="row"><b data-count="20" data-suffix="+">20+</b><span>人脈拓展</span></div>
+      <div class="row"><b data-count="5">5</b><span>個人作品</span></div>
+      <div class="row"><b data-count="6">6</b><span>面試邀請</span></div>
+      <div class="row"><b>?</b><span>錄取<small>待確認</small></span></div>
+    </div></div>
+  </section>
+
+  <!-- 8 next year -->
+  <section class="card c-next" aria-label="2027 預告">
+    <div class="eyebrow r" style="--d:0s">2027 預告</div>
+    <h2 class="r" style="--d:.3s">下一階段的目標</h2>
+    <ul class="quests r" style="--d:.8s">
+      <li><small>Side Quest</small><b>分享 6 篇與設計和工作經驗相關的文章</b></li>
+      <li><small>Main Quest</small><b>做一個有真實使用者的產品</b></li>
+      <li><small>Long Quest</small><b>回饋設計社群，把自己走過的路分享出去</b></li>
+    </ul>
+    <p class="then r" style="--d:1.6s">The Second<br>Best Time<br>Is <span class="nowtag">NOW</span></p>
+    <button class="reload" id="restart" type="button" aria-label="從頭再看一次"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
+  </section>
+
+  <button class="tap prev" id="tapPrev" type="button" aria-label="上一張"></button>
+  <button class="tap next" id="tapNext" type="button" aria-label="下一張"></button>
+</main>
+
+<script>
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.card'));
+  var prog=document.getElementById('progress');
+  var counter=document.getElementById('counter');
+  var nextBtn=document.getElementById('tapNext');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i=0, timers=[];
+  cards.forEach(function(){var s=document.createElement('span');s.appendChild(document.createElement('i'));prog.appendChild(s);});
+  var segs=[].slice.call(prog.children);
+
+  function delayOf(el){
+    var host=el.closest('.r'); if(!host) return 0;
+    var v=parseFloat(getComputedStyle(host).getPropertyValue('--d'));
+    return isNaN(v)?0:v*1000;
+  }
+  function countUp(card){
+    timers.forEach(clearTimeout); timers=[];
+    if(reduce) return;
+    card.querySelectorAll('[data-count]').forEach(function(el){
+      var to=+el.getAttribute('data-count'), suf=el.getAttribute('data-suffix')||'';
+      el.textContent='0';
+      timers.push(setTimeout(function(){
+        var t0=null, dur=900;
+        function step(t){ if(!t0)t0=t; var p=Math.min(1,(t-t0)/dur); el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); else el.textContent=to+suf; }
+        requestAnimationFrame(step);
+      }, delayOf(el)+350));
+    });
+  }
+  function show(n){
+    n=Math.max(0,Math.min(cards.length-1,n));
+    cards[i].classList.remove('on','play');
+    cards[i].querySelectorAll('[data-count]').forEach(function(el){el.textContent=el.getAttribute('data-count')+(el.getAttribute('data-suffix')||'');});
+    i=n;
+    var c=cards[i];
+    c.classList.add('on'); void c.offsetWidth; c.classList.add('play');
+    segs.forEach(function(s,k){s.className=k<i?'done':(k===i?'now':'');});
+    counter.textContent=(i+1)+' / '+cards.length;
+    document.getElementById('stage').classList.toggle('dark',c.hasAttribute('data-dark'));
+    countUp(c);
+    nextBtn.hidden=(i===cards.length-1);
+  }
+  nextBtn.addEventListener('click',function(){show(i+1);});
+  document.getElementById('tapPrev').addEventListener('click',function(){show(i-1);});
+  document.getElementById('restart').addEventListener('click',function(){show(0);});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+  });
+  var sx=null, sy=null, st=document.getElementById('stage');
+  st.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  st.addEventListener('touchend',function(e){
+    if(sx===null)return; var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){ e.preventDefault(); show(dx<0?i+1:i-1); }
+    sx=null;
+  });
+  show(0);
+})();
+</script>
+
+</body></html>
