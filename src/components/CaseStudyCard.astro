@@ -9,8 +9,12 @@ interface Props {
   summary: string;
   tags: string[];
   cover?: ImageMetadata;
+  /** 建構動畫的區塊代碼與標籤（首頁使用）；省略則不加標記。 */
+  build?: { group: string; label: string };
 }
-const { slug, title, summary, tags, cover } = Astro.props;
+const { slug, title, summary, tags, cover, build } = Astro.props;
+const b = (type: "text" | "block" | "button") =>
+  build ? { "data-build": type, "data-group": build.group } : {};
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 // Force a line break right before the em-dash separator (rather than
@@ -21,7 +25,7 @@ const titleTail = titleRest.join("——");
 ---
 
 <a class="feature" href={`${base}/work/${slug}`}>
-  <span class="thumb">
+  <span class="thumb" {...b("block")} data-label={build?.label}>
     {cover ? (
       <Image
         class="cover-image"
@@ -38,9 +42,9 @@ const titleTail = titleRest.join("——");
   </span>
   <span class="body">
     <span class="tags">
-      {tags.map((tag) => <span class="tag">{tag}</span>)}
+      {tags.map((tag) => <span class="tag" {...b("button")}>{tag}</span>)}
     </span>
-    <h2>
+    <h2 {...b("text")}>
       <span class="title-highlight">
         {titleHead}
         {titleTail && (
@@ -51,7 +55,7 @@ const titleTail = titleRest.join("——");
         )}
       </span>
     </h2>
-    <p class="summary">{summary}</p>
+    <p class="summary" {...b("text")}>{summary}</p>
   </span>
 </a>
 

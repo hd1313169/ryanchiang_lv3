@@ -4,24 +4,35 @@ import gmailIcon from "../assets/icons/gmail.png";
 import linkedinIcon from "../assets/icons/linkedin.png";
 import cakeIcon from "../assets/icons/cake.png";
 
+interface Props {
+  /** 首頁與 About 啟用建構動畫（取代 .reveal 淡入） */
+  build?: boolean;
+}
+const { build = false } = Astro.props;
+const bt = (type: "text" | "block" | "button", group: string) =>
+  build ? { "data-build": type, "data-group": group } : {};
 const email = "wsad71155@gmail.com";
 // Placeholders — swap in the real profile URLs.
 const linkedinHref = "https://www.linkedin.com/in/ryanchiang13";
 const cakeHref = "https://www.cake.me/ryanchiang_13";
 ---
 
-<footer class="footer reveal">
+<footer
+  class:list={["footer", { reveal: !build }]}
+  data-build-section={build ? "enter" : undefined}
+  data-build-theme={build ? "dark" : undefined}
+>
   <div class="footer-inner">
     <div class="footer-heading">
       <div class="footer-heading-main">
-        <p>任何合作機會</p>
-        <p>歡迎隨時和我聊聊 :)</p>
+        <p {...bt("text", "contact-heading")}>任何合作機會</p>
+        <p {...bt("text", "contact-heading")}>歡迎隨時和我聊聊 :)</p>
       </div>
-      <p class="footer-caption">Ryan Chiang · UI/UX Designer · Taipei, Taiwan</p>
+      <p class="footer-caption" {...bt("text", "contact-heading")}>Ryan Chiang · UI/UX Designer · Taipei, Taiwan</p>
     </div>
 
     <div class="footer-contacts">
-      <button class="contact-link" type="button" data-email={email}>
+      <button class="contact-link" type="button" data-email={email} {...bt("button", "contacts")}>
         <Image class="contact-icon" src={gmailIcon} alt="" width={40} height={32} />
         <span class="contact-text">{email}</span>
         <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -29,7 +40,7 @@ const cakeHref = "https://www.cake.me/ryanchiang_13";
           <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
         </svg>
       </button>
-      <a class="contact-link" href={linkedinHref} target="_blank" rel="noopener noreferrer">
+      <a class="contact-link" href={linkedinHref} target="_blank" rel="noopener noreferrer" {...bt("button", "contacts")}>
         <Image class="contact-icon" src={linkedinIcon} alt="" width={40} height={40} />
         <span class="contact-text">LinkedIn</span>
         <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -37,7 +48,7 @@ const cakeHref = "https://www.cake.me/ryanchiang_13";
           <path d="M7 7h10v10" />
         </svg>
       </a>
-      <a class="contact-link" href={cakeHref} target="_blank" rel="noopener noreferrer">
+      <a class="contact-link" href={cakeHref} target="_blank" rel="noopener noreferrer" {...bt("button", "contacts")}>
         <Image class="contact-icon contact-icon--round" src={cakeIcon} alt="" width={40} height={40} />
         <span class="contact-text">CakeResume</span>
         <svg class="trailing-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

@@ -1,4 +1,11 @@
 ---
+interface Props {
+  /** 首頁與 About 啟用建構動畫 */
+  build?: boolean;
+}
+const { build = false } = Astro.props;
+const bt = (type: "text" | "block" | "button", group: string) =>
+  build ? { "data-build": type, "data-group": group } : {};
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const currentPath = Astro.url.pathname;
 
@@ -10,10 +17,16 @@ const items = [
 const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4cJKqj/view?usp=drive_link";
 ---
 
-<nav class="nav" aria-label="主要導覽">
+<nav
+  class="nav"
+  aria-label="主要導覽"
+  data-build-section={build ? "once" : undefined}
+  data-build-lock={build ? "false" : undefined}
+  data-build-fixed={build ? "" : undefined}
+>
   <div class="nav-inner">
     <a class="brand" href={`${base}/`}>
-      <span class="brand-name">Ryan Chiang</span>
+      <span class="brand-name" {...bt("text", "brand")}>Ryan Chiang</span>
     </a>
 
     <button
@@ -22,6 +35,7 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
       aria-expanded="false"
       aria-controls="nav-menu"
       aria-label="開啟選單"
+      {...bt("block", "menu")}
     >
       <span class="menu-bar" aria-hidden="true"></span>
       <span class="menu-bar" aria-hidden="true"></span>
@@ -32,14 +46,14 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
       {
         items.map((item) => (
           <li>
-            <a href={item.href} aria-current={item.active ? "page" : undefined}>
+            <a href={item.href} aria-current={item.active ? "page" : undefined} {...bt("text", "menu")}>
               {item.label}
             </a>
           </li>
         ))
       }
       <li>
-        <a href={resumeHref} target="_blank" rel="noopener noreferrer">履歷</a>
+        <a href={resumeHref} target="_blank" rel="noopener noreferrer" {...bt("text", "menu")}>履歷</a>
       </li>
     </ul>
   </div>

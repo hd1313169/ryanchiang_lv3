@@ -1,0 +1,211 @@
+/* 建構動畫：overlay 定位、初始隱藏、輔助視覺外觀。
+   色彩與字型 token 定義在 tokens.css（--color-build 等）。
+   注意：引擎控制的屬性（transform / opacity / clip-path）不可加 transition。 */
+
+/* ---------- 鎖定（只有首頁與 About 會加上 html.ba-page） ---------- */
+html.ba-page {
+  scrollbar-gutter: stable;
+  /* 游標從畫面外飛入：裁掉水平溢出，避免出現橫向捲軸 */
+  overflow-x: clip;
+}
+html.locked {
+  overflow: hidden;
+}
+
+/* ---------- 初始隱藏：只在 JS 啟動且未略過時 ---------- */
+html.js:not(.ba-skip) [data-build-section="once"]:not(.ba-done) [data-build],
+html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build],
+html.js:not(.ba-noscrub) [data-build-section="enter"]:not(.ba-done) [data-build] {
+  clip-path: inset(0 100% 0 0);
+}
+
+[data-build-section]:not([data-build-fixed]) {
+  position: relative;
+}
+
+/* 尚未建構完成的元件不接受滑鼠，避免空白處出現 hover 效果 */
+html.js [data-build-section] [data-build]:not([data-built]),
+html.js [data-build-section] :is(a, li):has([data-build]:not([data-built])) {
+  pointer-events: none;
+}
+
+/* ---------- overlay ---------- */
+.ba-overlay,
+.ba-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ba-guide {
+  position: absolute;
+  opacity: 0;
+}
+.ba-guide--v {
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed var(--color-build-guide);
+}
+.ba-guide--h {
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed var(--color-build-guide);
+}
+
+.ba-frame {
+  position: absolute;
+  border: var(--build-line) solid var(--color-build);
+  opacity: 0;
+}
+.ba-frame--member {
+  border-color: var(--color-build-member);
+}
+
+.ba-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--color-build-handle-fill);
+  border: var(--build-line) solid var(--color-build);
+  opacity: 0;
+}
+
+.ba-size,
+.ba-tag {
+  position: absolute;
+  font: 500 10px/1.4 var(--font-mono);
+  white-space: nowrap;
+  opacity: 0;
+}
+.ba-size {
+  background: var(--color-build);
+  color: var(--color-build-on);
+  padding: 2px 5px;
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+.ba-tag {
+  color: var(--color-build);
+  transform: translateY(-100%);
+  padding-bottom: 4px;
+}
+
+.ba-skel {
+  position: absolute;
+  background: var(--color-skel);
+  border-radius: 4px;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+.ba-skel--depth1 {
+  background: var(--color-skel-depth1);
+}
+
+.ba-caret {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.5px;
+  background: var(--color-build);
+  opacity: 0;
+}
+
+.ba-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 15px;
+  height: 21px;
+  margin: -1px 0 0 -1px;
+  opacity: 0;
+  z-index: 3;
+  will-change: transform;
+  overflow: visible;
+}
+.ba-cursor path {
+  fill: var(--color-text);
+  stroke: #fff;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+/* ---------- 提示 UI ---------- */
+.ba-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 200;
+  font: 12px/1 var(--font-mono), var(--font-cjk), monospace;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 9px 14px;
+  white-space: nowrap;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.ba-hint.is-off {
+  opacity: 0;
+}
+
+.ba-cue {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  bottom: calc(-1 * var(--space-5));
+  font: 14px/1 var(--font-mono), var(--font-cjk), monospace;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.ba-cue.is-on {
+  opacity: 1;
+}
+.ba-cue-arrow {
+  display: inline-block;
+  animation: ba-cue-bounce 1.4s ease-in-out infinite;
+}
+@keyframes ba-cue-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.ba-debug {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 201;
+  display: flex;
+  gap: 6px;
+  font: 12px var(--font-mono), monospace;
+}
+.ba-debug button {
+  font: inherit;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.ba-debug button[aria-pressed="true"] {
+  background: var(--color-text);
+  color: #fff;
+}

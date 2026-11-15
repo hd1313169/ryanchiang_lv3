@@ -7,7 +7,17 @@ import "@fontsource/noto-sans-tc/300.css";
 import "@fontsource/noto-sans-tc/400.css";
 import "@fontsource/noto-sans-tc/500.css";
 import "@fontsource/noto-sans-tc/600.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
 import "../styles/tokens.css";
+import "../build-anim/build-anim.css";
+import {
+  ENABLED as BUILD_ENABLED,
+  MOBILE_BP,
+  PLAY_EVERY_LOAD,
+  SCRUB_ENABLED,
+  STORAGE_PREFIX,
+} from "../build-anim/config";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import BackToTop from "../components/BackToTop.astro";
@@ -16,15 +26,35 @@ import CareerWrappedFab from "../components/CareerWrappedFab.astro";
 interface Props {
   title: string;
   description: string;
+  /** 啟用建構動畫的頁面代碼（首頁 "home"、About "about"）；省略則不啟用。 */
+  buildAnim?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, buildAnim } = Astro.props;
+const buildKey = BUILD_ENABLED ? buildAnim : undefined;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
 ---
 
 <html lang="zh-Hant">
   <head>
+    {
+      buildKey && (
+        <script is:inline define:vars={{ buildKey, MOBILE_BP, STORAGE_PREFIX, PLAY_EVERY_LOAD, SCRUB_ENABLED }}>
+          // 必須在 <head> 最前面：主程式載入前就決定隱藏／鎖定，避免閃爍或被捲動。
+          // 不可把 locked 寫死在 HTML，否則 JS 失敗時頁面會永遠鎖住。
+          var r = document.documentElement;
+          var played = false;
+          try { played = sessionStorage.getItem(STORAGE_PREFIX + buildKey) === "1"; } catch (e) {}
+          var debug = /[?&]debug/.test(location.search) || PLAY_EVERY_LOAD;
+          r.dataset.baPage = buildKey;
+          r.classList.add("js", "ba-page");
+          if (!SCRUB_ENABLED) r.classList.add("ba-noscrub");
+          if ((played && !debug) || location.hash) r.classList.add("ba-skip");
+          else if (window.innerWidth >= MOBILE_BP) r.classList.add("locked");
+        </script>
+      )
+    }
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
@@ -41,11 +71,11 @@ const ogImage = new URL(`${base}/og-image.png`, Astro.site ?? Astro.url.origin);
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <Nav />
+    <Nav build={!!buildKey} />
     <main>
       <slot />
     </main>
-    <Footer />
+    <Footer build={!!buildKey} />
     <CareerWrappedFab />
     <BackToTop />
     <slot name="overlay" />

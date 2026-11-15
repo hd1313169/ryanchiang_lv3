@@ -11,6 +11,12 @@
         ],
         "createdAt": "2026-11-14T15:00:09.232Z",
         "reason": "user confirmed: requested gradient on the decorative FAB star icon only"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "ba-cue-bounce",
+        "createdAt": "2026-11-15T13:26:34.503Z",
+        "reason": "user requested the scroll-cue arrow to bounce continuously; keyframes use ease-in-out 4px translate, not bounce/elastic easing"
       }
     ]
   }
