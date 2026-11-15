@@ -12,7 +12,8 @@
 - [x] 1.3 實作 `rng.ts`、`split.ts`、`measure.ts`（拆字快取、文字行合併、元件量測）；驗證：在 Hero 呼叫後，`.ch` 數量與非空白字數相符
 - [x] 1.4 實作 `overlay.ts` 與 `build-anim.css`（`html.js [data-build]` 初始隱藏，以及各 `.ba-*` 樣式）；驗證：在 `?debug` 暫停時可看到框線、控制點、標籤
 - [x] 1.5 實作 `timeline.ts`（六個階段、once 模式）與 `index.ts` 的 `buildSection`、`skip`、`replay`、`destroy`；驗證：完成後 overlay 沒有子節點，元件 `clip-path` 為 `none`
-- [ ] 1.6 實作 `scroll-lock.ts`（鎖定、iOS fixed、按鍵攔截、點擊略過、捲動加速、resize 直接完成），以及提示 UI；驗證：桌機 Chrome 與 iOS Safari 播放中無法捲動，點擊後立即解鎖
+- [x] 1.6 實作 `scroll-lock.ts`（鎖定、iOS fixed、按鍵攔截、點擊略過、捲動加速、resize 直接完成），以及提示 UI；驗證：桌機 Chrome 與 iOS Safari 播放中無法捲動，點擊後立即解鎖
+  - 備註：業主決定上線後再以 iPhone 實機測試（本機區網連線失敗）
   - 備註：桌機 Chrome 已驗證（滾輪、PageDown、空白鍵皆無法捲動；點擊解鎖）；iOS Safari 需實機
 - [x] 1.7 在首頁與 About 注入 head 行內 script（`js`／`locked` class、sessionStorage、`#hash`、< 720px 判斷），案例頁不注入；驗證：案例頁的 `<html>` 沒有 `locked`
 - [x] 1.8 首頁 Hero 加上 `data-build` 標記（slogan／buttons／visual），移除 `.reveal`，掃描並修正 `h1 span` 之類的選擇器；驗證：Hero 完整播放約 4.3 秒，品牌字「Ryan」的樣式正確
@@ -26,7 +27,8 @@
 - [x] 2.1 實作 scrub 模式（ScrollTrigger pin、onUpdate 推進、進度換算與平滑、onRefresh 重建並保留進度）；驗證：往回捲會倒播，resize 後框線位置正確
 - [x] 2.2 實作手機版逐區塊 timeline（`gsap.matchMedia`、`data-layer`），以及錨點跳轉時經過的區段直接完成；驗證：寬度 < 720px 時不釘住，每張卡片各自建構
 - [x] 2.3 精選專案、個人專案加上標記並移除 `.reveal`，決定個人專案的區塊切分（每個區段不超過 6 個區塊）；驗證：捲約 600px 後完成，再捲約 200px 才放行
-- [ ] 2.4 4× CPU 降速錄製 Performance；驗證：量測以外沒有 Layout，也沒有超過 16ms 的幀
+- [x] 2.4 4× CPU 降速錄製 Performance；驗證：量測以外沒有 Layout，也沒有超過 16ms 的幀
+  - 備註：業主以 Chrome DevTools 4× 降速實錄：動畫期間（約 1.5–4.8 秒）有部分掉幀（黃色 partially presented），播完後正常；LCP 8.03s 因內容等打字完成才可見。錄製時有多個擴充功能同時執行。業主決定接受現狀上線，優化（減少同時游標、逐字更新次數）留待日後
   - 備註：4× CPU 降速 trace：無超過 16ms 的長任務；動畫只觸發樣式重算、不觸發 Layout（打字游標高度改為一次設定）。播放中的 Layout 全部來自 Noto Sans TC 子集字型陸續載入（Fonts changed），第二次造訪有快取時不會發生。headless 的幀間隔不穩定（同頁三次最長 38–75ms），需在一般 Chrome DevTools 實錄確認
 - [x] 2.5 Commit「Phase 2」，在 preview 評估捲動阻力，必要時調整 config 的距離
   - 備註：已推送；捲動區段已改為觸發後自動播完，不再有額外捲動距離
@@ -37,7 +39,8 @@
 - [x] 3.2 移除 skills／AI 區段的 CSS sticky、`100vh` 與疊蓋 z-index，必要時調整排版；驗證：兩個區段依序正常捲動，沒有重疊
 - [x] 3.3 skills、AI（`data-build-theme="dark"`）、工作經歷、社群區段加上 scrub 標記，移除 `.reveal` 與錯開入場；驗證：深色區段的框線清楚可見，桌機上比畫面高的區段改為逐區塊建構
 - [x] 3.4 確認流程圖 lightbox 在建構完成後仍可開啟和關閉；驗證：點擊、Esc、背景點擊都正常
-- [ ] 3.5 依規格 §10.2 驗收清單完整跑一輪（桌機、手機、iOS Safari）
+- [x] 3.5 依規格 §10.2 驗收清單完整跑一輪（桌機、手機、iOS Safari）
+  - 備註：iOS Safari 實機部分延至上線後測試
   - 備註：自動化項目已通過（首頁與 About）：鎖定、點擊略過（含導覽列一起完成）、resize 直接完成、自然播完無殘留 overlay／隱藏樣式／will-change、#hash 不播放、手機無游標不鎖定、停用 JS 內容完整可捲動。剩 iOS Safari 實機與 Mac 觸控板慣性（規格 §7.5）
 - [x] 3.6 Commit「Phase 3」，在 preview 檢查
   - 備註：已推送
@@ -48,7 +51,8 @@
 
 - [x] 4.1 確認案例頁、Nav、Footer 沒有任何視覺或行為差異；驗證：比對修改前後的 preview 截圖
   - 備註：以 main 與分支各自 build，五篇案例頁 × 桌機／手機整頁截圖比對：高度、html class、data-build 數量一致；少數截圖的位元差異在 main 對 main 時同樣出現，屬渲染雜訊
-- [ ] 4.2 由業主決定要合併的階段，合併至 main（可以只合併部分階段）
+- [x] 4.2 由業主決定要合併的階段，合併至 main（可以只合併部分階段）
+  - 備註：業主決定整個分支合併至 main 上線
 
 ## Workflow follow-up
 
