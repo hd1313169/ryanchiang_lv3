@@ -218,11 +218,14 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
         const caret = div("ba-caret");
         const ts = t0 + T.typeStart;
         tl.to(bars, { opacity: 0, duration: T.typeSkelOut }, ts);
+        // 高度在建立時一次設定（同一元件內字高相同），逐字只移動 transform，避免每個字觸發 Layout
+        const rects = chars.map((ch) => ch.getBoundingClientRect());
+        caret.style.height = px(Math.max(0, ...rects.map((r) => r.height)));
         tl.set(caret, { opacity: 1 }, ts);
         chars.forEach((ch, k) => {
-          const r = ch.getBoundingClientRect();
+          const r = rects[k];
           tl.set(ch, { opacity: 1 }, ts + k * step);
-          tl.set(caret, { x: r.right - origin.left + LOOK.caretGap, y: r.top - origin.top, height: r.height }, ts + k * step);
+          tl.set(caret, { x: r.right - origin.left + LOOK.caretGap, y: r.top - origin.top }, ts + k * step);
         });
         mEnd = ts + dur;
         tl.to(caret, { opacity: 0, duration: T.caretBlink, repeat: T.caretBlinkRepeat, yoyo: true }, mEnd);
