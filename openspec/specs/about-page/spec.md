@@ -17,7 +17,7 @@ The About page SHALL display an "AI 應用實踐高效設計" section immediatel
 
 ---
 ### Requirement: Sticky cover-scroll transition
-On wider viewports, as a visitor scrolls from the skills section into the AI workflow section, the skills section SHALL remain pinned in place while the AI workflow section visually rises to fully cover it, before scrolling continues normally into the AI workflow section's own content. On narrow viewports, where the skills section's single-column content is taller than the viewport, this pin-and-cover transition SHALL be skipped so the skills section instead scrolls normally and all of its content remains reachable.
+On wider viewports, as a visitor scrolls from the skills section into the AI workflow section, the skills section SHALL remain pinned in place while the AI workflow section visually rises to fully cover it, before scrolling continues normally into the AI workflow section's own content. On narrow viewports, or whenever the skills section is taller than the viewport, this pin-and-cover transition SHALL be skipped so the skills section instead scrolls normally and all of its content remains reachable.
 
 #### Scenario: Scrolling from skills into the AI workflow section on a wide viewport
 - **WHEN** a visitor on a wide viewport scrolls down past the "我擅長的事" section
@@ -29,7 +29,7 @@ On wider viewports, as a visitor scrolls from the skills section into the AI wor
 
 #### Scenario: JavaScript disabled
 - **WHEN** a visitor has JavaScript disabled and scrolls through the same region on a wide viewport
-- **THEN** the cover-scroll transition still occurs, since it relies only on CSS positioning
+- **THEN** both sections scroll normally with no cover transition, and all content is visible
 
 ---
 ### Requirement: Flowchart lightbox
@@ -244,14 +244,6 @@ The circles SHALL render behind the section's heading and cards, and SHALL NOT o
 #### Scenario: Diffusion bleeds above but not into the Footer
 - **WHEN** a visitor views the boundary between 工作經歷 and the community section, and separately the boundary between the community section and the Footer
 - **THEN** the glow's soft diffusion is visible extending upward past the community section's own top edge into 工作經歷, and is not visible anywhere within the Footer
-
----
-### Requirement: Staggered card entrance
-The two cards SHALL animate into view one after another (not simultaneously) the first time they scroll into the viewport, each entering with the same bottom-to-top fade/slide treatment already used elsewhere on the About page (e.g. 工作經歷's items).
-
-#### Scenario: Cards enter in sequence
-- **WHEN** a visitor scrolls the two cards into view for the first time
-- **THEN** the left card begins its entrance animation before the right card does, rather than both animating in at the same instant
 
 ---
 ### Requirement: About page renders finalized content sections
