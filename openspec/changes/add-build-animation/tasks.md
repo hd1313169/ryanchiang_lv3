@@ -44,7 +44,7 @@
 
 ## 4. 收尾
 
-- [ ] 4.0 上線前把 `config.ts` 的 `REPLAY_EVERY_LOAD` 改回 false；驗證：重新整理後首屏不重播
+- [x] 4.0 ~~上線前把 `REPLAY_EVERY_LOAD` 改回 false~~ 業主決定首屏每次載入都播放；開關改名為 `PLAY_EVERY_LOAD` 並維持 true
 
 - [x] 4.1 確認案例頁、Nav、Footer 沒有任何視覺或行為差異；驗證：比對修改前後的 preview 截圖
   - 備註：以 main 與分支各自 build，五篇案例頁 × 桌機／手機整頁截圖比對：高度、html class、data-build 數量一致；少數截圖的位元差異在 main 對 main 時同樣出現，屬渲染雜訊

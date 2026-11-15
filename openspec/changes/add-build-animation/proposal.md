@@ -7,7 +7,7 @@
 ## What Changes
 
 - 新增建構動畫引擎（GSAP 3.12.x，純 TypeScript 模組，位於 `src/build-anim/`），依 `data-build` / `data-group` / `data-depth` 標記自動產生 timeline，所有參數集中於 `config.ts`，並提供總開關。
-- 首頁 Hero 與 About 首屏（intro）各自以 `once` 模式播放一次（各自記錄於 sessionStorage）。播放時鎖定捲動，可點擊略過、捲動加速。兩頁的 Nav 與 Footer 也各自獨立建構（案例頁不變）。
+- 首頁 Hero、About 首屏（intro）與導覽列每次載入都播放。播放時鎖定捲動，可點擊略過、捲動加速。兩頁的 Nav 與 Footer 也各自獨立建構（案例頁不變）。
 - 首頁的精選專案、個人專案，以及 About 的技能、AI 工作流程、工作經歷、社群區段，改為捲動觸發：每個區塊捲進畫面時以時間播完建構，往回捲離開畫面時收回（不使用規格的「釘住＋隨捲動拖動」，見 design.md 決策 21）。
 - **BREAKING（視覺行為）**：首頁與 About 移除現有的 `.reveal` 淡入上移，以及 About 卡片的錯開入場，全部改用建構效果。案例頁的 `.reveal` 維持不變。
 - About「我擅長的事 → AI 工作流程」的疊蓋轉場由 CSS sticky 改為 GSAP pin 實作，視覺效果不變；停用 JS 時不再有疊蓋。

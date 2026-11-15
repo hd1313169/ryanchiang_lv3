@@ -18,8 +18,12 @@
 - **THEN** 導覽列作為獨立區段，與 Hero 同時開始建構，但不會鎖定或解除捲動
 
 #### Scenario: Footer builds when reached
-- **WHEN** 訪客捲到首頁底部的 Footer
-- **THEN** Footer 的標題與聯絡按鈕以深色版的輔助線建構出現
+- **WHEN** 訪客捲到首頁或 About 底部的 Footer
+- **THEN** Footer 整區一起以深色版的輔助線建構，播放方式與首屏相同
+
+#### Scenario: Scrolling away from a built footer
+- **WHEN** Footer 建構完成後，訪客往回捲到 Footer 離開畫面，再捲回來
+- **THEN** Footer 維持完成狀態，不倒退也不重播
 
 ### Requirement: Build sequence
 每個參與的區段 SHALL 依序呈現六個階段：參考線出現、游標飛入並拉出區塊大框、元件框展開、灰色骨架填入、內容出現（文字逐字打出並附插入點，圖片與按鈕由左往右擦出）、輔助線收起。同一區段的所有區塊 SHALL 同步推進，只允許微小錯開。
@@ -57,16 +61,12 @@
 - **WHEN** About 的深色 AI 工作流程區段建構
 - **THEN** 框線、骨架與標籤在深色背景上清楚可見
 
-### Requirement: Opening sections play once per page per session
-首頁 Hero 與 About 首屏 SHALL 以時間驅動播放（約 4.3 秒），同一個分頁工作階段中每頁各播一次。之後再進入同一頁 SHALL 直接顯示完成狀態。網址帶 `#hash` 進入時 SHALL NOT 播放。
-
-#### Scenario: First visit to home then about
-- **WHEN** 訪客在同一分頁先開首頁、再開 About
-- **THEN** 兩頁的首屏各播放一次建構動畫
+### Requirement: Opening sections play on every load
+首頁 Hero、About 首屏與兩頁的導覽列 SHALL 以時間驅動播放，且每次載入（含重新整理）都播放。網址帶 `#hash` 進入時 SHALL NOT 播放。捲回頂端時 SHALL NOT 倒播或重播。
 
 #### Scenario: Reloading the home page
-- **WHEN** 訪客已看過首頁 Hero 後重新整理首頁
-- **THEN** Hero 直接以完成狀態出現，不鎖定捲動
+- **WHEN** 訪客看過首頁 Hero 後重新整理首頁
+- **THEN** Hero 與導覽列再播放一次
 
 #### Scenario: Entering via anchor link
 - **WHEN** 訪客以帶 `#hash` 的網址進入首頁或 About
@@ -80,8 +80,8 @@
 在寬度 ≥ 720px 時，首屏播放期間 SHALL 鎖定頁面捲動（滾輪、觸控、捲動鍵、捲軸皆無效），鎖定與解鎖時版面 SHALL NOT 左右跳動。點擊區段 SHALL 立即完成並解鎖；嘗試捲動 SHALL 讓播放加速。鎖定中 SHALL 顯示提示；完成後 SHALL 在區段下方水平置中顯示「往下捲動」提示，箭頭持續上下跳動。等待字型載入期間 SHALL 先顯示垂直參考線，不留空白。
 
 #### Scenario: Clicking to skip
-- **WHEN** 首屏播放中訪客點擊區段任一處
-- **THEN** 建構立即完成，頁面恢復可捲動
+- **WHEN** 首屏播放中訪客點擊畫面任一處
+- **THEN** 首屏與導覽列的建構立即完成，頁面恢復可捲動
 
 #### Scenario: Trying to scroll
 - **WHEN** 首屏播放中訪客轉動滾輪或觸控拖曳

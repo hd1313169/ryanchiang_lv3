@@ -2,7 +2,7 @@
 // 用法：區段加上 data-build-section="once"，元件加上 data-build / data-group，
 // 再於頁面 <script> 呼叫 startBuildAnimations()。
 import { gsap } from "gsap";
-import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, REPLAY_EVERY_LOAD, SCRUB_ENABLED, SEED, SPEED, STORAGE_PREFIX, LOOK } from "./config";
+import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, PLAY_EVERY_LOAD, SCRUB_ENABLED, SEED, SPEED, STORAGE_PREFIX, LOOK } from "./config";
 import { clearOverlay } from "./overlay";
 import { lock, unlock } from "./scroll-lock";
 import { setupScrub } from "./scrub";
@@ -201,7 +201,8 @@ function layoutReady(sections: HTMLElement[]): Promise<boolean> {
 export async function startBuildAnimations() {
   const all = (mode: string) => Array.from(document.querySelectorAll<HTMLElement>(`[data-build-section="${mode}"]`));
   const sections = all("once");
-  const scrubSections = all("scrub");
+  // scrub：逐區塊觸發、可收回；enter：整區捲到時播一次、不收回（Footer）
+  const scrubSections = [...all("scrub"), ...all("enter")];
   const key = root.dataset.baPage ?? location.pathname;
 
   if (!ENABLED) {
@@ -211,7 +212,7 @@ export async function startBuildAnimations() {
   const scrubOn = SCRUB_ENABLED && !root.classList.contains("ba-noscrub");
   if (!scrubOn) scrubSections.forEach(showFinished);
 
-  const skip = root.classList.contains("ba-skip") || (!debug && !REPLAY_EVERY_LOAD && storage.get(key));
+  const skip = root.classList.contains("ba-skip") || (!debug && !PLAY_EVERY_LOAD && storage.get(key));
   if (skip) {
     root.classList.remove("locked");
     sections.forEach(showFinished);

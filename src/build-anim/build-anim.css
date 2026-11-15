@@ -14,7 +14,8 @@ html.locked {
 
 /* ---------- 初始隱藏：只在 JS 啟動且未略過時 ---------- */
 html.js:not(.ba-skip) [data-build-section="once"]:not(.ba-done) [data-build],
-html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build] {
+html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build],
+html.js:not(.ba-noscrub) [data-build-section="enter"]:not(.ba-done) [data-build] {
   clip-path: inset(0 100% 0 0);
 }
 

@@ -5,8 +5,8 @@
 export const ENABLED = true;
 /** 捲動建構區段（scrub）的開關，可單獨關閉。 */
 export const SCRUB_ENABLED = true;
-/** 測試期間用：true 時首屏每次載入都播放（忽略「同一分頁只播一次」）。上線前改回 false。 */
-export const REPLAY_EVERY_LOAD = true;
+/** 首屏（Hero、導覽列）每次載入都播放（業主決定）。false 則回到規格的「同一分頁只播一次」。 */
+export const PLAY_EVERY_LOAD = true;
 
 /** 桌機／手機切換點（px），CSS 斷點也用同一個值。 */
 export const MOBILE_BP = 720;
@@ -68,18 +68,19 @@ export const T = {
   typeStart: 1.5,
   typeSkelOut: 0.25,
   // 打字加快（規格原值 0.35 + 字數 × 0.018，上限 1.0）
-  typeBase: 0.2,
-  typePerChar: 0.008,
-  typeMax: 0.5,
+  typeBase: 0.12,
+  typePerChar: 0.005,
+  typeMax: 0.3,
   caretBlink: 0.08,
   caretBlinkRepeat: 2,
   caretHide: 0.2,
 
+  // 圖片／按鈕擦出加快（規格 0.5）
   wipeStart: 1.65,
-  wipeDur: 0.5,
-  wipeSkelOut: 1.9,
-  wipeSkelOutDur: 0.3,
-  wipeEnd: 2.15,
+  wipeDur: 0.3,
+  wipeSkelOut: 1.75,
+  wipeSkelOutDur: 0.2,
+  wipeEnd: 1.95,
 
   memberOutDelay: 0.15,
   frameOutDur: 0.3,

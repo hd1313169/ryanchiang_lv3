@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MOBILE_BP, SCRUB, SPEED } from "./config";
 import { clearOverlay } from "./overlay";
 import { whenUnlocked } from "./scroll-lock";
-import { buildElements, buildTimeline, markBuilt } from "./timeline";
+import { buildElements, buildTimeline, markBuilt, settleElements } from "./timeline";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -79,6 +79,36 @@ function perGroup(section: HTMLElement, seed: number, cursors: boolean) {
   };
 }
 
+/** 整區一起播一次、不收回（與首屏相同的播法，用於 Footer）。 */
+function enterOnce(section: HTMLElement, seed: number, cursors: boolean) {
+  let tl: gsap.core.Timeline | null = null;
+  let started = false;
+  const finish = () => {
+    clearOverlay(section);
+    settleElements(buildElements(section));
+    section.classList.add("ba-done");
+  };
+  const rebuild = () => {
+    if (started) return; // 開始播放後不再重建（播完即清空 overlay）
+    tl?.kill();
+    tl = buildTimeline(section, { seed, cursors });
+    tl.eventCallback("onComplete", finish);
+  };
+  const play = () => {
+    if (started || !tl) return;
+    started = true;
+    tl.timeScale(cursors ? SPEED.base : SPEED.mobile).play();
+  };
+  rebuild();
+  if (section.getBoundingClientRect().top < window.innerHeight * 0.85) play();
+  const st = ScrollTrigger.create({ trigger: section, start: SCRUB.groupStart, onEnter: play, onRefresh: rebuild });
+  return () => {
+    st.kill();
+    if (started) tl?.progress(1);
+    else tl?.kill();
+  };
+}
+
 const INTENT_KEYS = new Set([" ", "ArrowDown", "PageDown", "End"]);
 
 /**
@@ -109,15 +139,16 @@ function arm(sections: HTMLElement[], baseSeed: number) {
   const mm = gsap.matchMedia();
   sections.forEach((section, si) => {
     const seed = baseSeed + (si + 1) * 100;
+    const run = section.dataset.buildSection === "enter" ? enterOnce : perGroup;
     mm.add(`(min-width: ${MOBILE_BP}px)`, () => {
-      const undo = perGroup(section, seed, true);
+      const undo = run(section, seed, true);
       return () => {
         undo();
         clearOverlay(section);
       };
     });
     mm.add(`(max-width: ${MOBILE_BP - 1}px)`, () => {
-      const undo = perGroup(section, seed, false);
+      const undo = run(section, seed, false);
       return () => {
         undo();
         clearOverlay(section);
