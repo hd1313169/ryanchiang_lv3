@@ -28,7 +28,7 @@
 
 3. **`html.locked` 行內 script 只放在首頁與 About**：透過 BaseLayout 的 head slot（或頁面 prop）注入，不影響案例頁。script 同時判斷 sessionStorage 已播／帶 `#hash`／寬度 < 720px，三者任一成立就不加 `locked`，避免閃一下。
 
-4. **Nav 不參與**：Hero 區塊改為 `slogan`（眉標、標題、headline、內文）、`buttons`、`visual`（插畫框）。原規格的 `nav`、`stats` 不使用。插畫雙層 overlay 圖（`is-active` 切換）整個框視為一個 `block`，內部兩張圖不單獨標記，避免與既有切換邏輯衝突。
+4. **Nav 不參與**（已由決策 17 取代）：Hero 區塊改為 `slogan`（眉標、標題、headline、內文）、`buttons`、`visual`（插畫框）。原規格的 `nav`、`stats` 不使用。插畫雙層 overlay 圖（`is-active` 切換）整個框視為一個 `block`，內部兩張圖不單獨標記，避免與既有切換邏輯衝突。
    - 參考線的水平線改為：區段頂端、主標題頂端、最下方元件頂端。
 
 5. **About 首屏 = `intro-grid`，`once` 模式**。sessionStorage key 依頁面分開（`ba:home`、`ba:about`）。
@@ -60,6 +60,14 @@
 15. **開場空白**：實測主要是 Noto Sans TC 的數十個子集字型檔（本機約 1 秒），插畫只需 0.07 秒。量測必須等字型，所以改為等待期間先淡入垂直參考線；游標進場也從 0.2 提前到 0.05 引擎秒。
 
 16. **標籤用 `button` 類型**：每個標籤 pill 是一個元件，以骨架＋擦出呈現，不用打字。
+
+17. **Nav／Footer 獨立建構**（第三輪回饋）：`Nav`、`Footer` 接 `build` prop，由 BaseLayout 依頁面決定。Nav 是 `once` 區段、`data-build-lock="false"`（不鎖捲動，鎖定只由 Hero 持有，各區段只解除自己加的鎖）、`data-build-fixed`（保留 `position: fixed`）。手機版收合中的選單量不到尺寸，略過動畫，完成時一併顯示。Footer 是不釘住的捲動區段（`data-build-pin="false"`）、深色主題，取代原本的 `.reveal`。
+
+18. **第一次捲動才啟用捲動區段**：載入時「精選專案」標題常常已在畫面底部，會立刻開始播。改為第一次嘗試捲動（scroll／wheel／touchmove／捲動鍵）後才啟用；Hero 鎖定期間的嘗試也算，等解鎖後啟用，並立即播放已露出的區塊。先前標題偶爾不出現有兩個原因：鎖定中的滾輪沒有產生捲動事件；以及 ScrollTrigger 建立時會立即重建 timeline，剛 `play()` 的 timeline 這時 `isActive()` 仍是 false，重建後就停在 0。改為自行記錄每個區塊的播放方向。往回捲時另用一個觸發點（區塊頂端離開畫面底部）收回。
+
+19. **未建構的元件不接受滑鼠**：完成時加 `data-built`；CSS 對沒有 `data-built` 的元件（以及包著它們的連結）設 `pointer-events: none`，避免空白處出現 hover 螢光筆線。
+
+20. **打字加快**：0.2 + 字數 × 0.008，上限 0.5 引擎秒（規格 0.35 / 0.018 / 1.0）；格線與拉框時間不變。
 
 ## Risks / Trade-offs
 

@@ -3,6 +3,7 @@ const KEYS = new Set([" ", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home",
 const root = document.documentElement;
 
 let locked = false;
+const unlockWaiters: Array<() => void> = [];
 let onAttempt: (() => void) | null = null;
 let savedY = 0;
 
@@ -50,6 +51,13 @@ export function unlock() {
     Object.assign(document.body.style, { position: "", top: "", width: "" });
     window.scrollTo(0, savedY);
   }
+  unlockWaiters.splice(0).forEach((cb) => cb());
 }
 
-export const isLocked = () => locked;
+export const isLocked = () => locked || document.documentElement.classList.contains("locked");
+
+/** 未鎖定時立即執行；鎖定中則等解鎖後執行。 */
+export function whenUnlocked(cb: () => void) {
+  if (!isLocked()) cb();
+  else unlockWaiters.push(cb);
+}

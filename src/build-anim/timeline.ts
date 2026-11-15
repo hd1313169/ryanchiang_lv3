@@ -56,7 +56,11 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
   const H = origin.height;
   const rand = rng(opts.seed);
   const useCursor = opts.cursors ?? window.innerWidth >= MOBILE_BP;
-  const items = els.map((el) => measure(el, origin)).sort((a, b) => a.y - b.y || a.x - b.x);
+  // 隱藏中的元件（例如手機版收合的選單）不參與動畫，完成時一併顯示
+  const items = els
+    .map((el) => measure(el, origin))
+    .filter((it) => it.w > 0 && it.h > 0)
+    .sort((a, b) => a.y - b.y || a.x - b.x);
   const { div, cursor } = createLayer(section, opts.group ?? "all");
   const tl = gsap.timeline({ paused: true });
   if (!items.length) return tl;
@@ -240,8 +244,14 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
   return tl;
 }
 
+/** 標記元件已建構完成（未完成的元件不接受滑鼠，避免空白處出現 hover 效果）。 */
+export function markBuilt(els: HTMLElement[], built: boolean) {
+  els.forEach((el) => el.toggleAttribute("data-built", built));
+}
+
 /** 完成狀態：元件 clip-path 設為 none，清掉字元的行內 opacity。 */
 export function settleElements(els: HTMLElement[]) {
+  markBuilt(els, true);
   gsap.set(els, { clipPath: "none" });
   els.forEach((el) => {
     if (el.dataset.build === "text") gsap.set(charsOf(el), { clearProps: "opacity" });

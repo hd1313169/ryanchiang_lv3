@@ -7,15 +7,19 @@
 ## ADDED Requirements
 
 ### Requirement: Pages covered by the build animation
-建構動畫 SHALL 只套用在首頁與 About 頁。導覽列、Footer、案例頁 SHALL NOT 參與建構動畫。
+建構動畫 SHALL 只套用在首頁與 About 頁，包含這兩頁的導覽列與 Footer。案例頁（含其導覽列與 Footer）SHALL NOT 參與建構動畫。
 
 #### Scenario: Visiting a case study page
 - **WHEN** 訪客開啟任一案例頁
 - **THEN** 頁面不出現參考線、游標、框線或打字效果，維持既有的入場行為
 
-#### Scenario: Navigation during the hero build
-- **WHEN** 首頁 Hero 正在建構
-- **THEN** 導覽列從一開始就完整可見，且不會被框選
+#### Scenario: Navigation builds independently
+- **WHEN** 訪客開啟首頁
+- **THEN** 導覽列作為獨立區段，與 Hero 同時開始建構，但不會鎖定或解除捲動
+
+#### Scenario: Footer builds when reached
+- **WHEN** 訪客捲到首頁底部的 Footer
+- **THEN** Footer 的標題與聯絡按鈕以深色版的輔助線建構出現
 
 ### Requirement: Build sequence
 每個參與的區段 SHALL 依序呈現六個階段：參考線出現、游標飛入並拉出區塊大框、元件框展開、灰色骨架填入、內容出現（文字逐字打出並附插入點，圖片與按鈕由左往右擦出）、輔助線收起。同一區段的所有區塊 SHALL 同步推進，只允許微小錯開。
@@ -88,7 +92,7 @@
 - **THEN** 建構立即完成
 
 ### Requirement: Scroll-driven sections
-首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時觸發，並以時間播完整段建構（保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線。釘住的區段往回捲 SHALL 倒播；逐區塊的區段往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
+首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時觸發，並以時間播完整段建構（保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線；使用者第一次嘗試捲動之前 SHALL NOT 觸發任何區塊。尚未建構完成的元件 SHALL NOT 回應滑鼠。釘住的區段往回捲 SHALL 倒播；逐區塊的區段往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
 
 #### Scenario: Scrolling into a short scrub section
 - **WHEN** 訪客往下捲到一個高度放得進畫面的捲動建構區段頂端
@@ -97,6 +101,14 @@
 #### Scenario: Scrolling through a tall scrub section
 - **WHEN** 訪客在桌機上捲過比畫面高的「精選專案」區段
 - **THEN** 區段不停住；每張卡片頂端捲到畫面約 85% 處時開始建構，之後不需繼續捲動也會播完（含格線、游標與框線）
+
+#### Scenario: Scrolling attempt during the opening lock
+- **WHEN** 訪客在首屏播放、捲動被鎖定時轉動滾輪
+- **THEN** 首屏結束解鎖後，已露出在畫面中的區塊（例如「精選專案」標題）立即開始建構，不需要再捲一次
+
+#### Scenario: Hovering an unbuilt card
+- **WHEN** 卡片尚未建構完成，訪客把滑鼠移到卡片所在位置
+- **THEN** 不會出現任何 hover 效果（例如標題螢光筆線）
 
 #### Scenario: Page loaded but not yet scrolled
 - **WHEN** 首頁載入完成，卡片頂端只露出在畫面底部

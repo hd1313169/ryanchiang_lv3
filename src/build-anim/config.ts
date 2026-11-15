@@ -29,6 +29,7 @@ export const SCRUB = {
   // 逐區塊：區塊頂端捲到畫面 85% 處時觸發，之後以時間播放完整動畫（不隨捲動拖動）；
   // 往回捲到區塊離開畫面下方時倒轉收回，下次捲進來再播一次
   groupStart: "top 85%",
+  groupResetAt: "top 100%", // 往回捲到區塊頂端離開畫面底部時收回
   groupGuidePad: 32, // 逐區塊參考線在區塊上下各延伸的距離（px）
 };
 export const FONT_TIMEOUT_MS = 3000;
@@ -70,12 +71,13 @@ export const T = {
 
   typeStart: 1.7,
   typeSkelOut: 0.25,
-  typeBase: 0.35,
-  typePerChar: 0.018,
-  typeMax: 1.0,
+  // 打字加快（規格原值 0.35 + 字數 × 0.018，上限 1.0）
+  typeBase: 0.2,
+  typePerChar: 0.008,
+  typeMax: 0.5,
   caretBlink: 0.08,
-  caretBlinkRepeat: 3,
-  caretHide: 0.35,
+  caretBlinkRepeat: 2,
+  caretHide: 0.2,
 
   wipeStart: 1.85,
   wipeDur: 0.5,
@@ -124,4 +126,8 @@ export const GROUP_NAMES: Record<string, string> = {
   buttons: "Buttons",
   visual: "Visual",
   heading: "Heading",
+  brand: "Logo",
+  menu: "Menu",
+  "contact-heading": "Heading",
+  contacts: "Contacts",
 };

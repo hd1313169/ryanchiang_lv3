@@ -18,8 +18,14 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
   clip-path: inset(0 100% 0 0);
 }
 
-[data-build-section] {
+[data-build-section]:not([data-build-fixed]) {
   position: relative;
+}
+
+/* 尚未建構完成的元件不接受滑鼠，避免空白處出現 hover 效果 */
+html.js [data-build-section] [data-build]:not([data-built]),
+html.js [data-build-section] a:has([data-build]:not([data-built])) {
+  pointer-events: none;
 }
 
 /* ---------- overlay ---------- */
@@ -158,7 +164,7 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
   gap: 6px;
   white-space: nowrap;
   bottom: calc(-1 * var(--space-5));
-  font: 12px/1 var(--font-mono), var(--font-cjk), monospace;
+  font: 14px/1 var(--font-mono), var(--font-cjk), monospace;
   color: var(--color-text-secondary);
   opacity: 0;
   transition: opacity 0.5s;

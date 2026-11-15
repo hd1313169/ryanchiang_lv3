@@ -4,7 +4,7 @@
 import { gsap } from "gsap";
 import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, REPLAY_EVERY_LOAD, SCRUB_ENABLED, SEED, SPEED, STORAGE_PREFIX, LOOK } from "./config";
 import { clearOverlay } from "./overlay";
-import { lock, unlock, isLocked } from "./scroll-lock";
+import { lock, unlock } from "./scroll-lock";
 import { setupScrub } from "./scrub";
 import { buildElements, buildTimeline, preShowGuides, settleElements } from "./timeline";
 
@@ -79,13 +79,15 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
   const els = buildElements(section);
   let tl: gsap.core.Timeline | null = null;
   let slow = false;
+  let ownsLock = false; // 只解除自己加上的鎖定（導覽列與 Hero 同時播放）
 
   const finish = () => {
     clearOverlay(section);
     settleElements(els);
     section.classList.remove("ba-running");
     section.classList.add("ba-done");
-    if (isLocked()) {
+    if (ownsLock) {
+      ownsLock = false;
       unlock();
       hideHint();
       showScrollCue(section);
@@ -107,10 +109,11 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
     section.classList.add("ba-running");
     const mobile = isMobile();
     if (opts.lockScroll && !mobile) {
+      ownsLock = true;
       lock(speedUp);
       showHint("點擊畫面略過・捲動可加速");
-    } else {
-      root.classList.remove("locked");
+    } else if (opts.lockScroll) {
+      unlock();
     }
     tl = buildTimeline(section, { seed: opts.seed ?? SEED, guidesShown: !!section.querySelector('[data-layer="pre"]') });
     tl.timeScale(slow ? SPEED.slow : mobile ? SPEED.mobile : (opts.timeScale ?? SPEED.base));
@@ -149,7 +152,7 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
       window.removeEventListener("resize", onResize);
       clearOverlay(section);
       settleElements(els);
-      if (isLocked()) unlock();
+      if (ownsLock) unlock();
     },
   };
 }
@@ -231,7 +234,7 @@ export async function startBuildAnimations() {
     sections.forEach((section) =>
       buildSection(section, {
         mode: "once",
-        lockScroll: true,
+        lockScroll: section.dataset.buildLock !== "false",
         onComplete: () => storage.set(key),
       }),
     );
