@@ -14,6 +14,18 @@
   --font-cjk: "Noto Sans TC", sans-serif;
   --font-body: var(--font-cjk), var(--font-latin), sans-serif;
 
+  /* Build animation overlay only (src/build-anim). Never used by page
+     content — the blue accent exists solely for guides, frames, handles,
+     size/name labels and the caret while a section is being "built". */
+  --color-build: #2f54eb;
+  --color-build-guide: rgba(47, 84, 235, 0.22);
+  --color-build-member: rgba(47, 84, 235, 0.45);
+  --color-build-handle-fill: #ffffff;
+  --color-build-on: #ffffff; /* text on the build accent (size label) */
+  --color-skel: var(--color-block-bg);
+  --color-skel-depth1: #e3e1db;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
   /* Type scale — modular ~1.3 ratio */
   --text-2xs: 0.6875rem; /* 11px — vertical micro-labels, meta */
   --text-xs: 0.8125rem; /* 13px — captions, tags */
@@ -202,4 +214,16 @@ img {
     transform: none;
     transition: none;
   }
+}
+
+/* Dark sections (e.g. About's AI band) swap the build overlay to a light
+   variant so frames and skeletons stay visible on #1e1e1e. */
+[data-build-theme="dark"] {
+  --color-build: #7b95ff;
+  --color-build-guide: rgba(123, 149, 255, 0.28);
+  --color-build-member: rgba(123, 149, 255, 0.55);
+  --color-build-handle-fill: #1e1e1e;
+  --color-build-on: #0f1530;
+  --color-skel: #2c2c2c;
+  --color-skel-depth1: #383838;
 }
