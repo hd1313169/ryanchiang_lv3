@@ -15,6 +15,8 @@ export type TimelineOptions = {
   /** 只建構某個區塊（手機版逐區塊）；省略則建構整個區段。 */
   group?: string;
   guides?: boolean;
+  /** 是否建立游標；預設依視窗寬度。 */
+  cursors?: boolean;
 };
 
 export function buildElements(section: HTMLElement, group?: string): HTMLElement[] {
@@ -38,7 +40,7 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
   const W = origin.width;
   const H = origin.height;
   const rand = rng(opts.seed);
-  const useCursor = window.innerWidth >= MOBILE_BP;
+  const useCursor = opts.cursors ?? window.innerWidth >= MOBILE_BP;
   const items = els.map((el) => measure(el, origin)).sort((a, b) => a.y - b.y || a.x - b.x);
   const { div, cursor } = createLayer(section, opts.group ?? "all");
   const tl = gsap.timeline({ paused: true });
@@ -93,7 +95,7 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
     gsap.set(hTR, { x: x + w, y });
     gsap.set(hBL, { x, y: y + h });
     const size = div("ba-size", { left: px(x + w / 2), top: px(y + h + LOOK.sizeGap) }, `${Math.round(w)} × ${Math.round(h)}`);
-    const tag = div("ba-tag", { left: px(x), top: px(y) }, GROUP_NAMES[g.name] ?? g.name);
+    const tag = div("ba-tag", { left: px(x), top: px(y) }, g.mem[0].el.dataset.label ?? GROUP_NAMES[g.name] ?? g.name);
 
     // 階段 2：游標
     if (useCursor) {

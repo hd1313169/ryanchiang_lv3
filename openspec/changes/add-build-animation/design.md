@@ -35,7 +35,7 @@
 
 6. **Scrub 距離**：`buildDist 600`、`holdDist 200`。理由：動畫約 3 引擎秒，600px 約是滾輪 4～6 下；About 有 4 段，總額外捲動由約 6200px 降到約 3200px。數值放在 `config.ts`，試玩後再調。
 
-7. **About sticky 改 GSAP pin**：移除 `.skills-band` 的 sticky 與 `.ai-band` 的 `100vh`／疊蓋 z-index，兩者變成一般區段，各自 scrub。規格 §7.7 不允許用 `100svh` 撐高，所以 `.ai-band` 的 `min-height: 100vh` 一併移除，版面由內容決定。若 skills 區在桌機高於畫面，改為逐區塊建構（跟手機規則一樣），不整段釘住。
+7. **About sticky 改 GSAP pin**：移除 `.skills-band` 的 sticky 與 `.ai-band` 的 `100vh`／疊蓋 z-index，兩者變成一般區段，各自 scrub。規格 §7.7 不允許用 `100svh` 撐高，所以 `.ai-band` 的 `min-height: 100vh` 一併移除，版面由內容決定。比畫面高的區段一律改為逐區塊建構（見決策 11）。
 
 8. **`.reveal` 移除範圍**：只移除 `index.astro`、`about.astro` 上的 `.reveal` class。BaseLayout 的 observer 不動（案例頁仍在使用）。
 
@@ -48,6 +48,10 @@
    - 底色維持 #fff，不採用原型的 #F6F5F2
 
 10. **選擇器衝突檢查**：拆字會產生 `span.ch`。實作前先掃描兩頁的 CSS，把 `h1 span`、`p span` 這類寫法改成專屬 class。目前 `.hero-title .latin` 已符合。
+
+11. **高區段不釘住**（實作階段 2 時確認）：首頁「精選專案」（約 2070px）與「個人專案」（約 2390px）在 1440×900 下都超過畫面兩倍高，整區釘住會讓下方卡片在畫面外建構。規則：區段高度 ≤ 畫面高 × `SCRUB.pinMaxHeight`（0.9）才整區釘住；否則每個區塊（每張卡片）各自隨捲動建構，桌機保留游標、不畫參考線。實際效果是首頁沒有被釘住的段落，捲動阻力比原本預估的小。
+
+12. **REPLAY_EVERY_LOAD**（測試期間）：`config.ts` 的開關，true 時首屏每次載入都播放。上線前改回 false。
 
 ## Risks / Trade-offs
 

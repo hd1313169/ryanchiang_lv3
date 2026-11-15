@@ -2,9 +2,10 @@
 // 用法：區段加上 data-build-section="once"，元件加上 data-build / data-group，
 // 再於頁面 <script> 呼叫 startBuildAnimations()。
 import { gsap } from "gsap";
-import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, SEED, SPEED, STORAGE_PREFIX, LOOK } from "./config";
+import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, REPLAY_EVERY_LOAD, SCRUB_ENABLED, SEED, SPEED, STORAGE_PREFIX, LOOK } from "./config";
 import { clearOverlay } from "./overlay";
 import { lock, unlock, isLocked } from "./scroll-lock";
+import { setupScrub } from "./scrub";
 import { buildElements, buildTimeline, settleElements } from "./timeline";
 
 export type BuildOptions = {
@@ -191,26 +192,35 @@ function layoutReady(sections: HTMLElement[]): Promise<boolean> {
 
 /** 頁面進入點：啟動所有 data-build-section 區段。 */
 export async function startBuildAnimations() {
-  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-build-section="once"]'));
-  if (!sections.length) return;
+  const all = (mode: string) => Array.from(document.querySelectorAll<HTMLElement>(`[data-build-section="${mode}"]`));
+  const sections = all("once");
+  const scrubSections = all("scrub");
   const key = root.dataset.baPage ?? location.pathname;
 
-  const skip = !ENABLED || root.classList.contains("ba-skip") || (!debug && storage.get(key));
+  if (!ENABLED) {
+    [...sections, ...scrubSections].forEach(showFinished);
+    return;
+  }
+  const scrubOn = SCRUB_ENABLED && !root.classList.contains("ba-noscrub");
+  if (!scrubOn) scrubSections.forEach(showFinished);
+
+  const skip = root.classList.contains("ba-skip") || (!debug && !REPLAY_EVERY_LOAD && storage.get(key));
   if (skip) {
     root.classList.remove("locked");
     sections.forEach(showFinished);
-    return;
   }
 
-  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  if (!skip && "scrollRestoration" in history) history.scrollRestoration = "manual";
   const ok = await layoutReady(sections);
   if (!ok) {
     root.classList.remove("locked");
-    sections.forEach(showFinished);
+    [...sections, ...scrubSections].forEach(showFinished);
     return;
   }
 
   requestAnimationFrame(() => {
+    if (scrubOn && scrubSections.length) setupScrub(scrubSections, SEED);
+    if (skip) return;
     sections.forEach((section) =>
       buildSection(section, {
         mode: "once",

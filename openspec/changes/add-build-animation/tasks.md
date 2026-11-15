@@ -21,9 +21,9 @@
 
 ## 2. 階段 2：首頁 scrub 區段
 
-- [ ] 2.1 實作 scrub 模式（ScrollTrigger pin、onUpdate 推進、進度換算與平滑、onRefresh 重建並保留進度）；驗證：往回捲會倒播，resize 後框線位置正確
-- [ ] 2.2 實作手機版逐區塊 timeline（`gsap.matchMedia`、`data-layer`），以及錨點跳轉時經過的區段直接完成；驗證：寬度 < 720px 時不釘住，每張卡片各自建構
-- [ ] 2.3 精選專案、個人專案加上標記並移除 `.reveal`，決定個人專案的區塊切分（每個區段不超過 6 個區塊）；驗證：捲約 600px 後完成，再捲約 200px 才放行
+- [x] 2.1 實作 scrub 模式（ScrollTrigger pin、onUpdate 推進、進度換算與平滑、onRefresh 重建並保留進度）；驗證：往回捲會倒播，resize 後框線位置正確
+- [x] 2.2 實作手機版逐區塊 timeline（`gsap.matchMedia`、`data-layer`），以及錨點跳轉時經過的區段直接完成；驗證：寬度 < 720px 時不釘住，每張卡片各自建構
+- [x] 2.3 精選專案、個人專案加上標記並移除 `.reveal`，決定個人專案的區塊切分（每個區段不超過 6 個區塊）；驗證：捲約 600px 後完成，再捲約 200px 才放行
 - [ ] 2.4 4× CPU 降速錄製 Performance；驗證：量測以外沒有 Layout，也沒有超過 16ms 的幀
 - [ ] 2.5 Commit「Phase 2」，在 preview 評估捲動阻力，必要時調整 config 的距離
 
@@ -37,6 +37,8 @@
 - [ ] 3.6 Commit「Phase 3」，在 preview 檢查
 
 ## 4. 收尾
+
+- [ ] 4.0 上線前把 `config.ts` 的 `REPLAY_EVERY_LOAD` 改回 false；驗證：重新整理後首屏不重播
 
 - [ ] 4.1 確認案例頁、Nav、Footer 沒有任何視覺或行為差異；驗證：比對修改前後的 preview 截圖
 - [ ] 4.2 由業主決定要合併的階段，合併至 main（可以只合併部分階段）

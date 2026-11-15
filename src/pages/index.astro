@@ -109,23 +109,24 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     </div>
   </section>
 
-  <section class="work-section">
+  <section class="work-section" data-build-section="scrub">
     <div class="work-heading">
-      <span class="work-icon" aria-hidden="true"></span>
-      <h2>精選專案</h2>
-      <span class="work-rule" aria-hidden="true"></span>
+      <span class="work-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+      <h2 data-build="text" data-group="heading">精選專案</h2>
+      <span class="work-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
     </div>
 
     <div class="work-list" aria-label="作品列表">
       {
-        caseStudies.map((entry) => (
-          <div class="work-card reveal">
+        caseStudies.map((entry, i) => (
+          <div class="work-card">
             <CaseStudyCard
               slug={entry.id}
               title={entry.data.title}
               summary={entry.data.summary}
               tags={entry.data.tags}
               cover={entry.data.cover}
+              build={{ group: `case-${i + 1}`, label: `Case ${String(i + 1).padStart(2, "0")}` }}
             />
           </div>
         ))
@@ -133,19 +134,24 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     </div>
   </section>
 
-  <section class="section-row">
+  <section class="section-row" data-build-section="scrub">
     <div class="section-row-inner">
-      <div class="section-heading reveal">
-        <span class="section-icon" aria-hidden="true"></span>
-        <h2>個人專案</h2>
-        <span class="section-rule" aria-hidden="true"></span>
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+        <h2 data-build="text" data-group="heading">個人專案</h2>
+        <span class="section-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
       </div>
       <ul class="side-projects">
         {
-          sideProjects.map((project) => (
-            <li class="reveal">
+          sideProjects.map((project, i) => (
+            <li>
               <div class="side-project">
-                <span class="side-project-thumb">
+                <span
+                  class="side-project-thumb"
+                  data-build="block"
+                  data-group={`side-${i + 1}`}
+                  data-label={`Side ${String(i + 1).padStart(2, "0")}`}
+                >
                   <Image
                     class="side-project-cover"
                     src={project.cover}
@@ -157,19 +163,23 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
                   />
                 </span>
                 <span class="side-project-body">
-                  <span class="side-project-tags">
+                  <span class="side-project-tags" data-build="text" data-group={`side-${i + 1}`}>
                     {project.tags.map((tag) => (
                       <span class="side-project-tag">{tag}</span>
                     ))}
                   </span>
-                  <h3 class="side-project-title">
+                  <h3 class="side-project-title" data-build="text" data-group={`side-${i + 1}`}>
                     <a class="side-project-link" href={project.href} target="_blank" rel="noopener noreferrer">
                       <span class="title-highlight">{project.title}</span>
                     </a>
                   </h3>
-                  <p class:list={["side-project-summary", { "has-prototype": project.prototype }]}>{project.summary}</p>
+                  <p
+                    class:list={["side-project-summary", { "has-prototype": project.prototype }]}
+                    data-build="text"
+                    data-group={`side-${i + 1}`}
+                  >{project.summary}</p>
                     {project.prototype && (
-                      <span class="side-project-prototype-row">
+                      <span class="side-project-prototype-row" data-build="block" data-group={`side-${i + 1}`}>
                       觀看
                       <a class="side-project-prototype" href={project.prototype} target="_blank" rel="noopener noreferrer">
                         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
@@ -332,15 +342,13 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     color: var(--color-text);
     background-image: linear-gradient(#feffbf, #feffbf);
     background-repeat: no-repeat;
-    /* Starts at 0 width and grows in on entrance (see .reveal.is-visible
-       below) for a hand-drawn highlighter-sweep effect. */
+    /* Starts at 0 width and sweeps in once the hero has finished building
+       (.ba-done, set by src/build-anim) for a hand-drawn highlighter effect. */
     background-size: 0% 66%;
     background-position: 0 100%;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    /* Delay covers the .hero block's slide-in (600ms) plus a 400ms pause,
-       so the highlighter only sweeps in once the block has fully arrived. */
-    transition: background-size 700ms ease-in-out 1000ms;
+    transition: background-size 700ms ease-in-out 200ms;
     /* Scales continuously alongside .hero-title (clamp(2rem, 4vw, 2.625rem))
        instead of a separate fixed size + single breakpoint, so the two
        don't visibly drift out of proportion as the viewport narrows. */
@@ -349,7 +357,8 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     line-height: 1.5;
   }
 
-  .reveal.is-visible .hero-headline {
+  .hero.ba-done .hero-headline,
+  :global(html:not(.js)) .hero-headline {
     background-size: 100% 66%;
   }
 
@@ -550,23 +559,6 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     background: var(--color-border);
   }
 
-  .section-heading.reveal {
-    transform: translateY(1.5rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .section-heading.reveal.is-visible {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .section-heading.reveal {
-      transform: none;
-      transition: none;
-    }
-  }
 
   /* Grid is pre-sized for a 2x2 card layout even though only one card
      exists today — the empty cells simply collapse until more are added. */
@@ -584,23 +576,6 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     flex-direction: column;
   }
 
-  .side-projects > li.reveal {
-    transform: translateY(2rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .side-projects > li.reveal.is-visible {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .side-projects > li.reveal {
-      transform: none;
-      transition: none;
-    }
-  }
 
   .side-project {
     display: flex;
@@ -758,45 +733,6 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
   @media (min-width: 40em) {
     .side-projects {
       grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .work-card {
-    transform: translateY(2rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .work-card.is-visible {
-    transform: translateY(0);
-  }
-
-  /* Cascades bottom-to-top, one card after another. */
-  .work-card:nth-child(1) {
-    transition-delay: 0ms;
-  }
-
-  .work-card:nth-child(2) {
-    transition-delay: 120ms;
-  }
-
-  .work-card:nth-child(3) {
-    transition-delay: 240ms;
-  }
-
-  .work-card:nth-child(4) {
-    transition-delay: 360ms;
-  }
-
-  .work-card:nth-child(5) {
-    transition-delay: 480ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .work-card {
-      transform: none;
-      transition: none;
     }
   }
 

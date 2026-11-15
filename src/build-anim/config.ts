@@ -5,6 +5,8 @@
 export const ENABLED = true;
 /** 捲動建構區段（scrub）的開關，可單獨關閉。 */
 export const SCRUB_ENABLED = true;
+/** 測試期間用：true 時首屏每次載入都播放（忽略「同一分頁只播一次」）。上線前改回 false。 */
+export const REPLAY_EVERY_LOAD = true;
 
 /** 桌機／手機切換點（px），CSS 斷點也用同一個值。 */
 export const MOBILE_BP = 720;
@@ -17,6 +19,16 @@ export const SPEED = {
 };
 
 export const SEED = 11;
+
+/** 捲動建構區段。 */
+export const SCRUB = {
+  buildDist: 600, // 釘住時，建構所需捲動距離（px）；規格原值 1200
+  holdDist: 200, // 完成後保留距離（px）；規格原值 350
+  smooth: 0.35, // 進度平滑（秒）
+  pinMaxHeight: 0.9, // 區段高度 ≤ 畫面高 × 此值才整區釘住，否則逐區塊建構
+  groupStart: "90%", // 逐區塊：區塊頂端從畫面 90% 捲到 35% 時完成建構
+  groupEnd: "35%",
+};
 export const FONT_TIMEOUT_MS = 3000;
 export const STORAGE_PREFIX = "ba:played:";
 
@@ -108,4 +120,5 @@ export const GROUP_NAMES: Record<string, string> = {
   intro: "Intro",
   buttons: "Buttons",
   visual: "Visual",
+  heading: "Heading",
 };
