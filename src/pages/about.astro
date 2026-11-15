@@ -91,21 +91,22 @@ const communityCards = [
 ---
 
 <BaseLayout
+  buildAnim="about"
   title="About — Ryan Chiang"
   description="很多系統設計專案的真正難點，不在介面，而在介面背後那些沒有被說清楚的規則。我習慣在這個地方多停一下，把隱形的前提找出來，讓後續的設計有真正的依據。"
 >
   <article class="about">
-    <section class="intro-grid">
-      <div class="bio reveal reveal-left">
-        <p class="intro">
+    <section class="intro-grid" data-build-section="once">
+      <div class="bio">
+        <p class="intro" data-build="text" data-group="intro">
           我是 Ryan，UI/UX Designer
         </p>
 
-        <p class="run-in">
+        <p class="run-in" data-build="text" data-group="intro">
           來自台中的多職能設計師，有 4 年設計經驗與 2 年多的整合行銷經驗，專案中也會負責專案管理的職責。喜歡把自己的想法用 Side Project 方式實踐，也積極參加社群、課程與工作坊來拓展自己的眼界。
         </p>
 
-        <p class="run-in">
+        <p class="run-in" data-build="text" data-group="intro">
           <span class="highlight">我認為設計師的核心價值是定義問題與提供解決方案。</span>多元的經歷背景讓我在面對挑戰時，習慣先思考透徹再動手，拆解情境找出隱藏其中的細節，再根據當下條件選擇最合適的解決方法，不會侷限於只是畫設計圖。
         </p>
 
@@ -113,8 +114,8 @@ const communityCards = [
           {
             facts.map((fact) => (
               <div class="fact">
-                <dt class="fact-label">{fact.label}</dt>
-                <dd class="fact-value">
+                <dt class="fact-label" data-build="text" data-group="facts">{fact.label}</dt>
+                <dd class="fact-value" data-build="text" data-group="facts">
                   {fact.value.split("\n").map((line, i) => (
                     <>
                       {i > 0 && <br />}
@@ -126,9 +127,9 @@ const communityCards = [
             ))
           }
           <div class="fact">
-            <dt class="fact-label">Email</dt>
+            <dt class="fact-label" data-build="text" data-group="facts">Email</dt>
             <dd class="fact-value">
-              <button type="button" class="email-copy" data-email={email}>
+              <button type="button" class="email-copy" data-email={email} data-build="button" data-group="facts">
                 <span class="email-copy-text">{email}</span>
               </button>
             </dd>
@@ -136,31 +137,41 @@ const communityCards = [
         </dl>
       </div>
 
-      <div class="side reveal reveal-left">
-        <div class="photo">
+      <div class="side">
+        <div class="photo" data-build="block" data-group="photo">
           <Image src={portrait} alt="Ryan Chiang" width={700} quality={90} />
         </div>
       </div>
     </section>
 
     <div class="ai-stack">
-      <section class="skills-band">
+      <section class="skills-band" data-build-section="scrub">
         <div class="skills-band-inner">
           <div class="section-heading">
-            <span class="section-icon" aria-hidden="true"></span>
-            <h2>我擅長的事</h2>
-            <span class="section-rule" aria-hidden="true"></span>
+            <span class="section-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+            <h2 data-build="text" data-group="heading">我擅長的事</h2>
+            <span class="section-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
           </div>
           <dl class="skills">
             {
               skills.map((skill, i) => (
-                <div class="skill skill-enter">
-                  <Image class="skill-icon" src={skill.icon} alt="" width={280} height={280} quality={90} />
-                  <dt>
+                <div class="skill">
+                  <Image
+                    class="skill-icon"
+                    src={skill.icon}
+                    alt=""
+                    width={280}
+                    height={280}
+                    quality={90}
+                    data-build="block"
+                    data-group={`skill-${i + 1}`}
+                    data-label={`Skill ${String(i + 1).padStart(2, "0")}`}
+                  />
+                  <dt data-build="text" data-group={`skill-${i + 1}`}>
                     <span class="skill-num">{String(i + 1).padStart(2, "0")}</span>
                     {skill.title}
                   </dt>
-                  <dd>{skill.description}</dd>
+                  <dd data-build="text" data-group={`skill-${i + 1}`}>{skill.description}</dd>
                 </div>
               ))
             }
@@ -168,48 +179,55 @@ const communityCards = [
         </div>
       </section>
 
-      <section class="ai-band">
+      <section class="ai-band" data-build-section="scrub" data-build-theme="dark">
         <div class="ai-band-inner">
           <div class="section-heading ai-heading">
-            <span class="section-icon ai-icon" aria-hidden="true"></span>
-            <h2>AI 應用實踐高效設計</h2>
-            <span class="section-rule ai-rule" aria-hidden="true"></span>
+            <span class="section-icon ai-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+            <h2 data-build="text" data-group="heading">AI 應用實踐高效設計</h2>
+            <span class="section-rule ai-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
           </div>
-          <p class="ai-summary">
+          <p class="ai-summary" data-build="text" data-group="summary">
             我持續把設計流程中目標明確的步驟自動化，從需求整理、規格產出到 Prototype
             製作，透過 Skills 與 MCP 串接實踐高效設計。
             <br />
             重複性高的工作交給 AI 跑，縮減設計與驗證的週期；我負責核心的設計與決策，將注意力放在真正需要介入的地方。
           </p>
-          <button type="button" class="ai-flowchart-trigger" aria-haspopup="dialog" aria-controls="ai-lightbox">
+          <button
+            type="button"
+            class="ai-flowchart-trigger"
+            aria-haspopup="dialog"
+            aria-controls="ai-lightbox"
+            data-build="block" data-group="flow"
+            data-label="Workflow"
+          >
             <Image src={aiWorkflow} alt="AI 應用實踐高效設計六步驟流程圖：需求整理與知識管理、規格產出、概念發想、UI/UX 設計、Prototype 製作、交付與驗收文件產出" width={2160} quality={90} />
           </button>
         </div>
       </section>
     </div>
 
-    <section class="section-row">
-      <div class="section-heading reveal">
-        <span class="section-icon" aria-hidden="true"></span>
-        <h2>工作經歷</h2>
-        <span class="section-rule" aria-hidden="true"></span>
+    <section class="section-row" data-build-section="scrub">
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+        <h2 data-build="text" data-group="heading">工作經歷</h2>
+        <span class="section-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
       </div>
       <ul class="experience">
         {
-          experience.map((job) => (
-            <li class="experience-item reveal">
+          experience.map((job, i) => (
+            <li class="experience-item">
               <div class="experience-meta">
-                <p class="job-title">{job.role}</p>
-                <p class="job-meta">
+                <p class="job-title" data-build="text" data-group={`job-${i + 1}`} data-label={`Job ${String(i + 1).padStart(2, "0")}`}>{job.role}</p>
+                <p class="job-meta" data-build="text" data-group={`job-${i + 1}`}>
                   <span class="job-org">{job.org}</span>
                   <span class="job-period">{job.period}</span>
                 </p>
               </div>
               <div class="experience-content">
-                <p class="job-headline">
+                <p class="job-headline" data-build="text" data-group={`job-${i + 1}`}>
                   <span class="job-headline-highlight">{job.headline}</span>
                 </p>
-                <ul class="job-checklist">
+                <ul class="job-checklist" data-build="text" data-group={`job-${i + 1}`}>
                   {job.bullets.map((line) => (
                     <li>{line}</li>
                   ))}
@@ -222,23 +240,28 @@ const communityCards = [
     </section>
 
     <div class="community-band-clip">
-      <section class="community-band">
+      <section class="community-band" data-build-section="scrub">
         <div class="community-band-inner">
-          <div class="section-heading reveal">
-            <span class="section-icon" aria-hidden="true"></span>
-            <h2>積極參與設計社群與課程</h2>
-            <span class="section-rule" aria-hidden="true"></span>
+          <div class="section-heading">
+            <span class="section-icon" aria-hidden="true" data-build="block" data-group="heading"></span>
+            <h2 data-build="text" data-group="heading">積極參與設計社群與課程</h2>
+            <span class="section-rule" aria-hidden="true" data-build="block" data-group="heading"></span>
           </div>
           <ul class="community-cards">
             <span class="community-glow community-glow-left" aria-hidden="true"></span>
             <span class="community-glow community-glow-right" aria-hidden="true"></span>
             {
-              communityCards.map((card) => (
-                <li class="community-card reveal">
-                  <div class="community-card-image">
+              communityCards.map((card, i) => (
+                <li class="community-card">
+                  <div
+                    class="community-card-image"
+                    data-build="block"
+                    data-group={`community-${i + 1}`}
+                    data-label={`Card ${String(i + 1).padStart(2, "0")}`}
+                  >
                     <Image src={card.image} alt="" width={1200} quality={90} />
                   </div>
-                  <p class="community-card-caption">{card.caption}</p>
+                  <p class="community-card-caption" data-build="text" data-group={`community-${i + 1}`}>{card.caption}</p>
                 </li>
               ))
             }
@@ -257,16 +280,36 @@ const communityCards = [
   </Fragment>
 </BaseLayout>
 
-<noscript>
-  <style>
-    /* .skill-enter isn't part of the shared .reveal mechanism (see the
-       script below), so it needs its own no-JS fallback. */
-    .skill-enter {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-  </style>
-</noscript>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { startBuildAnimations } from "../build-anim";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // 疊蓋轉場（原本是 CSS sticky）：桌機上「我擅長的事」停在畫面頂端，
+  // 深色的 AI 區塊往上捲時把它整個蓋住，然後正常捲動。
+  // 區段比畫面高時不釘住，否則下方的卡片會在被看到之前就被蓋掉。
+  const skillsBand = document.querySelector<HTMLElement>(".skills-band");
+  const aiBand = document.querySelector<HTMLElement>(".ai-band");
+  if (skillsBand && aiBand) {
+    gsap.matchMedia().add("(min-width: 40em)", () => {
+      if (skillsBand.offsetHeight > window.innerHeight) return;
+      const st = ScrollTrigger.create({
+        trigger: skillsBand,
+        start: "top top",
+        endTrigger: aiBand,
+        end: "top top",
+        pin: true,
+        pinSpacing: false,
+      });
+      return () => st.kill();
+    });
+  }
+
+  startBuildAnimations();
+</script>
 
 <script>
   document.querySelectorAll<HTMLButtonElement>(".email-copy").forEach((button) => {
@@ -289,17 +332,6 @@ const communityCards = [
         if (label) label.textContent = original;
         button.classList.remove("copied");
       }, 1600);
-    });
-  });
-
-  // The skill cards enter as soon as the page loads rather than waiting for
-  // scroll-into-view (unlike the rest of the page's .reveal elements), so
-  // they're triggered directly here instead of through the shared
-  // IntersectionObserver in BaseLayout. The double rAF lets the browser
-  // paint the initial (hidden) state first so the transition actually runs.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.querySelectorAll(".skill-enter").forEach((el) => el.classList.add("is-visible"));
     });
   });
 
@@ -353,26 +385,6 @@ const communityCards = [
     gap: clamp(1rem, 4vw, 3rem);
   }
 
-  /* Text and photo enter together (both left-to-right), then the
-     highlighter sweeps in 200ms after they finish (see .highlight). */
-  .reveal-left {
-    transform: translateX(-3rem);
-    transition:
-      opacity 600ms ease-in-out,
-      transform 600ms ease-in-out;
-  }
-
-  .reveal-left.is-visible {
-    transform: translateX(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-left {
-      transform: none;
-      transition: none;
-    }
-  }
-
   .bio {
     display: flex;
     flex-direction: column;
@@ -407,19 +419,18 @@ const communityCards = [
     color: var(--color-text);
     background-image: linear-gradient(#feffbf, #feffbf);
     background-repeat: no-repeat;
-    /* Starts at 0 width and grows in on entrance (see .reveal.is-visible
-       below) for a hand-drawn highlighter-sweep effect. */
+    /* Starts at 0 width and sweeps in once the intro has finished building
+       (.ba-done, set by src/build-anim) for a hand-drawn highlighter effect. */
     background-size: 0% 66%;
     background-position: 0 100%;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     font-weight: 500;
-    /* Starts once the text/photo slide-in (600ms) plus a 200ms pause has
-       elapsed: 600 + 200 = 800ms. */
-    transition: background-size 700ms ease-in-out 800ms;
+    transition: background-size 700ms ease-in-out 200ms;
   }
 
-  .reveal.is-visible .highlight {
+  .intro-grid.ba-done .highlight,
+  :global(html:not(.js)) .highlight {
     background-size: 100% 66%;
   }
 
@@ -565,40 +576,14 @@ const communityCards = [
     background: var(--color-border);
   }
 
-  .section-heading.reveal {
-    transform: translateY(1.5rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .section-heading.reveal.is-visible {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .section-heading.reveal {
-      transform: none;
-      transition: none;
-    }
-  }
-
-  /* Wraps .skills-band and .ai-band together so .skills-band's sticky range
-     (see below) is bounded by this wrapper's height — i.e. exactly the
-     combined height of both bands, not the rest of the page. */
+  /* Wraps .skills-band and .ai-band. (They used to share a CSS sticky
+     cover transition; both now enter through the build animation.) */
   .ai-stack {
     position: relative;
   }
 
   /* Breaks out of .about's centered column to span the full viewport width,
-     regardless of how deeply nested the section is. Sticky (desktop only —
-     see the min-width: 40em override below) at the top of .ai-stack so
-     .ai-band (below) can visually slide up and cover it as the page scrolls
-     — see .ai-band's comment for the other half of that effect. On mobile,
-     the single-column skills list is taller than the viewport; since a
-     sticky element that's taller than the viewport can't be scrolled
-     internally, pinning it there would freeze it before its lower cards
-     ever become visible, so mobile gets plain, unpinned flow instead. */
+     regardless of how deeply nested the section is. */
   .skills-band {
     position: static;
     width: 100vw;
@@ -618,12 +603,7 @@ const communityCards = [
     margin-inline: auto;
   }
 
-  /* Sits flush under .skills-band (no gap) with a higher stacking order and
-     an opaque background, so as the page scrolls it rises up over the still
-     -pinned .skills-band above, fully covering it before .ai-stack ends and
-     normal scrolling resumes into 工作經歷 (desktop only — see .skills-band's
-     comment on why mobile skips the sticky pin; min-height: 100vh is only
-     needed to keep that cover convincing, so it's desktop-only too). */
+  /* Full-bleed dark band sitting flush under .skills-band. */
   .ai-band {
     position: relative;
     z-index: 2;
@@ -754,43 +734,6 @@ const communityCards = [
     padding-inline: clamp(16px, 2vw, 24px);
   }
 
-  /* Cascades bottom-to-top, one card after another, starting on page load
-     rather than waiting for scroll into view (see the script below) — the
-     heading above is static (no entrance effect). */
-  .skill.skill-enter {
-    transform: translateY(2rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .skill.skill-enter.is-visible {
-    transform: translateY(0);
-  }
-
-  .skill:nth-child(1) {
-    transition-delay: 0ms;
-  }
-
-  .skill:nth-child(2) {
-    transition-delay: 120ms;
-  }
-
-  .skill:nth-child(3) {
-    transition-delay: 240ms;
-  }
-
-  .skill:nth-child(4) {
-    transition-delay: 360ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .skill.skill-enter {
-      transform: none;
-      transition: none;
-    }
-  }
-
   .skill-icon {
     display: block;
     width: clamp(4.5rem, 10vw, 108px);
@@ -837,26 +780,6 @@ const communityCards = [
     flex-direction: column;
     gap: var(--space-2);
     padding-block: clamp(1.75rem, 4vw, 2.5rem);
-  }
-
-  /* Each card enters bottom-to-top independently, right as it scrolls
-     into view — not staggered off the others. */
-  .experience-item.reveal {
-    transform: translateY(2rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .experience-item.reveal.is-visible {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .experience-item.reveal {
-      transform: none;
-      transition: none;
-    }
   }
 
   .experience-item:first-child {
@@ -1056,39 +979,6 @@ const communityCards = [
     padding-block: clamp(1.5rem, 6vw, 2.5rem);
   }
 
-  /* The two cards enter one after another rather than together — same
-     bottom-to-top entrance as .experience-item.reveal, staggered like
-     .skill:nth-child below. Both share one on-screen moment (they're
-     observed as soon as either is visible per BaseLayout's IntersectionObserver),
-     so the delay is what creates the sequential feel. */
-  .community-card.reveal {
-    transform: translateY(2rem);
-    transition:
-      opacity 500ms ease-in-out,
-      transform 500ms ease-in-out;
-  }
-
-  .community-card.reveal.is-visible {
-    transform: translateY(0);
-  }
-
-  /* nth-of-type, not nth-child: the two glow <span>s are earlier siblings
-     within .community-cards, which would throw off a plain nth-child count. */
-  .community-card:nth-of-type(1) {
-    transition-delay: 0ms;
-  }
-
-  .community-card:nth-of-type(2) {
-    transition-delay: 180ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .community-card.reveal {
-      transform: none;
-      transition: none;
-    }
-  }
-
   .community-card-image {
     display: flex;
     justify-content: center;
@@ -1111,16 +1001,6 @@ const communityCards = [
   }
 
   @media (min-width: 40em) {
-    .skills-band {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .ai-band {
-      min-height: 100vh;
-    }
-
     .experience-item {
       flex-direction: row;
       gap: var(--space-5);

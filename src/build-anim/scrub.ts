@@ -1,6 +1,7 @@
-// 捲動驅動區段（規格 §7.6–7.8）。
-// - 桌機且區段高度放得進畫面：區段頂端貼齊畫面頂端時釘住，捲動推進建構。
-// - 其餘情況（手機，或區段比畫面高）：不釘住，每個區塊捲進畫面時各自隨捲動建構。
+// 捲動觸發區段（規格 §7.6–7.8 的調整版）。
+// 每個區塊捲進畫面時觸發，以時間播完整段建構；往回捲到區塊離開畫面下方時收回。
+// 不使用「釘住 + 隨捲動拖動進度」：試看時發現區段靠近時會是一片只有淡格線的空白，
+// 快速捲動也看不清。需要釘住效果的頁面（例如 About 的疊蓋）自行用 ScrollTrigger 處理。
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MOBILE_BP, SCRUB, SPEED } from "./config";
@@ -10,40 +11,8 @@ import { buildElements, buildTimeline, markBuilt } from "./timeline";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const smooth = (tl: gsap.core.Timeline, p: number) =>
-  gsap.to(tl, { progress: p, duration: SCRUB.smooth, ease: "power2.out", overwrite: true });
-
 function groupsOf(section: HTMLElement): string[] {
   return Array.from(new Set(buildElements(section).map((el) => el.dataset.group || "misc")));
-}
-
-/** 整區釘住。 */
-function pinWhole(section: HTMLElement, seed: number) {
-  let tl: gsap.core.Timeline | null = null;
-  const total = SCRUB.buildDist + SCRUB.holdDist;
-  const rebuild = () => {
-    const p = tl ? tl.progress() : 0;
-    tl?.kill();
-    tl = buildTimeline(section, { seed });
-    tl.progress(p);
-  };
-  rebuild();
-  const st = ScrollTrigger.create({
-    trigger: section,
-    start: "top top",
-    end: `+=${total}`,
-    pin: true,
-    onUpdate: (self) => {
-      const p = Math.min((self.progress * total) / SCRUB.buildDist, 1);
-      if (tl) smooth(tl, p);
-      markBuilt(buildElements(section), p >= 1);
-    },
-    onRefresh: rebuild,
-  });
-  return () => {
-    st.kill();
-    tl?.kill();
-  };
 }
 
 /** 逐區塊、不釘住：捲進畫面時觸發，以時間播完整段動畫；往回捲離開時倒轉。 */
@@ -141,9 +110,7 @@ function arm(sections: HTMLElement[], baseSeed: number) {
   sections.forEach((section, si) => {
     const seed = baseSeed + (si + 1) * 100;
     mm.add(`(min-width: ${MOBILE_BP}px)`, () => {
-      const fits =
-        section.dataset.buildPin !== "false" && section.offsetHeight <= window.innerHeight * SCRUB.pinMaxHeight;
-      const undo = fits ? pinWhole(section, seed) : perGroup(section, seed, true);
+      const undo = perGroup(section, seed, true);
       return () => {
         undo();
         clearOverlay(section);
@@ -157,7 +124,17 @@ function arm(sections: HTMLElement[], baseSeed: number) {
       };
     });
   });
-  // 延遲載入的圖片改變版面後，重新量測（onRefresh 會重建 timeline 並保留進度）
-  if (document.readyState === "complete") return;
-  window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
+  // 延遲載入的圖片改變版面後，重新量測（onRefresh 會重建 timeline 並保留進度）。
+  // 圖片可能在 window load 之後才開始載入，所以逐張監聽。
+  let pending = 0;
+  const refreshSoon = () => {
+    cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(() => ScrollTrigger.refresh());
+  };
+  sections.forEach((section) =>
+    section.querySelectorAll("img").forEach((img) => {
+      if (!img.complete) img.addEventListener("load", refreshSoon, { once: true });
+    }),
+  );
+  if (document.readyState !== "complete") window.addEventListener("load", refreshSoon, { once: true });
 }

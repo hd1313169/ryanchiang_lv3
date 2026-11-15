@@ -92,14 +92,10 @@
 - **THEN** 建構立即完成
 
 ### Requirement: Scroll-driven sections
-首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時觸發，並以時間播完整段建構（保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線；使用者第一次嘗試捲動之前 SHALL NOT 觸發任何區塊。尚未建構完成的元件 SHALL NOT 回應滑鼠。釘住的區段往回捲 SHALL 倒播；逐區塊的區段往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
+首屏以外的參與區段 SHALL NOT 為了建構而釘住。每個區塊 SHALL 在捲進畫面時觸發，並以時間播完整段建構（桌機保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線；使用者第一次嘗試捲動之前 SHALL NOT 觸發任何區塊。尚未建構完成的元件 SHALL NOT 回應滑鼠。往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
 
-#### Scenario: Scrolling into a short scrub section
-- **WHEN** 訪客往下捲到一個高度放得進畫面的捲動建構區段頂端
-- **THEN** 區段停住，繼續捲動約 600px 後建構完成，再捲約 200px 後恢復正常捲動
-
-#### Scenario: Scrolling through a tall scrub section
-- **WHEN** 訪客在桌機上捲過比畫面高的「精選專案」區段
+#### Scenario: Scrolling through a scroll-built section
+- **WHEN** 訪客在桌機上捲過「精選專案」區段
 - **THEN** 區段不停住；每張卡片頂端捲到畫面約 85% 處時開始建構，之後不需繼續捲動也會播完（含格線、游標與框線）
 
 #### Scenario: Scrolling attempt during the opening lock
@@ -115,16 +111,16 @@
 - **THEN** 卡片區沒有任何參考線或框線
 
 #### Scenario: Scrolling back up
-- **WHEN** 訪客在建構中途往回捲
-- **THEN** 文字逐字刪除、框線縮回、游標飛出畫面
+- **WHEN** 訪客往回捲到某張卡片完全離開畫面下方
+- **THEN** 該卡片收回到未建構狀態，再次捲入時重新建構
 
-#### Scenario: Resizing a scrub section
-- **WHEN** 視窗大小改變
-- **THEN** 區段重新量測，維持原本的進度，框線位置正確
+#### Scenario: Resizing or late-loading images
+- **WHEN** 視窗大小改變，或區段內延遲載入的圖片載入完成
+- **THEN** 區段重新量測，維持原本的進度，框線位置正確，圖片不會停在隱藏狀態
 
 #### Scenario: Jumping via anchor
-- **WHEN** 訪客透過錨點跳轉，經過尚未建構的釘住區段
-- **THEN** 經過的區段直接視為完成，不會卡住
+- **WHEN** 訪客透過錨點跳轉到頁面中段
+- **THEN** 落點畫面中的區塊立即開始建構，頁面不會卡住
 
 ### Requirement: Mobile behavior
 寬度 < 720px 時 SHALL NOT 建立游標、SHALL NOT 鎖定捲動、SHALL NOT 釘住區段。首屏 SHALL 仍播放一次。其他區段的每個區塊 SHALL 在捲進畫面時各自播放建構，往回捲離開畫面時收回。

@@ -33,9 +33,9 @@
 
 5. **About 首屏 = `intro-grid`，`once` 模式**。sessionStorage key 依頁面分開（`ba:home`、`ba:about`）。
 
-6. **Scrub 距離**：`buildDist 600`、`holdDist 200`。理由：動畫約 3 引擎秒，600px 約是滾輪 4～6 下；About 有 4 段，總額外捲動由約 6200px 降到約 3200px。數值放在 `config.ts`，試玩後再調。
+6. **Scrub 距離**（已由決策 21 取消）：`buildDist 600`、`holdDist 200`。理由：動畫約 3 引擎秒，600px 約是滾輪 4～6 下；About 有 4 段，總額外捲動由約 6200px 降到約 3200px。數值放在 `config.ts`，試玩後再調。
 
-7. **About sticky 改 GSAP pin**：移除 `.skills-band` 的 sticky 與 `.ai-band` 的 `100vh`／疊蓋 z-index，兩者變成一般區段，各自 scrub。規格 §7.7 不允許用 `100svh` 撐高，所以 `.ai-band` 的 `min-height: 100vh` 一併移除，版面由內容決定。比畫面高的區段一律改為逐區塊建構（見決策 11）。
+7. **About sticky 改 GSAP pin**（細節見決策 22）：移除 `.skills-band` 的 sticky 與 `.ai-band` 的 `100vh`／疊蓋 z-index，兩者變成一般區段，各自 scrub。規格 §7.7 不允許用 `100svh` 撐高，所以 `.ai-band` 的 `min-height: 100vh` 一併移除，版面由內容決定。比畫面高的區段一律改為逐區塊建構（見決策 11）。
 
 8. **`.reveal` 移除範圍**：只移除 `index.astro`、`about.astro` 上的 `.reveal` class。BaseLayout 的 observer 不動（案例頁仍在使用）。
 
@@ -68,6 +68,12 @@
 19. **未建構的元件不接受滑鼠**：完成時加 `data-built`；CSS 對沒有 `data-built` 的元件（以及包著它們的連結）設 `pointer-events: none`，避免空白處出現 hover 螢光筆線。
 
 20. **打字加快**：0.2 + 字數 × 0.008，上限 0.5 引擎秒（規格 0.35 / 0.018 / 1.0）；格線與拉框時間不變。
+
+21. **取消「整區釘住 + 隨捲動拖動」**（階段 3）：About 的「我擅長的事」（657px）與社群區（566px）放得進畫面，原本會走釘住模式，但靠近時整區是只有淡格線的空白，與首頁第二輪回饋的問題相同。所有捲動區段統一為「逐區塊觸發、以時間播完」，`SCRUB.buildDist`／`holdDist`／`pinMaxHeight` 移除。
+
+22. **About 疊蓋轉場改用 GSAP**：使用者要求「拿掉 sticky，改用 GSAP」。以 `ScrollTrigger` 釘住 `.skills-band`（`pinSpacing: false`，從自身頂端到 `.ai-band` 頂端），深色 AI 區塊往上蓋過；桌機（≥ 40em）且區段不高於畫面時才啟用。程式放在 `about.astro`，不進引擎。
+
+23. **延遲載入的圖片**：About 社群卡片的圖片在 window load 之後才載入，量測時高度為 0，原本會被略過並永遠隱藏。改為：量不到尺寸的元件直接顯示；區段內每張圖片載入後觸發 `ScrollTrigger.refresh()`，重新量測並重建。
 
 ## Risks / Trade-offs
 

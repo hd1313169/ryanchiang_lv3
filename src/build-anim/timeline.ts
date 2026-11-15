@@ -56,11 +56,12 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
   const H = origin.height;
   const rand = rng(opts.seed);
   const useCursor = opts.cursors ?? window.innerWidth >= MOBILE_BP;
-  // 隱藏中的元件（例如手機版收合的選單）不參與動畫，完成時一併顯示
-  const items = els
-    .map((el) => measure(el, origin))
-    .filter((it) => it.w > 0 && it.h > 0)
-    .sort((a, b) => a.y - b.y || a.x - b.x);
+  // 量不到尺寸的元件（手機版收合的選單、尚未載入的延遲圖片）不參與動畫，直接顯示，
+  // 避免永遠停在隱藏狀態；圖片載入後會重新量測並重建
+  const measured = els.map((el) => measure(el, origin));
+  const items = measured.filter((it) => it.w > 0 && it.h > 0).sort((a, b) => a.y - b.y || a.x - b.x);
+  const skipped = measured.filter((it) => !(it.w > 0 && it.h > 0)).map((it) => it.el);
+  if (skipped.length) settleElements(skipped);
   const { div, cursor } = createLayer(section, opts.group ?? "all");
   const tl = gsap.timeline({ paused: true });
   if (!items.length) return tl;

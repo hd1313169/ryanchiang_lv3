@@ -20,12 +20,8 @@ export const SPEED = {
 
 export const SEED = 11;
 
-/** 捲動建構區段。 */
+/** 捲動觸發區段。 */
 export const SCRUB = {
-  buildDist: 600, // 釘住時，建構所需捲動距離（px）；規格原值 1200
-  holdDist: 200, // 完成後保留距離（px）；規格原值 350
-  smooth: 0.35, // 進度平滑（秒）
-  pinMaxHeight: 0.9, // 區段高度 ≤ 畫面高 × 此值才整區釘住，否則逐區塊建構
   // 逐區塊：區塊頂端捲到畫面 85% 處時觸發，之後以時間播放完整動畫（不隨捲動拖動）；
   // 往回捲到區塊離開畫面下方時倒轉收回，下次捲進來再播一次
   groupStart: "top 85%",
@@ -48,28 +44,28 @@ export const T = {
   memberStep: 0.04,
   depthDelay: 0.15,
 
-  // 游標放慢（規格原值 fly 0.5 / drag 0.5）；游標提早進場（規格 0.2）以縮短開場空白
+  // 游標飛入放慢（規格 0.5→0.8）、拉框 0.55（規格 0.5）；游標提早進場（規格 0.2）以縮短開場空白
   cursorIn: 0.05,
   cursorFadeIn: 0.15,
   cursorFly: 0.8,
   press: 0.85,
   pressDur: 0.08,
   drag: 0.87,
-  dragDur: 0.75,
-  release: 1.62,
+  dragDur: 0.55,
+  release: 1.42,
   releaseDur: 0.1,
-  annotIn: 1.6,
+  annotIn: 1.4,
   annotDur: 0.15,
-  cursorOut: 1.7,
+  cursorOut: 1.5,
   cursorOutDur: 0.5,
 
-  memberFrame: 1.2,
+  memberFrame: 1.0,
   memberFrameDur: 0.4,
-  skelIn: 1.4,
+  skelIn: 1.2,
   skelDur: 0.35,
   skelStagger: 0.05,
 
-  typeStart: 1.7,
+  typeStart: 1.5,
   typeSkelOut: 0.25,
   // 打字加快（規格原值 0.35 + 字數 × 0.018，上限 1.0）
   typeBase: 0.2,
@@ -79,11 +75,11 @@ export const T = {
   caretBlinkRepeat: 2,
   caretHide: 0.2,
 
-  wipeStart: 1.85,
+  wipeStart: 1.65,
   wipeDur: 0.5,
-  wipeSkelOut: 2.1,
+  wipeSkelOut: 1.9,
   wipeSkelOutDur: 0.3,
-  wipeEnd: 2.35,
+  wipeEnd: 2.15,
 
   memberOutDelay: 0.15,
   frameOutDur: 0.3,
@@ -130,4 +126,7 @@ export const GROUP_NAMES: Record<string, string> = {
   menu: "Menu",
   "contact-heading": "Heading",
   contacts: "Contacts",
+  facts: "Facts",
+  photo: "Photo",
+  summary: "Summary",
 };

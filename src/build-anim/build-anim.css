@@ -24,7 +24,7 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
 
 /* 尚未建構完成的元件不接受滑鼠，避免空白處出現 hover 效果 */
 html.js [data-build-section] [data-build]:not([data-built]),
-html.js [data-build-section] a:has([data-build]:not([data-built])) {
+html.js [data-build-section] :is(a, li):has([data-build]:not([data-built])) {
   pointer-events: none;
 }
 

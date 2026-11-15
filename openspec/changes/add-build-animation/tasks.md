@@ -29,10 +29,10 @@
 
 ## 3. 階段 3：About
 
-- [ ] 3.1 intro-grid 以 once 模式加上標記（sessionStorage key 與首頁分開）；驗證：同一分頁中首頁和 About 各播一次
-- [ ] 3.2 移除 skills／AI 區段的 CSS sticky、`100vh` 與疊蓋 z-index，必要時調整排版；驗證：兩個區段依序正常捲動，沒有重疊
-- [ ] 3.3 skills、AI（`data-build-theme="dark"`）、工作經歷、社群區段加上 scrub 標記，移除 `.reveal` 與錯開入場；驗證：深色區段的框線清楚可見，桌機上比畫面高的區段改為逐區塊建構
-- [ ] 3.4 確認流程圖 lightbox 在建構完成後仍可開啟和關閉；驗證：點擊、Esc、背景點擊都正常
+- [x] 3.1 intro-grid 以 once 模式加上標記（sessionStorage key 與首頁分開）；驗證：同一分頁中首頁和 About 各播一次
+- [x] 3.2 移除 skills／AI 區段的 CSS sticky、`100vh` 與疊蓋 z-index，必要時調整排版；驗證：兩個區段依序正常捲動，沒有重疊
+- [x] 3.3 skills、AI（`data-build-theme="dark"`）、工作經歷、社群區段加上 scrub 標記，移除 `.reveal` 與錯開入場；驗證：深色區段的框線清楚可見，桌機上比畫面高的區段改為逐區塊建構
+- [x] 3.4 確認流程圖 lightbox 在建構完成後仍可開啟和關閉；驗證：點擊、Esc、背景點擊都正常
 - [ ] 3.5 依規格 §10.2 驗收清單完整跑一輪（桌機、手機、iOS Safari）
 - [ ] 3.6 Commit「Phase 3」，在 preview 檢查
 
