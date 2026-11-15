@@ -84,7 +84,7 @@
 - **THEN** 建構立即完成
 
 ### Requirement: Scroll-driven sections
-首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時各自隨捲動建構（保留游標）。往回捲 SHALL 倒播。
+首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時各自隨捲動建構（保留游標，並在區塊範圍內顯示參考線）。往回捲 SHALL 倒播。
 
 #### Scenario: Scrolling into a short scrub section
 - **WHEN** 訪客往下捲到一個高度放得進畫面的捲動建構區段頂端
@@ -92,7 +92,7 @@
 
 #### Scenario: Scrolling through a tall scrub section
 - **WHEN** 訪客在桌機上捲過比畫面高的「精選專案」區段
-- **THEN** 區段不停住，每張卡片從畫面下方 90% 捲到 35% 的過程中各自建構完成
+- **THEN** 區段不停住，每張卡片從頂端進入畫面開始建構、到整張卡片出現時完成，期間有格線、游標與框線
 
 #### Scenario: Scrolling back up
 - **WHEN** 訪客在建構中途往回捲

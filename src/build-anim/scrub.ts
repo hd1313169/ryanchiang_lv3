@@ -49,17 +49,18 @@ function perGroup(section: HTMLElement, seed: number, cursors: boolean) {
       const old = tls.get(g);
       const p = old ? old.progress() : 0;
       old?.kill();
-      const tl = buildTimeline(section, { seed: seed + i, group: g, guides: false, cursors });
+      const tl = buildTimeline(section, { seed: seed + i, group: g, guides: cursors, cursors });
       tl.progress(p);
       tls.set(g, tl);
     };
     rebuild();
-    const trigger =
-      section.querySelector<HTMLElement>(`[data-build][data-group="${g}"]:not([data-depth="1"])`) ?? section;
+    const members = section.querySelectorAll<HTMLElement>(`[data-build][data-group="${g}"]:not([data-depth="1"])`);
+    const trigger = members[0] ?? section;
     return ScrollTrigger.create({
       trigger,
-      start: `top ${SCRUB.groupStart}`,
-      end: `top ${SCRUB.groupEnd}`,
+      start: SCRUB.groupStart,
+      endTrigger: members[members.length - 1] ?? trigger,
+      end: SCRUB.groupEnd,
       onUpdate: (self) => {
         const tl = tls.get(g);
         if (tl) smooth(tl, self.progress);

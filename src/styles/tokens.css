@@ -18,8 +18,9 @@
      content — the blue accent exists solely for guides, frames, handles,
      size/name labels and the caret while a section is being "built". */
   --color-build: #2f54eb;
-  --color-build-guide: rgba(47, 84, 235, 0.22);
-  --color-build-member: rgba(47, 84, 235, 0.45);
+  --color-build-guide: rgba(47, 84, 235, 0.38);
+  --color-build-member: rgba(47, 84, 235, 0.6);
+  --build-line: 1.5px; /* frame stroke */
   --color-build-handle-fill: #ffffff;
   --color-build-on: #ffffff; /* text on the build accent (size label) */
   --color-skel: var(--color-block-bg);
@@ -220,8 +221,8 @@ img {
    variant so frames and skeletons stay visible on #1e1e1e. */
 [data-build-theme="dark"] {
   --color-build: #7b95ff;
-  --color-build-guide: rgba(123, 149, 255, 0.28);
-  --color-build-member: rgba(123, 149, 255, 0.55);
+  --color-build-guide: rgba(123, 149, 255, 0.42);
+  --color-build-member: rgba(123, 149, 255, 0.7);
   --color-build-handle-fill: #1e1e1e;
   --color-build-on: #0f1530;
   --color-skel: #2c2c2c;

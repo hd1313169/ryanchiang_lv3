@@ -50,7 +50,7 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
 
 .ba-frame {
   position: absolute;
-  border: 1px solid var(--color-build);
+  border: var(--build-line) solid var(--color-build);
   opacity: 0;
 }
 .ba-frame--member {
@@ -61,11 +61,11 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
   position: absolute;
   left: 0;
   top: 0;
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
   background: var(--color-build-handle-fill);
-  border: 1px solid var(--color-build);
+  border: var(--build-line) solid var(--color-build);
   opacity: 0;
 }
 
@@ -104,7 +104,7 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
   position: absolute;
   left: 0;
   top: 0;
-  width: 2px;
+  width: 2.5px;
   background: var(--color-build);
   opacity: 0;
 }

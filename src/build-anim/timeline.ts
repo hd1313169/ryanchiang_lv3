@@ -1,5 +1,5 @@
 import { gsap } from "gsap";
-import { EASE, GROUP_NAMES, LOOK, MOBILE_BP, T } from "./config";
+import { EASE, GROUP_NAMES, LOOK, MOBILE_BP, SCRUB, T } from "./config";
 import { measure, type Item } from "./measure";
 import { createLayer } from "./overlay";
 import { rng } from "./rng";
@@ -52,14 +52,29 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
     const cs = getComputedStyle(section);
     const padL = parseFloat(cs.paddingLeft);
     const inner = W - padL - parseFloat(cs.paddingRight);
-    for (let i = 0; i <= LOOK.guideCols; i++) {
-      guides.push(div("ba-guide ba-guide--v", { left: px(padL + (inner * i) / LOOK.guideCols) }));
-    }
-    const title = items.find((i) => /^H[12]$/.test(i.el.tagName)) ?? items[0];
+    const title = items.find((i) => /^H[123]$/.test(i.el.tagName)) ?? items[0];
     const lastItem = items[items.length - 1];
-    [items[0].y - LOOK.guideTopOffset, title.y, lastItem.y - LOOK.guideBottomOffset].forEach((y) =>
-      guides.push(div("ba-guide ba-guide--h", { top: px(y) })),
-    );
+    const hYs = [items[0].y - LOOK.guideTopOffset, title.y, lastItem.y - LOOK.guideBottomOffset];
+    if (opts.group) {
+      // 逐區塊：只在區塊範圍內畫格線，同一列的區塊共用欄線而不重疊
+      const gx0 = Math.min(...items.map((i) => i.x)) - LOOK.framePad;
+      const gx1 = Math.max(...items.map((i) => i.x + i.w)) + LOOK.framePad;
+      const gy0 = Math.min(...items.map((i) => i.y)) - SCRUB.groupGuidePad;
+      const gy1 = Math.max(...items.map((i) => i.y + i.h)) + SCRUB.groupGuidePad;
+      for (let i = 0; i <= LOOK.guideCols; i++) {
+        const gx = padL + (inner * i) / LOOK.guideCols;
+        if (gx < gx0 || gx >= gx1) continue;
+        guides.push(div("ba-guide ba-guide--v", { left: px(gx), top: px(gy0), height: px(gy1 - gy0), bottom: "auto" }));
+      }
+      hYs.forEach((y) =>
+        guides.push(div("ba-guide ba-guide--h", { top: px(y), left: px(gx0), width: px(gx1 - gx0), right: "auto" })),
+      );
+    } else {
+      for (let i = 0; i <= LOOK.guideCols; i++) {
+        guides.push(div("ba-guide ba-guide--v", { left: px(padL + (inner * i) / LOOK.guideCols) }));
+      }
+      hYs.forEach((y) => guides.push(div("ba-guide ba-guide--h", { top: px(y) })));
+    }
     tl.to(guides, { opacity: 1, duration: T.guideIn, stagger: T.guideStagger }, 0);
   }
 
