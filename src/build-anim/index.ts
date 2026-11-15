@@ -130,7 +130,8 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
   const onResize = () => {
     if (tl?.isActive()) skip();
   };
-  section.addEventListener("click", onClick);
+  // 首屏播放中點擊畫面任何位置，所有首屏區段（Hero 與導覽列）一起完成
+  window.addEventListener("click", onClick);
   window.addEventListener("resize", onResize);
 
   if (debug) mountDebug(() => {
@@ -148,7 +149,7 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
     replay: play,
     destroy() {
       tl?.kill();
-      section.removeEventListener("click", onClick);
+      window.removeEventListener("click", onClick);
       window.removeEventListener("resize", onResize);
       clearOverlay(section);
       settleElements(els);
