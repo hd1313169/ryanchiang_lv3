@@ -22,10 +22,8 @@ export const SEED = 11;
 
 /** 捲動觸發區段。 */
 export const SCRUB = {
-  // 逐區塊：區塊頂端捲到畫面 85% 處時觸發，之後以時間播放完整動畫（不隨捲動拖動）；
-  // 往回捲到區塊離開畫面下方時倒轉收回，下次捲進來再播一次
+  // 逐區塊：區塊頂端捲到畫面 85% 處時觸發，之後以時間播完（不隨捲動拖動、不因回捲倒退）
   groupStart: "top 85%",
-  groupResetAt: "top 100%", // 往回捲到區塊頂端離開畫面底部時收回
   groupGuidePad: 32, // 逐區塊參考線在區塊上下各延伸的距離（px）
 };
 export const FONT_TIMEOUT_MS = 3000;

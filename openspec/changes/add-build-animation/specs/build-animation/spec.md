@@ -92,7 +92,7 @@
 - **THEN** 建構立即完成
 
 ### Requirement: Scroll-driven sections
-首屏以外的參與區段 SHALL NOT 為了建構而釘住。每個區塊 SHALL 在捲進畫面時觸發，並以時間播完整段建構（桌機保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線；使用者第一次嘗試捲動之前 SHALL NOT 觸發任何區塊。尚未建構完成的元件 SHALL NOT 回應滑鼠。往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
+首屏以外的參與區段 SHALL NOT 為了建構而釘住。每個區塊 SHALL 在捲進畫面時觸發，並以時間播完整段建構（桌機保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線；使用者第一次嘗試捲動之前 SHALL NOT 觸發任何區塊。尚未建構完成的元件 SHALL NOT 回應滑鼠。區塊播完後 SHALL 停在完成狀態並清除輔助線，SHALL NOT 因回捲而倒退或重播；只有重新載入頁面才會再播。
 
 #### Scenario: Scrolling through a scroll-built section
 - **WHEN** 訪客在桌機上捲過「精選專案」區段
@@ -111,8 +111,8 @@
 - **THEN** 卡片區沒有任何參考線或框線
 
 #### Scenario: Scrolling back up
-- **WHEN** 訪客往回捲到某張卡片完全離開畫面下方
-- **THEN** 該卡片收回到未建構狀態，再次捲入時重新建構
+- **WHEN** 訪客捲到頁面底部後再捲回頂端
+- **THEN** 所有已建構的區塊維持完成狀態，不收回、不重播，畫面上沒有殘留的輔助線
 
 #### Scenario: Resizing or late-loading images
 - **WHEN** 視窗大小改變，或區段內延遲載入的圖片載入完成
@@ -123,7 +123,7 @@
 - **THEN** 落點畫面中的區塊立即開始建構，頁面不會卡住
 
 ### Requirement: Mobile behavior
-寬度 < 720px 時 SHALL NOT 建立游標、SHALL NOT 鎖定捲動、SHALL NOT 釘住區段。首屏 SHALL 仍播放一次。其他區段的每個區塊 SHALL 在捲進畫面時各自播放建構，往回捲離開畫面時收回。
+寬度 < 720px 時 SHALL NOT 建立游標、SHALL NOT 鎖定捲動、SHALL NOT 釘住區段。首屏 SHALL 仍播放一次。其他區段的每個區塊 SHALL 在捲進畫面時各自播放建構，播完後不因回捲而倒退。
 
 #### Scenario: Opening the home page on a phone
 - **WHEN** 訪客以手機開啟首頁

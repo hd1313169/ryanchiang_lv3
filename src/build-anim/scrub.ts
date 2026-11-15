@@ -1,5 +1,6 @@
 // 捲動觸發區段（規格 §7.6–7.8 的調整版）。
-// 每個區塊捲進畫面時觸發，以時間播完整段建構；往回捲到區塊離開畫面下方時收回。
+// 每個區塊捲進畫面時觸發，以時間播完整段建構；播完即停在完成狀態，不因回捲而倒退，
+// 只有重新載入頁面才會再播。
 // 不使用「釘住 + 隨捲動拖動進度」：試看時發現區段靠近時會是一片只有淡格線的空白，
 // 快速捲動也看不清。需要釘住效果的頁面（例如 About 的疊蓋）自行用 ScrollTrigger 處理。
 import { gsap } from "gsap";
@@ -7,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MOBILE_BP, SCRUB, SPEED } from "./config";
 import { clearOverlay } from "./overlay";
 import { whenUnlocked } from "./scroll-lock";
-import { buildElements, buildTimeline, markBuilt, settleElements } from "./timeline";
+import { buildElements, buildTimeline, settleElements } from "./timeline";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,67 +16,58 @@ function groupsOf(section: HTMLElement): string[] {
   return Array.from(new Set(buildElements(section).map((el) => el.dataset.group || "misc")));
 }
 
-/** 逐區塊、不釘住：捲進畫面時觸發，以時間播完整段動畫；往回捲離開時倒轉。 */
+/** 逐區塊：每個區塊捲進畫面時以時間播完一次，播完清掉輔助線並停在完成狀態，不會因回捲而倒退。 */
 function perGroup(section: HTMLElement, seed: number, cursors: boolean) {
   const tls = new Map<string, gsap.core.Timeline>();
-  // 每個區塊目前想要的方向；重建 timeline 時依此恢復（不能靠 isActive，剛 play 的那一刻仍是 false）
-  const dir = new Map<string, "play" | "reverse" | null>();
+  const state = new Map<string, "idle" | "playing" | "done">();
   const speed = cursors ? SPEED.base : SPEED.mobile;
+  const groups = groupsOf(section);
 
-  const apply = (g: string) => {
-    const tl = tls.get(g);
-    const d = dir.get(g);
-    if (!tl || !d) return;
-    if (d === "play" && tl.progress() < 1) tl.timeScale(speed).play();
-    if (d === "reverse" && tl.progress() > 0) tl.timeScale(SPEED.fast).reverse();
+  const play = (g: string) => {
+    if (state.get(g) !== "idle") return;
+    state.set(g, "playing");
+    tls.get(g)?.timeScale(speed).play();
   };
 
-  const triggers = groupsOf(section).map((g, i) => {
+  const triggers = groups.map((g, i) => {
     const els = buildElements(section, g);
+    state.set(g, "idle");
+    const finish = () => {
+      state.set(g, "done");
+      section.querySelector(`:scope > .ba-overlay > [data-layer="${g}"]`)?.remove();
+      settleElements(els);
+      if (groups.every((x) => state.get(x) === "done")) section.classList.add("ba-done");
+    };
     const rebuild = () => {
+      if (state.get(g) === "done") return; // 已完成的區塊不再重建
       const old = tls.get(g);
       const p = old ? old.progress() : 0;
       old?.kill();
       const tl = buildTimeline(section, { seed: seed + i, group: g, guides: cursors, cursors });
-      tl.eventCallback("onComplete", () => markBuilt(els, true));
+      tl.eventCallback("onComplete", finish);
       tl.progress(p);
-      markBuilt(els, p >= 1);
       tls.set(g, tl);
-      apply(g);
+      if (state.get(g) === "playing") tl.timeScale(speed).play();
     };
     rebuild();
     const trigger =
       section.querySelector<HTMLElement>(`[data-build][data-group="${g}"]:not([data-depth="1"])`) ?? section;
     // 啟用當下已經露出在畫面中的區塊，直接播放
-    if (trigger.getBoundingClientRect().top < window.innerHeight) {
-      dir.set(g, "play");
-      apply(g);
-    }
-    return [
-      ScrollTrigger.create({
-        trigger,
-        start: SCRUB.groupStart,
-        onEnter: () => {
-          dir.set(g, "play");
-          apply(g);
-        },
-        onRefresh: rebuild,
-      }),
-      // 往回捲到區塊完全離開畫面下方時才收回
-      ScrollTrigger.create({
-        trigger,
-        start: SCRUB.groupResetAt,
-        onLeaveBack: () => {
-          dir.set(g, "reverse");
-          markBuilt(els, false);
-          apply(g);
-        },
-      }),
-    ];
+    if (trigger.getBoundingClientRect().top < window.innerHeight) play(g);
+    return ScrollTrigger.create({
+      trigger,
+      start: SCRUB.groupStart,
+      onEnter: () => play(g),
+      onRefresh: rebuild,
+    });
   });
   return () => {
-    triggers.flat().forEach((t) => t.kill());
-    tls.forEach((t) => t.kill());
+    triggers.forEach((t) => t.kill());
+    // 切換桌機／手機時：播放中的直接完成，未播放的丟棄（由另一套設定重建）
+    groups.forEach((g) => {
+      if (state.get(g) === "playing") tls.get(g)?.progress(1);
+      else tls.get(g)?.kill();
+    });
   };
 }
 
