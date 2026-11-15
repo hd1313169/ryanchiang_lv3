@@ -3,7 +3,7 @@
 // - 其餘情況（手機，或區段比畫面高）：不釘住，每個區塊捲進畫面時各自隨捲動建構。
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MOBILE_BP, SCRUB } from "./config";
+import { MOBILE_BP, SCRUB, SPEED } from "./config";
 import { clearOverlay } from "./overlay";
 import { buildElements, buildTimeline } from "./timeline";
 
@@ -41,30 +41,32 @@ function pinWhole(section: HTMLElement, seed: number) {
   };
 }
 
-/** 逐區塊、不釘住。 */
+/** 逐區塊、不釘住：捲進畫面時觸發，以時間播完整段動畫；往回捲離開時倒轉。 */
 function perGroup(section: HTMLElement, seed: number, cursors: boolean) {
   const tls = new Map<string, gsap.core.Timeline>();
   const triggers = groupsOf(section).map((g, i) => {
     const rebuild = () => {
       const old = tls.get(g);
       const p = old ? old.progress() : 0;
+      const reversed = old ? old.reversed() : true;
+      const running = old?.isActive() ?? false;
       old?.kill();
       const tl = buildTimeline(section, { seed: seed + i, group: g, guides: cursors, cursors });
       tl.progress(p);
+      if (running) {
+        if (reversed) tl.timeScale(SPEED.fast).reverse();
+        else tl.timeScale(cursors ? SPEED.base : SPEED.mobile).play();
+      }
       tls.set(g, tl);
     };
     rebuild();
-    const members = section.querySelectorAll<HTMLElement>(`[data-build][data-group="${g}"]:not([data-depth="1"])`);
-    const trigger = members[0] ?? section;
+    const trigger =
+      section.querySelector<HTMLElement>(`[data-build][data-group="${g}"]:not([data-depth="1"])`) ?? section;
     return ScrollTrigger.create({
       trigger,
       start: SCRUB.groupStart,
-      endTrigger: members[members.length - 1] ?? trigger,
-      end: SCRUB.groupEnd,
-      onUpdate: (self) => {
-        const tl = tls.get(g);
-        if (tl) smooth(tl, self.progress);
-      },
+      onEnter: () => tls.get(g)?.timeScale(cursors ? SPEED.base : SPEED.mobile).play(),
+      onLeaveBack: () => tls.get(g)?.timeScale(SPEED.fast).reverse(),
       onRefresh: rebuild,
     });
   });

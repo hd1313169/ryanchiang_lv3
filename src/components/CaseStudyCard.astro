@@ -13,7 +13,7 @@ interface Props {
   build?: { group: string; label: string };
 }
 const { slug, title, summary, tags, cover, build } = Astro.props;
-const b = (type: "text" | "block") =>
+const b = (type: "text" | "block" | "button") =>
   build ? { "data-build": type, "data-group": build.group } : {};
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -41,8 +41,8 @@ const titleTail = titleRest.join("——");
     )}
   </span>
   <span class="body">
-    <span class="tags" {...b("text")}>
-      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    <span class="tags">
+      {tags.map((tag) => <span class="tag" {...b("button")}>{tag}</span>)}
     </span>
     <h2 {...b("text")}>
       <span class="title-highlight">

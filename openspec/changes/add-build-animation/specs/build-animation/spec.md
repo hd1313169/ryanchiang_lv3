@@ -20,6 +20,10 @@
 ### Requirement: Build sequence
 每個參與的區段 SHALL 依序呈現六個階段：參考線出現、游標飛入並拉出區塊大框、元件框展開、灰色骨架填入、內容出現（文字逐字打出並附插入點，圖片與按鈕由左往右擦出）、輔助線收起。同一區段的所有區塊 SHALL 同步推進，只允許微小錯開。
 
+#### Scenario: Tags build as components
+- **WHEN** 案例卡片的標籤到達內容階段
+- **THEN** 每個標籤以整個元件（底色＋文字）由左往右擦出，而不是只打出文字
+
 #### Scenario: Text appears by typing
 - **WHEN** 一個文字元件到達內容階段
 - **THEN** 文字逐字出現，旁邊有插入點游標，局部樣式（例如品牌英文字）在打字過程中與完成後都正確
@@ -69,7 +73,7 @@
 - **THEN** 首屏不倒播也不重播
 
 ### Requirement: Opening scroll lock with skip and speed-up
-在寬度 ≥ 720px 時，首屏播放期間 SHALL 鎖定頁面捲動（滾輪、觸控、捲動鍵、捲軸皆無效），鎖定與解鎖時版面 SHALL NOT 左右跳動。點擊區段 SHALL 立即完成並解鎖；嘗試捲動 SHALL 讓播放加速。鎖定中 SHALL 顯示提示，完成後提示往下捲動。
+在寬度 ≥ 720px 時，首屏播放期間 SHALL 鎖定頁面捲動（滾輪、觸控、捲動鍵、捲軸皆無效），鎖定與解鎖時版面 SHALL NOT 左右跳動。點擊區段 SHALL 立即完成並解鎖；嘗試捲動 SHALL 讓播放加速。鎖定中 SHALL 顯示提示；完成後 SHALL 在區段下方水平置中顯示「往下捲動」提示，箭頭持續上下跳動。等待字型載入期間 SHALL 先顯示垂直參考線，不留空白。
 
 #### Scenario: Clicking to skip
 - **WHEN** 首屏播放中訪客點擊區段任一處
@@ -84,7 +88,7 @@
 - **THEN** 建構立即完成
 
 ### Requirement: Scroll-driven sections
-首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時各自隨捲動建構（保留游標，並在區塊範圍內顯示參考線）。往回捲 SHALL 倒播。
+首屏以外的參與區段在寬度 ≥ 720px 且區段高度不超過畫面高度 90% 時，SHALL 於區段頂端貼齊畫面頂端時釘住，捲動進度直接決定建構進度；建構距離 SHALL 約 600px，完成後 SHALL 再保留約 200px 才放行。比畫面高的區段 SHALL NOT 釘住，改為每個區塊捲進畫面時觸發，並以時間播完整段建構（保留游標，並在區塊範圍內顯示參考線）；觸發前 SHALL NOT 顯示任何輔助線。釘住的區段往回捲 SHALL 倒播；逐區塊的區段往回捲到區塊離開畫面下方時 SHALL 收回，再次捲入時重播。
 
 #### Scenario: Scrolling into a short scrub section
 - **WHEN** 訪客往下捲到一個高度放得進畫面的捲動建構區段頂端
@@ -92,7 +96,11 @@
 
 #### Scenario: Scrolling through a tall scrub section
 - **WHEN** 訪客在桌機上捲過比畫面高的「精選專案」區段
-- **THEN** 區段不停住，每張卡片從頂端進入畫面開始建構、到整張卡片出現時完成，期間有格線、游標與框線
+- **THEN** 區段不停住；每張卡片頂端捲到畫面約 85% 處時開始建構，之後不需繼續捲動也會播完（含格線、游標與框線）
+
+#### Scenario: Page loaded but not yet scrolled
+- **WHEN** 首頁載入完成，卡片頂端只露出在畫面底部
+- **THEN** 卡片區沒有任何參考線或框線
 
 #### Scenario: Scrolling back up
 - **WHEN** 訪客在建構中途往回捲
@@ -107,7 +115,7 @@
 - **THEN** 經過的區段直接視為完成，不會卡住
 
 ### Requirement: Mobile behavior
-寬度 < 720px 時 SHALL NOT 建立游標、SHALL NOT 鎖定捲動、SHALL NOT 釘住區段。首屏 SHALL 仍播放一次。其他區段的每個區塊 SHALL 在捲進畫面時各自隨捲動建構，往回捲時各自倒播。
+寬度 < 720px 時 SHALL NOT 建立游標、SHALL NOT 鎖定捲動、SHALL NOT 釘住區段。首屏 SHALL 仍播放一次。其他區段的每個區塊 SHALL 在捲進畫面時各自播放建構，往回捲離開畫面時收回。
 
 #### Scenario: Opening the home page on a phone
 - **WHEN** 訪客以手機開啟首頁
@@ -115,7 +123,7 @@
 
 #### Scenario: Scrolling a section on a phone
 - **WHEN** 訪客在手機上捲到某張作品卡片
-- **THEN** 該卡片隨捲動從骨架建構到完成，區段不停住
+- **THEN** 該卡片從骨架建構到完成，區段不停住
 
 ### Requirement: Content remains available without the animation
 JavaScript 未執行、字型 3 秒內未載入，或建構動畫被總開關停用時，所有內容 SHALL 完整可見且可正常捲動。建構完成後頁面 SHALL NOT 殘留輔助視覺或隱藏樣式。

@@ -17,7 +17,22 @@ export type TimelineOptions = {
   guides?: boolean;
   /** 是否建立游標；預設依視窗寬度。 */
   cursors?: boolean;
+  /** 垂直參考線已預先顯示（等待字型期間），timeline 一開始就讓它們可見。 */
+  guidesShown?: boolean;
 };
+
+/** 等待字型時先畫出垂直參考線，不需要量測元件。回傳的圖層由 buildTimeline 接手時移除。 */
+export function preShowGuides(section: HTMLElement) {
+  const { div } = createLayer(section, "pre");
+  const cs = getComputedStyle(section);
+  const padL = parseFloat(cs.paddingLeft);
+  const inner = section.clientWidth - padL - parseFloat(cs.paddingRight);
+  const lines: HTMLElement[] = [];
+  for (let i = 0; i <= LOOK.guideCols; i++) {
+    lines.push(div("ba-guide ba-guide--v", { left: px(padL + (inner * i) / LOOK.guideCols) }));
+  }
+  gsap.to(lines, { opacity: 1, duration: T.guideIn, stagger: T.guideStagger });
+}
 
 export function buildElements(section: HTMLElement, group?: string): HTMLElement[] {
   const sel = group ? `[data-build][data-group="${group}"]` : "[data-build]";
@@ -70,12 +85,22 @@ export function buildTimeline(section: HTMLElement, opts: TimelineOptions): gsap
         guides.push(div("ba-guide ba-guide--h", { top: px(y), left: px(gx0), width: px(gx1 - gx0), right: "auto" })),
       );
     } else {
+      const vs: HTMLElement[] = [];
       for (let i = 0; i <= LOOK.guideCols; i++) {
-        guides.push(div("ba-guide ba-guide--v", { left: px(padL + (inner * i) / LOOK.guideCols) }));
+        vs.push(div("ba-guide ba-guide--v", { left: px(padL + (inner * i) / LOOK.guideCols) }));
       }
+      if (opts.guidesShown) {
+        gsap.set(vs, { opacity: 1 });
+        section.querySelector(':scope > .ba-overlay > [data-layer="pre"]')?.remove();
+      }
+      guides.push(...vs);
       hYs.forEach((y) => guides.push(div("ba-guide ba-guide--h", { top: px(y) })));
     }
-    tl.to(guides, { opacity: 1, duration: T.guideIn, stagger: T.guideStagger }, 0);
+    tl.to(
+      opts.guidesShown ? guides.filter((g) => g.classList.contains("ba-guide--h")) : guides,
+      { opacity: 1, duration: T.guideIn, stagger: T.guideStagger },
+      0,
+    );
   }
 
   // 依區塊分組，一個區塊一個游標

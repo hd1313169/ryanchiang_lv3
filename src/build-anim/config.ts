@@ -26,10 +26,9 @@ export const SCRUB = {
   holdDist: 200, // 完成後保留距離（px）；規格原值 350
   smooth: 0.35, // 進度平滑（秒）
   pinMaxHeight: 0.9, // 區段高度 ≤ 畫面高 × 此值才整區釘住，否則逐區塊建構
-  // 逐區塊：區塊頂端進入畫面底部（top 100%）開始，
-  // 區塊最後一個元件的底部捲到畫面 92% 處（整個區塊都已出現）時完成
-  groupStart: "top 100%",
-  groupEnd: "bottom 92%",
+  // 逐區塊：區塊頂端捲到畫面 85% 處時觸發，之後以時間播放完整動畫（不隨捲動拖動）；
+  // 往回捲到區塊離開畫面下方時倒轉收回，下次捲進來再播一次
+  groupStart: "top 85%",
   groupGuidePad: 32, // 逐區塊參考線在區塊上下各延伸的距離（px）
 };
 export const FONT_TIMEOUT_MS = 3000;
@@ -48,28 +47,28 @@ export const T = {
   memberStep: 0.04,
   depthDelay: 0.15,
 
-  // 游標放慢（規格原值 fly 0.5 / drag 0.5），之後的階段整體順延 0.55
-  cursorIn: 0.2,
+  // 游標放慢（規格原值 fly 0.5 / drag 0.5）；游標提早進場（規格 0.2）以縮短開場空白
+  cursorIn: 0.05,
   cursorFadeIn: 0.15,
   cursorFly: 0.8,
-  press: 1.0,
+  press: 0.85,
   pressDur: 0.08,
-  drag: 1.02,
+  drag: 0.87,
   dragDur: 0.75,
-  release: 1.77,
+  release: 1.62,
   releaseDur: 0.1,
-  annotIn: 1.75,
+  annotIn: 1.6,
   annotDur: 0.15,
-  cursorOut: 1.85,
+  cursorOut: 1.7,
   cursorOutDur: 0.5,
 
-  memberFrame: 1.35,
+  memberFrame: 1.2,
   memberFrameDur: 0.4,
-  skelIn: 1.55,
+  skelIn: 1.4,
   skelDur: 0.35,
   skelStagger: 0.05,
 
-  typeStart: 1.85,
+  typeStart: 1.7,
   typeSkelOut: 0.25,
   typeBase: 0.35,
   typePerChar: 0.018,
@@ -78,11 +77,11 @@ export const T = {
   caretBlinkRepeat: 3,
   caretHide: 0.35,
 
-  wipeStart: 2.0,
+  wipeStart: 1.85,
   wipeDur: 0.5,
-  wipeSkelOut: 2.25,
+  wipeSkelOut: 2.1,
   wipeSkelOutDur: 0.3,
-  wipeEnd: 2.5,
+  wipeEnd: 2.35,
 
   memberOutDelay: 0.15,
   frameOutDur: 0.3,

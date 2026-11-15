@@ -98,11 +98,19 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
     </div>
     <div class="hero-illustration">
       <div class="hero-illustration-frame" data-build="block" data-group="visual">
-        <Image src={heroIllustration1} alt="" width={480} class="hero-illustration-img is-active" />
+        <Image
+          src={heroIllustration1}
+          alt=""
+          width={480}
+          loading="eager"
+          fetchpriority="high"
+          class="hero-illustration-img is-active"
+        />
         <Image
           src={heroIllustration2}
           alt=""
           width={480}
+          loading="eager"
           class="hero-illustration-img hero-illustration-img--overlay"
         />
       </div>
@@ -163,9 +171,9 @@ const resumeHref = "https://drive.google.com/file/d/1ZC6IYmXv1XlfKsOaqDprTBE1ZP4
                   />
                 </span>
                 <span class="side-project-body">
-                  <span class="side-project-tags" data-build="text" data-group={`side-${i + 1}`}>
+                  <span class="side-project-tags">
                     {project.tags.map((tag) => (
-                      <span class="side-project-tag">{tag}</span>
+                      <span class="side-project-tag" data-build="button" data-group={`side-${i + 1}`}>{tag}</span>
                     ))}
                   </span>
                   <h3 class="side-project-title" data-build="text" data-group={`side-${i + 1}`}>

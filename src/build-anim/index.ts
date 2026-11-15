@@ -6,7 +6,7 @@ import { ENABLED, FONT_TIMEOUT_MS, MOBILE_BP, REPLAY_EVERY_LOAD, SCRUB_ENABLED, 
 import { clearOverlay } from "./overlay";
 import { lock, unlock, isLocked } from "./scroll-lock";
 import { setupScrub } from "./scrub";
-import { buildElements, buildTimeline, settleElements } from "./timeline";
+import { buildElements, buildTimeline, preShowGuides, settleElements } from "./timeline";
 
 export type BuildOptions = {
   mode: "once";
@@ -55,7 +55,10 @@ const hideHint = () => hint?.classList.add("is-off");
 function showScrollCue(section: HTMLElement) {
   const cue = document.createElement("div");
   cue.className = "ba-cue";
-  cue.textContent = "↓ 往下捲動";
+  const arrow = document.createElement("span");
+  arrow.className = "ba-cue-arrow";
+  arrow.textContent = "↓";
+  cue.append(arrow, "往下捲動");
   section.appendChild(cue);
   requestAnimationFrame(() => cue.classList.add("is-on"));
   const onScroll = () => {
@@ -109,7 +112,7 @@ export function buildSection(section: HTMLElement, opts: BuildOptions): BuildHan
     } else {
       root.classList.remove("locked");
     }
-    tl = buildTimeline(section, { seed: opts.seed ?? SEED });
+    tl = buildTimeline(section, { seed: opts.seed ?? SEED, guidesShown: !!section.querySelector('[data-layer="pre"]') });
     tl.timeScale(slow ? SPEED.slow : mobile ? SPEED.mobile : (opts.timeScale ?? SPEED.base));
     tl.eventCallback("onComplete", finish);
     tl.play(0);
@@ -210,7 +213,11 @@ export async function startBuildAnimations() {
     sections.forEach(showFinished);
   }
 
-  if (!skip && "scrollRestoration" in history) history.scrollRestoration = "manual";
+  if (!skip) {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    // 等字型期間先畫出格線，避免開場一片空白
+    sections.forEach(preShowGuides);
+  }
   const ok = await layoutReady(sections);
   if (!ok) {
     root.classList.remove("locked");

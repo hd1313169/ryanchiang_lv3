@@ -151,7 +151,12 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
 
 .ba-cue {
   position: absolute;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
   bottom: calc(-1 * var(--space-5));
   font: 12px/1 var(--font-mono), var(--font-cjk), monospace;
   color: var(--color-text-secondary);
@@ -161,6 +166,19 @@ html.js:not(.ba-noscrub) [data-build-section="scrub"]:not(.ba-done) [data-build]
 }
 .ba-cue.is-on {
   opacity: 1;
+}
+.ba-cue-arrow {
+  display: inline-block;
+  animation: ba-cue-bounce 1.4s ease-in-out infinite;
+}
+@keyframes ba-cue-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
 }
 
 .ba-debug {
