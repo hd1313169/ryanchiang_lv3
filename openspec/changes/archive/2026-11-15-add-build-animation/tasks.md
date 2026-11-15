@@ -13,7 +13,7 @@
 - [x] 1.4 實作 `overlay.ts` 與 `build-anim.css`（`html.js [data-build]` 初始隱藏，以及各 `.ba-*` 樣式）；驗證：在 `?debug` 暫停時可看到框線、控制點、標籤
 - [x] 1.5 實作 `timeline.ts`（六個階段、once 模式）與 `index.ts` 的 `buildSection`、`skip`、`replay`、`destroy`；驗證：完成後 overlay 沒有子節點，元件 `clip-path` 為 `none`
 - [x] 1.6 實作 `scroll-lock.ts`（鎖定、iOS fixed、按鍵攔截、點擊略過、捲動加速、resize 直接完成），以及提示 UI；驗證：桌機 Chrome 與 iOS Safari 播放中無法捲動，點擊後立即解鎖
-  - 備註：業主決定上線後再以 iPhone 實機測試（本機區網連線失敗）
+  - 備註：業主決定上線後再以 iPhone 實機測試（本機區網連線失敗）；2026-11-15 上線後業主以 iPhone 實機確認通過
   - 備註：桌機 Chrome 已驗證（滾輪、PageDown、空白鍵皆無法捲動；點擊解鎖）；iOS Safari 需實機
 - [x] 1.7 在首頁與 About 注入 head 行內 script（`js`／`locked` class、sessionStorage、`#hash`、< 720px 判斷），案例頁不注入；驗證：案例頁的 `<html>` 沒有 `locked`
 - [x] 1.8 首頁 Hero 加上 `data-build` 標記（slogan／buttons／visual），移除 `.reveal`，掃描並修正 `h1 span` 之類的選擇器；驗證：Hero 完整播放約 4.3 秒，品牌字「Ryan」的樣式正確
@@ -40,7 +40,7 @@
 - [x] 3.3 skills、AI（`data-build-theme="dark"`）、工作經歷、社群區段加上 scrub 標記，移除 `.reveal` 與錯開入場；驗證：深色區段的框線清楚可見，桌機上比畫面高的區段改為逐區塊建構
 - [x] 3.4 確認流程圖 lightbox 在建構完成後仍可開啟和關閉；驗證：點擊、Esc、背景點擊都正常
 - [x] 3.5 依規格 §10.2 驗收清單完整跑一輪（桌機、手機、iOS Safari）
-  - 備註：iOS Safari 實機部分延至上線後測試
+  - 備註：iOS Safari 實機部分延至上線後測試；2026-11-15 上線後業主以 iPhone 實機確認通過
   - 備註：自動化項目已通過（首頁與 About）：鎖定、點擊略過（含導覽列一起完成）、resize 直接完成、自然播完無殘留 overlay／隱藏樣式／will-change、#hash 不播放、手機無游標不鎖定、停用 JS 內容完整可捲動。剩 iOS Safari 實機與 Mac 觸控板慣性（規格 §7.5）
 - [x] 3.6 Commit「Phase 3」，在 preview 檢查
   - 備註：已推送
